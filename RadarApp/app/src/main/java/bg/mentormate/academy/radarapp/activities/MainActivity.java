@@ -14,8 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import bg.mentormate.academy.radarapp.fragments.NavigationDrawerFragment;
 import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.fragments.NavigationDrawerFragment;
 import bg.mentormate.academy.radarapp.models.User;
 
 
@@ -102,17 +102,26 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_logout) {
+            logout();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logout() {
+        User.logOut();
+        goToLoginScreen();
+    }
+
+    private void goToLoginScreen() {
+        Intent loginIntent = new Intent(this, LoginActivity.class);
+        loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(loginIntent);
     }
 
     /**

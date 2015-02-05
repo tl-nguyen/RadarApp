@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="bg.mentormate.academy.radarapp.activities.LoginActivity">
+    tools:context="bg.mentormate.academy.radarapp.activities.RegisterActivity">
 
     <EditText
         android:id="@+id/etUsername"
@@ -30,20 +30,22 @@
         android:hint="@string/et_password"
         android:inputType="textPassword" />
 
-    <Button
-        android:id="@+id/btnLogin"
+    <EditText
+        android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/etPassword"
         android:layout_centerHorizontal="true"
-        android:text="@string/btn_login" />
+        android:ems="10"
+        android:hint="@string/et_email"
+        android:inputType="textEmailAddress" />
 
-    <TextView
-        android:id="@+id/tvRegister"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnLogin"
+        android:layout_below="@+id/etEmail"
         android:layout_centerHorizontal="true"
-        android:text="@string/tv_register"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:text="@string/btn_register" />
+
 </RelativeLayout>

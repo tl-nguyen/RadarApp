@@ -8,7 +8,7 @@ import com.parse.ParseUser;
  * Created by tl on 05.02.15.
  */
 
-@ParseClassName("User")
+@ParseClassName("_User")
 public class User extends ParseUser{
 
     public ParseGeoPoint getCurrentLocation() {

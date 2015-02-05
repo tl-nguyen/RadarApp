@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bg.mentormate.academy.radarapp" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:name=".RadarApplication"
         android:allowBackup="true"
@@ -20,6 +23,14 @@
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login" >
+        </activity>
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:label="@string/title_activity_register"
+            android:parentActivityName=".activities.LoginActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="bg.mentormate.academy.radarapp.activities.LoginActivity" />
         </activity>
     </application>
 
