@@ -5,6 +5,7 @@ import android.app.Application;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
+import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 
 /**
@@ -18,6 +19,7 @@ public class RadarApplication extends Application {
         Parse.enableLocalDatastore(this);
 
         ParseObject.registerSubclass(User.class);
+        ParseObject.registerSubclass(Room.class);
 
         Parse.initialize(this,
                 "cuV0C51aioI2eMuE5eAncgkUgZL5XBaTQCqzigwx",

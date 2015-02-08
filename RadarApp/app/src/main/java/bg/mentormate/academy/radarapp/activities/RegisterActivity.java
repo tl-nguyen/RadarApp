@@ -1,6 +1,9 @@
 package bg.mentormate.academy.radarapp.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -8,7 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.models.User;
@@ -44,7 +53,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
         switch (id) {
             case R.id.btnRegister:
-                register();;
+                register();
                 break;
         }
     }
@@ -66,23 +75,49 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void createUser(String username, String password, String email) {
-        User newUser = new User();
+        final User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(password);
         newUser.setEmail(email);
-        newUser.signUpInBackground(new SignUpCallback() {
+        newUser.setCurrentLocation(new ParseGeoPoint(0f, 0f));
+        newUser.setFollowers(new ArrayList<User>());
+        newUser.setFollowing(new ArrayList<User>());
+
+        // Putting ic_launcher as a default avatar
+        final ParseFile blankAvatar = new ParseFile(
+                getBitmapFromDrawableId(R.drawable.ic_launcher));
+
+        // Save the avatar file
+        blankAvatar.saveInBackground(new SaveCallback() {
 
             @Override
             public void done(ParseException e) {
-                if (e == null) {
-                    // Signed up successfully
-                    goToMain();
-                }
-                else {
-                    DialogHelper.showAlert(RegisterActivity.this, getString(R.string.dialog_error_title), e.getMessage());
-                }
+                newUser.setAvatar(blankAvatar);
+
+                // sign-up the new user
+                newUser.signUpInBackground(new SignUpCallback() {
+
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            // Signed up successfully
+                            goToMain();
+                        }
+                        else {
+                            DialogHelper.showAlert(RegisterActivity.this, getString(R.string.dialog_error_title), e.getMessage());
+                        }
+                    }
+                });
             }
         });
+    }
+
+    private byte[] getBitmapFromDrawableId(int id) {
+        Drawable drawable = getResources().getDrawable(id);
+        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        return stream.toByteArray();
     }
 
     private void goToMain() {

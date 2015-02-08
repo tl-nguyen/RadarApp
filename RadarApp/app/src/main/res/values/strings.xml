@@ -2,9 +2,8 @@
 <resources>
 
     <string name="app_name">Radar App</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_section1">Rooms</string>
+    <string name="title_section2">My Profile</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
@@ -21,5 +20,9 @@
     <string name="et_email">Email</string>
     <string name="btn_register">Register</string>
     <string name="signup_invalid_inputs_message">The username, password and email fields can not be empty</string>
+    <string name="followers_label">follwers</string>
+    <string name="following_label">following</string>
+    <string name="edit_profile_label">Edit Profile</string>
+    <string name="number_sample">100</string>
 
 </resources>
