@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -25,10 +26,13 @@ import bg.mentormate.academy.radarapp.tools.DialogHelper;
 
 public class RegisterActivity extends ActionBarActivity implements View.OnClickListener {
 
+    ParseFile mBlankAvatar;
+
     private EditText mEtUsername;
     private EditText mEtPassword;
     private EditText mEtEmail;
     private Button mBtnRegister;
+    private ProgressBar mPbRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         mEtPassword = (EditText) findViewById(R.id.etPassword);
         mEtEmail = (EditText) findViewById(R.id.etEmail);
         mBtnRegister = (Button) findViewById(R.id.btnRegister);
+        mPbRegister = (ProgressBar) findViewById(R.id.progressBar);
 
         mBtnRegister.setOnClickListener(this);
     }
@@ -59,11 +64,13 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void register() {
+        showProgressBar();
         String username = mEtUsername.getText().toString().trim();
         String password = mEtPassword.getText().toString().trim();
         String email = mEtEmail.getText().toString().trim();
 
         if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+            hideProgressBar();
             // The input are empty, show an alert
             DialogHelper.showAlert(this, getString(R.string.dialog_error_title),
                     getString(R.string.signup_invalid_inputs_message));
@@ -84,30 +91,37 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         newUser.setFollowing(new ArrayList<User>());
 
         // Putting ic_launcher as a default avatar
-        final ParseFile blankAvatar = new ParseFile(
-                getBitmapFromDrawableId(R.drawable.ic_launcher));
+        if (mBlankAvatar == null) {
+            mBlankAvatar = new ParseFile(
+                    getBitmapFromDrawableId(R.drawable.ic_launcher));
+        }
 
         // Save the avatar file
-        blankAvatar.saveInBackground(new SaveCallback() {
+        mBlankAvatar.saveInBackground(new SaveCallback() {
 
             @Override
             public void done(ParseException e) {
-                newUser.setAvatar(blankAvatar);
+                if (e == null) {
+                    newUser.setAvatar(mBlankAvatar);
 
-                // sign-up the new user
-                newUser.signUpInBackground(new SignUpCallback() {
+                    // sign-up the new user
+                    newUser.signUpInBackground(new SignUpCallback() {
 
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            // Signed up successfully
-                            goToMain();
+                        @Override
+                        public void done(ParseException e) {
+                            hideProgressBar();
+                            if (e == null) {
+                                // Signed up successfully
+                                goToMain();
+                            } else {
+                                DialogHelper.showAlert(RegisterActivity.this, getString(R.string.dialog_error_title), e.getMessage());
+                            }
                         }
-                        else {
-                            DialogHelper.showAlert(RegisterActivity.this, getString(R.string.dialog_error_title), e.getMessage());
-                        }
-                    }
-                });
+                    });
+                } else {
+                    hideProgressBar();
+                    DialogHelper.showAlert(RegisterActivity.this, getString(R.string.dialog_error_title), e.getMessage());
+                }
             }
         });
     }
@@ -118,6 +132,14 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         return stream.toByteArray();
+    }
+
+    private void hideProgressBar() {
+        mPbRegister.setVisibility(View.GONE);
+    }
+
+    private void showProgressBar() {
+        mPbRegister.setVisibility(View.VISIBLE);
     }
 
     private void goToMain() {

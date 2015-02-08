@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.parse.LogInCallback;
@@ -23,6 +24,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private EditText mEtPassword;
     private Button mBtnLogin;
     private TextView mTvRegister;
+    private ProgressBar mPbLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         mEtPassword = (EditText) findViewById(R.id.etPassword);
         mBtnLogin = (Button) findViewById(R.id.btnLogin);
         mTvRegister = (TextView) findViewById(R.id.tvRegister);
+        mPbLogin = (ProgressBar) findViewById(R.id.progressBar);
 
         mBtnLogin.setOnClickListener(this);
         mTvRegister.setOnClickListener(this);
@@ -57,6 +60,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     }
 
     private void login() {
+        mPbLogin.setVisibility(View.VISIBLE);
         String username = mEtUsername.getText().toString().trim();
         String password = mEtPassword.getText().toString().trim();
 
@@ -70,6 +74,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
                 @Override
                 public void done(ParseUser parseUser, ParseException e) {
+                    mPbLogin.setVisibility(View.GONE);
+
                     if (e == null) {
                         // Logged in successfully
                         goToMain();
