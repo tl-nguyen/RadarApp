@@ -22,6 +22,14 @@ public class User extends ParseUser{
         put("currentLocation", currentLocation);
     }
 
+    public Room getRoom() {
+        return (Room) getParseObject("room");
+    }
+
+    public void setRoom(Room room) {
+        put("room", room);
+    }
+
     public ParseFile getAvatar() {
         return getParseFile("avatar");
     }

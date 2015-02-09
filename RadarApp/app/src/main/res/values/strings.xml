@@ -24,5 +24,11 @@
     <string name="following_label">following</string>
     <string name="edit_profile_label">Edit Profile</string>
     <string name="number_sample">100</string>
+    <string name="create_btn">Create Room</string>
+    <string name="join_btn">Join</string>
+    <string name="room_name_sample">My room 1</string>
+    <string name="name_label">Name</string>
+    <string name="avatar_label">Avatar</string>
+    <string name="destroy_btn">Destroy Room</string>
 
 </resources>

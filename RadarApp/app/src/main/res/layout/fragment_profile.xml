@@ -12,11 +12,12 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:id="@+id/imAvatar"
+        android:id="@+id/ivAvatar"
         android:src="@drawable/ic_launcher"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:contentDescription="@string/avatar_label" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,7 +25,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/number_sample"
         android:id="@+id/tvFollowersCount"
-        android:layout_alignTop="@+id/imAvatar"
+        android:layout_alignTop="@+id/ivAvatar"
         android:layout_alignLeft="@+id/tvFollowersLabel"
         android:layout_alignStart="@+id/tvFollowersLabel" />
 
@@ -65,10 +66,62 @@
         android:layout_height="wrap_content"
         android:text="@string/edit_profile_label"
         android:id="@+id/btnEditProfile"
-        android:layout_alignBottom="@+id/imAvatar"
-        android:layout_toRightOf="@+id/imAvatar"
-        android:layout_toEndOf="@+id/imAvatar"
+        android:layout_alignBottom="@+id/ivAvatar"
+        android:layout_toRightOf="@+id/ivAvatar"
+        android:layout_toEndOf="@+id/ivAvatar"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/llMyRoom"
+        android:layout_centerVertical="true"
+        android:layout_alignRight="@+id/btnEditProfile"
+        android:layout_alignEnd="@+id/btnEditProfile">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/name_label"
+            android:layout_weight="1"
+            android:id="@+id/tvRoomNameLabel" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/room_name_sample"
+            android:layout_weight="1"
+            android:id="@+id/tvMyRoomName" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/join_btn"
+            android:layout_weight="1"
+            android:id="@+id/btnJoin" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/create_btn"
+        android:id="@+id/btnCreate"
+        android:layout_below="@+id/llMyRoom"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/destroy_btn"
+        android:id="@+id/btnDestroy"
+        android:layout_alignTop="@+id/btnCreate"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
