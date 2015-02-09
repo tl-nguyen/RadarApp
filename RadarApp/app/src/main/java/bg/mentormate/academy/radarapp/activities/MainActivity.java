@@ -65,14 +65,14 @@ public class MainActivity extends ActionBarActivity
 
         switch (position) {
             case 0:
-
-                break;
-            case 1:
                 mMyProfileFragment = ProfileFragment.newInstance(position + 1);
 
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, mMyProfileFragment, "MY_PROFILE")
                         .commit();
+                break;
+            case 1:
+
                 break;
         }
 
@@ -81,11 +81,13 @@ public class MainActivity extends ActionBarActivity
     public void onSectionAttached(int number, String title) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
                 mTitle = title;
                 break;
+            case 2:
+                mTitle = getString(R.string.title_section2);
+                break;
+            case 3:
+                mTitle = getString(R.string.title_section3);
         }
     }
 

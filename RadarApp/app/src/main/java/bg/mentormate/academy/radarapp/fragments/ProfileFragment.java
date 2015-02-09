@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -93,15 +94,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         mBtnJoin.setOnClickListener(this);
         mBtnCreate.setOnClickListener(this);
+        mBtnDestroy.setOnClickListener(this);
 
         mTvFollowersCount.setText(mUser.getFollowers().size() + "");
         mTvFollowingCount.setText(mUser.getFollowing().size() + "");
 
-        showProgressBar();
         mUser.getAvatar().getDataInBackground(new GetDataCallback() {
             @Override
             public void done(byte[] bytes, ParseException e) {
-                hideProgressBar();
                 if (e == null) {
                     Bitmap imgBitmap = BitmapFactory.decodeByteArray(
                             bytes,
@@ -138,11 +138,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         } else {
             roomCreatedVisibility();
 
-            showProgressBar();
             mMyRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
                 @Override
                 public void done(ParseObject parseObject, ParseException e) {
-                    hideProgressBar();
                     if (e == null) {
                         mTvMyRoomName.setText(mMyRoom.getName());
                     } else {
@@ -187,7 +185,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 onCreateClicked();
                 break;
             case R.id.btnDestroy:
-
+                onDestroyClicked();
                 break;
         }
     }
@@ -223,23 +221,54 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             AlertHelper.alert(getActivity(), getString(R.string.dialog_error_title),
                     getString(R.string.create_room_invalid_inputs_message));
         } else {
-            showProgressBar();
+            if (mMyRoom == null && !mUser.containsKey("room")) {
+                showProgressBar();
 
-            mMyRoom = new Room();
-            mMyRoom.setName(name);
-            mMyRoom.setPassKey(passKey);
-            mMyRoom.setCreatedBy(mUser);
-            mMyRoom.saveInBackground(new SaveCallback() {
+                mMyRoom = new Room();
+                mMyRoom.setName(name);
+                mMyRoom.setPassKey(passKey);
+                mMyRoom.setCreatedBy(mUser);
+                mMyRoom.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        hideProgressBar();
+                        if (e == null) {
+                            // managing UI elements
+                            setRoomManagementElements();
+
+                            mUser.setRoom(mMyRoom);
+                            mUser.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e != null) {
+                                        showErrorAlert(e);
+                                    }
+                                }
+                            });
+                        } else {
+                            showErrorAlert(e);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    private void onDestroyClicked() {
+        if (mUser.containsKey("room")) {
+
+            showProgressBar();
+            mUser.remove("room");
+            mMyRoom.deleteInBackground(new DeleteCallback() {
                 @Override
                 public void done(ParseException e) {
                     if (e == null) {
-                        mUser.setRoom(mMyRoom);
+                        mMyRoom = null;
                         mUser.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
                                 hideProgressBar();
                                 if (e == null) {
-                                    // managing UI elements
                                     setRoomManagementElements();
                                 } else {
                                     showErrorAlert(e);

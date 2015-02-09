@@ -2,11 +2,11 @@
 <resources>
 
     <string name="app_name">Radar App</string>
-    <string name="title_section1">Rooms</string>
-    <string name="title_section2">My Profile</string>
+    <string name="title_section1">My Profile</string>
+    <string name="title_section2">Rooms</string>
+    <string name="title_section3">Search</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
     <string name="action_logout">Logout</string>
     <string name="title_activity_login">Login</string>
     <string name="hello_world">Hello world!</string>
@@ -26,7 +26,7 @@
     <string name="number_sample">100</string>
     <string name="create_btn">Create Room</string>
     <string name="join_btn">Join</string>
-    <string name="name_label">Name</string>
+    <string name="name_label">Name:</string>
     <string name="avatar_label">Avatar</string>
     <string name="destroy_btn">Destroy Room</string>
     <string name="pass_key_hint">Pass Key</string>
