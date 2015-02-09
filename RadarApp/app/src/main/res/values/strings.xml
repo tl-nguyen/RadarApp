@@ -2,8 +2,8 @@
 <resources>
 
     <string name="app_name">Radar App</string>
-    <string name="title_section1">My Profile</string>
-    <string name="title_section2">Rooms</string>
+    <string name="title_section1">Home</string>
+    <string name="title_section2">My Profile</string>
     <string name="title_section3">Search</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

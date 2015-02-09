@@ -17,12 +17,10 @@ import bg.mentormate.academy.radarapp.models.User;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-
     /**
      * Fragments relating to the drawer menu items
      */
     private ProfileFragment mMyProfileFragment;
-
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -56,35 +54,43 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        User currentUser = (User) User.getCurrentUser();
 
-        switch (position) {
-            case 0:
-                mMyProfileFragment = ProfileFragment.newInstance(position + 1);
+        if (currentUser != null) {
+            // update the main content by replacing fragments
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, mMyProfileFragment, "MY_PROFILE")
-                        .commit();
-                break;
-            case 1:
+            switch (position) {
+                case 0:
 
-                break;
+                    break;
+                case 1:
+                    mMyProfileFragment = (ProfileFragment) fragmentManager.findFragmentByTag("MY_PROFILE");
+
+                    if (mMyProfileFragment == null) {
+                        mMyProfileFragment = ProfileFragment.newInstance(position + 1);
+                    }
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, mMyProfileFragment, "MY_PROFILE")
+                            .commit();
+                    break;
+            }
         }
-
     }
 
     public void onSectionAttached(int number, String title) {
         switch (number) {
             case 1:
-                mTitle = title;
+                mTitle = getString(R.string.title_section2);
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
+                mTitle = title;
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
