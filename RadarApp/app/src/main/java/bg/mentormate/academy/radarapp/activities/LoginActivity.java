@@ -15,7 +15,7 @@ import com.parse.ParseUser;
 
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.models.User;
-import bg.mentormate.academy.radarapp.tools.DialogHelper;
+import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
 
 public class LoginActivity extends Activity implements View.OnClickListener {
@@ -24,7 +24,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private EditText mEtPassword;
     private Button mBtnLogin;
     private TextView mTvRegister;
-    private ProgressBar mPbLogin;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         mEtPassword = (EditText) findViewById(R.id.etPassword);
         mBtnLogin = (Button) findViewById(R.id.btnLogin);
         mTvRegister = (TextView) findViewById(R.id.tvRegister);
-        mPbLogin = (ProgressBar) findViewById(R.id.progressBar);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         mBtnLogin.setOnClickListener(this);
         mTvRegister.setOnClickListener(this);
@@ -60,32 +60,40 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     }
 
     private void login() {
-        mPbLogin.setVisibility(View.VISIBLE);
         String username = mEtUsername.getText().toString().trim();
         String password = mEtPassword.getText().toString().trim();
 
         if (username.isEmpty() || password.isEmpty()) {
             // The input are empty, show an alert
-            DialogHelper.showAlert(this, getString(R.string.dialog_error_title),
+            AlertHelper.alert(this, getString(R.string.dialog_error_title),
                     getString(R.string.login_invalid_inputs_message));
         } else {
+            showProgressBar();
             // Log the new user in Parse.com
             User.logInInBackground(username, password, new LogInCallback() {
 
                 @Override
                 public void done(ParseUser parseUser, ParseException e) {
-                    mPbLogin.setVisibility(View.GONE);
+                    hideProgressBar();
 
                     if (e == null) {
                         // Logged in successfully
                         goToMain();
                     } else {
-                        DialogHelper.showAlert(LoginActivity.this, getString(R.string.dialog_error_title),
+                        AlertHelper.alert(LoginActivity.this, getString(R.string.dialog_error_title),
                                 e.getMessage());
                     }
                 }
             });
         }
+    }
+
+    private void showProgressBar() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar() {
+        mProgressBar.setVisibility(View.GONE);
     }
 
     private void goToMain() {

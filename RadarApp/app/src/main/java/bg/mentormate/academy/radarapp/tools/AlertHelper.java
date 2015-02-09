@@ -6,9 +6,9 @@ import android.content.Context;
 /**
  * Created by tl on 05.02.15.
  */
-public class DialogHelper {
+public class AlertHelper {
 
-    public static void showAlert(Context context, String title, String message) {
+    public static void alert(Context context, String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(message)
                 .setTitle(title)

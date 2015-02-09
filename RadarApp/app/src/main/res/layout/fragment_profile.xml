@@ -93,7 +93,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/room_name_sample"
             android:layout_weight="1"
             android:id="@+id/tvMyRoomName" />
 
@@ -120,8 +119,19 @@
         android:layout_height="wrap_content"
         android:text="@string/destroy_btn"
         android:id="@+id/btnDestroy"
-        android:layout_alignTop="@+id/btnCreate"
+        android:layout_below="@+id/llMyRoom"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_marginBottom="39dp"
+        android:indeterminate="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

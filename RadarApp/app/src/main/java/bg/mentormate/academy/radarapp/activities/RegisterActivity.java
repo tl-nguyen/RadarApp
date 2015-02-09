@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.models.User;
-import bg.mentormate.academy.radarapp.tools.DialogHelper;
+import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
 public class RegisterActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -32,7 +32,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     private EditText mEtPassword;
     private EditText mEtEmail;
     private Button mBtnRegister;
-    private ProgressBar mPbRegister;
+    private ProgressBar mProgresBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         mEtPassword = (EditText) findViewById(R.id.etPassword);
         mEtEmail = (EditText) findViewById(R.id.etEmail);
         mBtnRegister = (Button) findViewById(R.id.btnRegister);
-        mPbRegister = (ProgressBar) findViewById(R.id.progressBar);
+        mProgresBar = (ProgressBar) findViewById(R.id.progressBar);
 
         mBtnRegister.setOnClickListener(this);
     }
@@ -64,18 +64,15 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void register() {
-        showProgressBar();
         String username = mEtUsername.getText().toString().trim();
         String password = mEtPassword.getText().toString().trim();
         String email = mEtEmail.getText().toString().trim();
 
         if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
-            hideProgressBar();
-            // The input are empty, show an alert
-            DialogHelper.showAlert(this, getString(R.string.dialog_error_title),
+            // The inputs are empty, show an alert
+            AlertHelper.alert(this, getString(R.string.dialog_error_title),
                     getString(R.string.signup_invalid_inputs_message));
-        }
-        else {
+        } else {
             // Create the new user in Parse.com
             createUser(username, password, email);
         }
@@ -96,6 +93,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                     getBitmapFromDrawableId(R.drawable.ic_launcher));
         }
 
+        showProgressBar();
         // Save the avatar file
         mBlankAvatar.saveInBackground(new SaveCallback() {
 
@@ -114,13 +112,13 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                                 // Signed up successfully
                                 goToMain();
                             } else {
-                                DialogHelper.showAlert(RegisterActivity.this, getString(R.string.dialog_error_title), e.getMessage());
+                                AlertHelper.alert(RegisterActivity.this, getString(R.string.dialog_error_title), e.getMessage());
                             }
                         }
                     });
                 } else {
                     hideProgressBar();
-                    DialogHelper.showAlert(RegisterActivity.this, getString(R.string.dialog_error_title), e.getMessage());
+                    AlertHelper.alert(RegisterActivity.this, getString(R.string.dialog_error_title), e.getMessage());
                 }
             }
         });
@@ -135,11 +133,11 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void hideProgressBar() {
-        mPbRegister.setVisibility(View.GONE);
+        mProgresBar.setVisibility(View.GONE);
     }
 
     private void showProgressBar() {
-        mPbRegister.setVisibility(View.VISIBLE);
+        mProgresBar.setVisibility(View.VISIBLE);
     }
 
     private void goToMain() {

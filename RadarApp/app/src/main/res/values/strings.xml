@@ -26,9 +26,13 @@
     <string name="number_sample">100</string>
     <string name="create_btn">Create Room</string>
     <string name="join_btn">Join</string>
-    <string name="room_name_sample">My room 1</string>
     <string name="name_label">Name</string>
     <string name="avatar_label">Avatar</string>
     <string name="destroy_btn">Destroy Room</string>
+    <string name="pass_key_hint">Pass Key</string>
+    <string name="create_room_title">Make a cool room!</string>
+    <string name="done_btn">Make it!</string>
+    <string name="cancel_btn">Don\'t want no more</string>
+    <string name="create_room_invalid_inputs_message">The Room Name and KeyPass field must not be empty</string>
 
 </resources>
