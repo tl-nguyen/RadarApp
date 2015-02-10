@@ -6,15 +6,25 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
 
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.adapters.RecentRoomsAdapter;
+import bg.mentormate.academy.radarapp.models.Room;
+import bg.mentormate.academy.radarapp.models.User;
+import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
 /**
  * Created by tl on 09.02.15.
  */
-public class HomeFragment extends ListFragment {
+public class HomeFragment extends ListFragment implements View.OnClickListener {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -33,6 +43,14 @@ public class HomeFragment extends ListFragment {
         return fragment;
     }
 
+    private User mCurrentUser;
+    private Room mMyRoom;
+
+    private RecentRoomsAdapter mRecentRoomsAdapter;
+
+    private TextView mTvMyRoomName;
+    private Button mBtnJoin;
+
     public HomeFragment() {
     }
 
@@ -41,7 +59,24 @@ public class HomeFragment extends ListFragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        setListAdapter(new RecentRoomsAdapter(getActivity()));
+        mCurrentUser = (User) User.getCurrentUser();
+        mMyRoom = mCurrentUser.getRoom();
+
+        mTvMyRoomName = (TextView) rootView.findViewById(R.id.tvMyRoomName);
+        mBtnJoin = (Button) rootView.findViewById(R.id.btnJoin);
+
+        mMyRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                mTvMyRoomName.setText(mMyRoom.getName());
+            }
+        });
+
+        mRecentRoomsAdapter = new RecentRoomsAdapter(getActivity());
+
+        setListAdapter(mRecentRoomsAdapter);
+
+        mBtnJoin.setOnClickListener(this);
 
         return rootView;
     }
@@ -55,5 +90,29 @@ public class HomeFragment extends ListFragment {
                     getArguments().getInt(ARG_SECTION_NUMBER),
                     null);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+
+        switch (id) {
+            case R.id.btnJoin:
+                // TODO: Implementing joining to room
+
+                AlertHelper.alert(getActivity(), "Hey!", "You've selected '" + mMyRoom.getName() + "'");
+
+                break;
+        }
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        Room selectedRoom = mRecentRoomsAdapter.getItem(position);
+
+        AlertHelper.alert(getActivity(), "Hey!", "You've selected '" + selectedRoom.getName() + "'");
+
     }
 }
