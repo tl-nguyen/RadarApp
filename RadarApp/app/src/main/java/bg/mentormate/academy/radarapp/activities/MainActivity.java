@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.fragments.HomeFragment;
 import bg.mentormate.academy.radarapp.fragments.NavigationDrawerFragment;
 import bg.mentormate.academy.radarapp.fragments.ProfileFragment;
 import bg.mentormate.academy.radarapp.models.User;
@@ -18,9 +19,17 @@ import bg.mentormate.academy.radarapp.models.User;
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     /**
+     * Fragments Tags
+     */
+    private final static String HOME_TAG = "HOME";
+    private final static String MY_PROFILE_TAG = "MY_PROFILE";
+
+    /**
      * Fragments relating to the drawer menu items
      */
+    private HomeFragment mHomeFragment;
     private ProfileFragment mMyProfileFragment;
+
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -67,17 +76,26 @@ public class MainActivity extends ActionBarActivity
 
             switch (position) {
                 case 0:
+                    mHomeFragment = (HomeFragment) fragmentManager.findFragmentByTag(HOME_TAG);
+
+                    if (mHomeFragment == null) {
+                        mHomeFragment = HomeFragment.newInstance(position + 1);
+                    }
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, mHomeFragment, HOME_TAG)
+                            .commit();
 
                     break;
                 case 1:
-                    mMyProfileFragment = (ProfileFragment) fragmentManager.findFragmentByTag("MY_PROFILE");
+                    mMyProfileFragment = (ProfileFragment) fragmentManager.findFragmentByTag(MY_PROFILE_TAG);
 
                     if (mMyProfileFragment == null) {
                         mMyProfileFragment = ProfileFragment.newInstance(position + 1);
                     }
 
                     fragmentManager.beginTransaction()
-                            .replace(R.id.container, mMyProfileFragment, "MY_PROFILE")
+                            .replace(R.id.container, mMyProfileFragment, MY_PROFILE_TAG)
                             .commit();
                     break;
             }
@@ -87,7 +105,7 @@ public class MainActivity extends ActionBarActivity
     public void onSectionAttached(int number, String title) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section2);
+                mTitle = getString(R.string.title_section1);
                 break;
             case 2:
                 mTitle = title;

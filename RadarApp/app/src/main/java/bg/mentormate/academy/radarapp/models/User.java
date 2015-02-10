@@ -11,46 +11,46 @@ import java.util.List;
  * Created by tl on 05.02.15.
  */
 
-@ParseClassName("_User")
+@ParseClassName(Constants.USER_TABLE)
 public class User extends ParseUser{
 
     public ParseGeoPoint getCurrentLocation() {
-        return getParseGeoPoint("currentLocation");
+        return getParseGeoPoint(Constants.USER_COL_CURRENT_LOCATION);
     }
 
     public void setCurrentLocation(ParseGeoPoint currentLocation) {
-        put("currentLocation", currentLocation);
+        put(Constants.USER_COL_CURRENT_LOCATION, currentLocation);
     }
 
     public Room getRoom() {
-        return (Room) getParseObject("room");
+        return (Room) getParseObject(Constants.USER_COL_ROOM);
     }
 
     public void setRoom(Room room) {
-        put("room", room);
+        put(Constants.USER_COL_ROOM, room);
     }
 
     public ParseFile getAvatar() {
-        return getParseFile("avatar");
+        return getParseFile(Constants.USER_COL_AVATAR);
     }
 
     public void setAvatar(ParseFile avatar) {
-        put("avatar", avatar);
+        put(Constants.USER_COL_AVATAR, avatar);
     }
 
     public List<User> getFollowers() {
-        return getList("followers");
+        return getList(Constants.USER_COL_FOLLOWERS);
     }
 
     public void setFollowers(List<User> followers) {
-        put("followers", followers);
+        put(Constants.USER_COL_FOLLOWERS, followers);
     }
 
     public List<User> getFollowing() {
-        return getList("following");
+        return getList(Constants.USER_COL_FOLLOWING);
     }
 
     public void setFollowing(List<User> following) {
-        put("following", following);
+        put(Constants.USER_COL_FOLLOWING, following);
     }
 }

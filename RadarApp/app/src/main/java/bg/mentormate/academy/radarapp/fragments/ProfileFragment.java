@@ -27,6 +27,7 @@ import com.parse.SaveCallback;
 
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
+import bg.mentormate.academy.radarapp.models.Constants;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
@@ -179,7 +180,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         int id = v.getId();
         switch (id) {
             case R.id.btnJoin:
-
+                onJoinClicked();
                 break;
             case R.id.btnCreate:
                 onCreateClicked();
@@ -188,6 +189,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 onDestroyClicked();
                 break;
         }
+    }
+
+    private void onJoinClicked() {
+        // TODO: implement joining to the room
     }
 
     private void onCreateClicked() {
@@ -255,10 +260,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onDestroyClicked() {
-        if (mUser.containsKey("room")) {
+        if (mUser.containsKey(Constants.USER_COL_ROOM)) {
 
             showProgressBar();
-            mUser.remove("room");
+            mUser.remove(Constants.USER_COL_ROOM);
             mMyRoom.deleteInBackground(new DeleteCallback() {
                 @Override
                 public void done(ParseException e) {

@@ -1,7 +1,14 @@
 package bg.mentormate.academy.radarapp.fragments;
 
-import android.app.Fragment;
+import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.activities.MainActivity;
 
 /**
  * Created by tl on 09.02.15.
@@ -26,5 +33,24 @@ public class HomeFragment extends Fragment {
     }
 
     public HomeFragment() {
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        return rootView;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        if (activity instanceof MainActivity) {
+            ((MainActivity) getActivity()).onSectionAttached(
+                    getArguments().getInt(ARG_SECTION_NUMBER),
+                    null);
+        }
     }
 }
