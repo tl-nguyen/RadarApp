@@ -31,7 +31,7 @@
     <string name="destroy_btn">Destroy Room</string>
     <string name="pass_key_hint">Pass Key</string>
     <string name="create_room_title">Make a cool room!</string>
-    <string name="done_btn">Make it!</string>
+    <string name="make_room_btn">Make it!</string>
     <string name="cancel_btn">Don\'t want no more</string>
     <string name="create_room_invalid_inputs_message">The Room Name and KeyPass field must not be empty</string>
     <string name="by_label">By:</string>
@@ -41,5 +41,8 @@
     <string name="my_room_label">My Room:</string>
     <string name="recent_room_label">Recent Rooms:</string>
     <string name="name_hint">Name</string>
+    <string name="check_keypass_title">Enter the passkey to get in!</string>
+    <string name="got_it_btn">Got it!</string>
+    <string name="passkey_incorrect_message">The passkey is incorrect :-(</string>
 
 </resources>

@@ -1,12 +1,14 @@
 package bg.mentormate.academy.radarapp.fragments;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
@@ -103,10 +106,10 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onResume() {
+        super.onResume();
 
-        if (activity instanceof MainActivity) {
+        if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER),
                     null);
@@ -119,10 +122,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
 
         switch (id) {
             case R.id.btnJoin:
-                // TODO: Implementing joining to room
-
-                AlertHelper.alert(getActivity(), "Hey!", "You've selected '" + mMyRoom.getName() + "'");
-
+                onJoinClicked(mMyRoom);
                 break;
         }
     }
@@ -133,7 +133,62 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
 
         Room selectedRoom = mRecentRoomsAdapter.getItem(position);
 
-        AlertHelper.alert(getActivity(), "Hey!", "You've selected '" + selectedRoom.getName() + "'");
+        onJoinClicked(selectedRoom);
+    }
 
+    private void onJoinClicked(final Room room) {
+        if (!room.getUsers().contains(mCurrentUser)) {
+            checkForPassKey(room);
+        } else {
+            goToRoom();
+        }
+    }
+
+    private void checkForPassKey(final Room room) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View dvCreateRoom = inflater.inflate(R.layout.dialog_passkey_check, null);
+
+        final EditText etPassKey = (EditText) dvCreateRoom.findViewById(R.id.etPassKey);
+
+        builder.setView(dvCreateRoom)
+                .setTitle(getString(R.string.check_keypass_title))
+                .setPositiveButton(getString(R.string.got_it_btn), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String passKey = etPassKey.getText().toString().trim();
+
+                        if (passKey.equals(room.getPassKey())) {
+                            // Go to Room if the passkey is correct
+                            room.getUsers().add(mCurrentUser);
+                            room.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e == null) {
+                                        goToRoom();
+                                    } else {
+                                        AlertHelper.alert(getActivity(),
+                                                getString(R.string.dialog_error_title),
+                                                e.getMessage());
+                                    }
+                                }
+                            });
+                        } else {
+                            AlertHelper.alert(getActivity(),
+                                    getString(R.string.dialog_error_title),
+                                    getString(R.string.passkey_incorrect_message));
+                        }
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel_btn), null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void goToRoom() {
+        AlertHelper.alert(getActivity(), "Hey!", "You've in ;-)");
+        // TODO: add Room Activity
     }
 }

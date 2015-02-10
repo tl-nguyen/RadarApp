@@ -84,6 +84,7 @@ public class MainActivity extends ActionBarActivity
 
                     fragmentManager.beginTransaction()
                             .replace(R.id.container, mHomeFragment, HOME_TAG)
+                            .addToBackStack(HOME_TAG)
                             .commit();
 
                     break;
@@ -96,6 +97,7 @@ public class MainActivity extends ActionBarActivity
 
                     fragmentManager.beginTransaction()
                             .replace(R.id.container, mMyProfileFragment, MY_PROFILE_TAG)
+                            .addToBackStack(MY_PROFILE_TAG)
                             .commit();
                     break;
             }

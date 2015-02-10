@@ -25,6 +25,8 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.util.ArrayList;
+
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.models.Constants;
@@ -192,7 +194,59 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onJoinClicked() {
-        // TODO: implement joining to the room
+        if (!mMyRoom.getUsers().contains(mUser)) {
+            checkForPassKey(mMyRoom);
+        } else {
+            goToRoom();
+        }
+    }
+
+    private void checkForPassKey(final Room room) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View dvCreateRoom = inflater.inflate(R.layout.dialog_passkey_check, null);
+
+        final EditText etPassKey = (EditText) dvCreateRoom.findViewById(R.id.etPassKey);
+
+        builder.setView(dvCreateRoom)
+                .setTitle(getString(R.string.check_keypass_title))
+                .setPositiveButton(getString(R.string.got_it_btn), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String passKey = etPassKey.getText().toString().trim();
+
+                        if (passKey.equals(room.getPassKey())) {
+                            // Go to Room if the passkey is correct
+                            room.getUsers().add(mUser);
+                            room.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e == null) {
+                                        goToRoom();
+                                    } else {
+                                        AlertHelper.alert(getActivity(),
+                                                getString(R.string.dialog_error_title),
+                                                e.getMessage());
+                                    }
+                                }
+                            });
+                        } else {
+                            AlertHelper.alert(getActivity(),
+                                    getString(R.string.dialog_error_title),
+                                    getString(R.string.passkey_incorrect_message));
+                        }
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel_btn), null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void goToRoom() {
+        AlertHelper.alert(getActivity(), "Hey!", "You've in ;-)");
+        // TODO: add Room Activity
     }
 
     private void onCreateClicked() {
@@ -206,7 +260,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         builder.setView(dvCreateRoom)
                 .setTitle(getString(R.string.create_room_title))
-                .setPositiveButton(getString(R.string.done_btn), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.make_room_btn), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         String name = etName.getText().toString().trim();
@@ -233,6 +287,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 mMyRoom.setName(name);
                 mMyRoom.setPassKey(passKey);
                 mMyRoom.setCreatedBy(mUser);
+                mMyRoom.setUsers(new ArrayList<User>());
                 mMyRoom.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
