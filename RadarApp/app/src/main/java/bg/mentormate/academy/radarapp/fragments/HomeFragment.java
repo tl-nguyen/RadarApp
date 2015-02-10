@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -49,6 +50,8 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
     private RecentRoomsAdapter mRecentRoomsAdapter;
 
     private TextView mTvMyRoomName;
+    private TextView mTvNoRoomInfo;
+    private LinearLayout mLlMyRoom;
     private Button mBtnJoin;
 
     public HomeFragment() {
@@ -63,22 +66,40 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
         mMyRoom = mCurrentUser.getRoom();
 
         mTvMyRoomName = (TextView) rootView.findViewById(R.id.tvMyRoomName);
+        mTvNoRoomInfo = (TextView) rootView.findViewById(R.id.tvNoRoomInfo);
+        mLlMyRoom = (LinearLayout) rootView.findViewById(R.id.llMyRoom);
         mBtnJoin = (Button) rootView.findViewById(R.id.btnJoin);
 
-        mMyRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
-                mTvMyRoomName.setText(mMyRoom.getName());
-            }
-        });
+        if (mMyRoom != null) {
+            roomOwnedVisibility();
+
+            mMyRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject parseObject, ParseException e) {
+                    mTvMyRoomName.setText(mMyRoom.getName());
+                }
+            });
+
+            mBtnJoin.setOnClickListener(this);
+        } else {
+            roomNotOwnedVisibility();
+        }
 
         mRecentRoomsAdapter = new RecentRoomsAdapter(getActivity());
 
         setListAdapter(mRecentRoomsAdapter);
 
-        mBtnJoin.setOnClickListener(this);
-
         return rootView;
+    }
+
+    private void roomNotOwnedVisibility() {
+        mLlMyRoom.setVisibility(View.GONE);
+        mTvNoRoomInfo.setVisibility(View.VISIBLE);
+    }
+
+    private void roomOwnedVisibility() {
+        mLlMyRoom.setVisibility(View.VISIBLE);
+        mTvNoRoomInfo.setVisibility(View.GONE);
     }
 
     @Override

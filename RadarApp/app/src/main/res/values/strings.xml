@@ -37,5 +37,9 @@
     <string name="by_label">By:</string>
     <string name="room_name_sample">Cool Room</string>
     <string name="username_sample">tlnguyen</string>
+    <string name="no_room_info_tv">Don\'t have any room yet, create one to get one ;-)</string>
+    <string name="my_room_label">My Room:</string>
+    <string name="recent_room_label">Recent Rooms:</string>
+    <string name="name_hint">Name</string>
 
 </resources>
