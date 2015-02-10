@@ -1,19 +1,20 @@
 package bg.mentormate.academy.radarapp.fragments;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
+import bg.mentormate.academy.radarapp.adapters.RecentRoomsAdapter;
 
 /**
  * Created by tl on 09.02.15.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends ListFragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -39,6 +40,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        setListAdapter(new RecentRoomsAdapter(getActivity()));
 
         return rootView;
     }

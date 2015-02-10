@@ -34,5 +34,8 @@
     <string name="done_btn">Make it!</string>
     <string name="cancel_btn">Don\'t want no more</string>
     <string name="create_room_invalid_inputs_message">The Room Name and KeyPass field must not be empty</string>
+    <string name="by_label">By:</string>
+    <string name="room_name_sample">Cool Room</string>
+    <string name="username_sample">tlnguyen</string>
 
 </resources>

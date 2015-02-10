@@ -4,6 +4,12 @@ package bg.mentormate.academy.radarapp.models;
  * Created by tl on 10.02.15.
  */
 public class Constants {
+
+    /**
+     * Parse.com common cols
+     */
+    public final static String PARSE_COL_CREATED_AT = "createdAt";
+
     /**
      * Parse.com Room table constants
      */

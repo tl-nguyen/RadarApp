@@ -17,7 +17,6 @@ import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
-
 public class LoginActivity extends Activity implements View.OnClickListener {
 
     private EditText mEtUsername;
