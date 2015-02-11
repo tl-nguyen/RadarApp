@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Radar App</string>
+    <string name="app_name">Buddies Radar</string>
     <string name="title_section1">Home</string>
     <string name="title_section2">My Profile</string>
     <string name="title_section3">Search</string>
@@ -44,5 +44,7 @@
     <string name="check_keypass_title">Enter the passkey to get in!</string>
     <string name="got_it_btn">Got it!</string>
     <string name="passkey_incorrect_message">The passkey is incorrect :-(</string>
+    <string name="title_activity_room">RoomActivity</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

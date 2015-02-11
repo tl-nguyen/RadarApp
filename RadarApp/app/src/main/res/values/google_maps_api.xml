@@ -1,0 +1,16 @@
+<resources>
+    <string name="google_maps_key_instructions" templateMergeStrategy="replace"><!--
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=13:83:57:6A:DF:DA:CC:AA:F7:8E:82:A3:82:B5:6A:65:4C:CB:C5:5B%3Bbg.mentormate.radarapp
+
+    You can also add your credentials to an existing key, using this line:
+    13:83:57:6A:DF:DA:CC:AA:F7:8E:82:A3:82:B5:6A:65:4C:CB:C5:5B;bg.mentormate.radarapp
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    --></string>
+
+    <string name="google_maps_key" templateMergeStrategy="preserve">AIzaSyAF_hiA6nAB1M6-X1gK7TsoV3as_Fng7AQ</string>
+</resources>

@@ -2,6 +2,7 @@ package bg.mentormate.academy.radarapp.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.parse.SaveCallback;
 
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
+import bg.mentormate.academy.radarapp.activities.RoomActivity;
 import bg.mentormate.academy.radarapp.adapters.RecentRoomsAdapter;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
@@ -188,7 +190,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
     }
 
     private void goToRoom() {
-        AlertHelper.alert(getActivity(), "Hey!", "You've in ;-)");
-        // TODO: add Room Activity
+        Intent roomIntent = new Intent(getActivity(), RoomActivity.class);
+        startActivity(roomIntent);
     }
 }
