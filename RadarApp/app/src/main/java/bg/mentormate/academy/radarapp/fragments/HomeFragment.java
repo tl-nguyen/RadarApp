@@ -37,6 +37,8 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
 
+    private static final String ROOM_ID = "ROOM_ID";
+
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -138,11 +140,11 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
         onJoinClicked(selectedRoom);
     }
 
-    private void onJoinClicked(final Room room) {
+    private void onJoinClicked(Room room) {
         if (!room.getUsers().contains(mCurrentUser)) {
             checkForPassKey(room);
         } else {
-            goToRoom();
+            goToRoom(room.getObjectId());
         }
     }
 
@@ -168,7 +170,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
                                 @Override
                                 public void done(ParseException e) {
                                     if (e == null) {
-                                        goToRoom();
+                                        goToRoom(room.getObjectId());
                                     } else {
                                         AlertHelper.alert(getActivity(),
                                                 getString(R.string.dialog_error_title),
@@ -189,8 +191,9 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
         dialog.show();
     }
 
-    private void goToRoom() {
+    private void goToRoom(String roomId) {
         Intent roomIntent = new Intent(getActivity(), RoomActivity.class);
+        roomIntent.putExtra(ROOM_ID, roomId);
         startActivity(roomIntent);
     }
 }

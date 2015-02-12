@@ -46,6 +46,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
 
+    private static final String ROOM_ID = "ROOM_ID";
+
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -199,7 +201,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (!mMyRoom.getUsers().contains(mUser)) {
             checkForPassKey(mMyRoom);
         } else {
-            goToRoom();
+            goToRoom(mMyRoom.getObjectId());
         }
     }
 
@@ -225,7 +227,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                 @Override
                                 public void done(ParseException e) {
                                     if (e == null) {
-                                        goToRoom();
+                                        goToRoom(mMyRoom.getObjectId());
                                     } else {
                                         AlertHelper.alert(getActivity(),
                                                 getString(R.string.dialog_error_title),
@@ -246,8 +248,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         dialog.show();
     }
 
-    private void goToRoom() {
+    private void goToRoom(String roomId) {
         Intent roomIntent = new Intent(getActivity(), RoomActivity.class);
+        roomIntent.putExtra(ROOM_ID, roomId);
         startActivity(roomIntent);
     }
 
@@ -282,7 +285,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             AlertHelper.alert(getActivity(), getString(R.string.dialog_error_title),
                     getString(R.string.create_room_invalid_inputs_message));
         } else {
-            if (mMyRoom == null && !mUser.containsKey("room")) {
+            if (mMyRoom == null && !mUser.containsKey(Constants.USER_COL_ROOM)) {
                 showProgressBar();
 
                 mMyRoom = new Room();
