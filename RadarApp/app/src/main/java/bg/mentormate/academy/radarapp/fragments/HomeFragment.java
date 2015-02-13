@@ -70,6 +70,13 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         mCurrentUser = (User) User.getCurrentUser();
+
+        try {
+            mCurrentUser.fetch();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         mMyRoom = mCurrentUser.getRoom();
 
         mTvMyRoomName = (TextView) rootView.findViewById(R.id.tvMyRoomName);
