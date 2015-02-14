@@ -12,7 +12,6 @@ public class Constants {
      */
     public final static String PARSE_COL_CREATED_AT = "createdAt";
 
-
     /**
      * Parse.com CurrentLocation table constants
      */

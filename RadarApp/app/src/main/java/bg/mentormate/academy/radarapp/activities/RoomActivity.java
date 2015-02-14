@@ -1,10 +1,17 @@
 package bg.mentormate.academy.radarapp.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,7 +33,8 @@ import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.models.CurrentLocation;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
-import bg.mentormate.academy.radarapp.services.TrackingService;
+import bg.mentormate.academy.radarapp.services.LocationTrackingService;
+import bg.mentormate.academy.radarapp.services.RetrieveRoomDataService;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
 public class RoomActivity extends ActionBarActivity {
@@ -35,6 +43,18 @@ public class RoomActivity extends ActionBarActivity {
     private LocalDb mLocalDb;
     private User mCurrentUser;
     private Room mRoom;
+    private Intent mDataServiceIntent;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Toast.makeText(RoomActivity.this, "updated", Toast.LENGTH_SHORT).show();
+
+            mRoom = mLocalDb.getSelectedRoom();
+            addMarkers();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +66,11 @@ public class RoomActivity extends ActionBarActivity {
         mCurrentUser = (User) User.getCurrentUser();
 
         setUpMapIfNeeded();
+
+        registerReceiver(receiver,
+                new IntentFilter(RetrieveRoomDataService.BROADCAST_RESULT));
+
+        startServiceForData();
     }
 
     private void setUpMapIfNeeded() {
@@ -59,6 +84,16 @@ public class RoomActivity extends ActionBarActivity {
                 setUpMap();
             }
         }
+    }
+
+    private void startServiceForData() {
+        final long ALARM_TRIGGER_AT_TIME = SystemClock.elapsedRealtime() + 20000;
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+
+        mDataServiceIntent = new Intent(this, RetrieveRoomDataService.class);
+
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, mDataServiceIntent, 0);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, ALARM_TRIGGER_AT_TIME, 5000,pendingIntent);
     }
 
     private void setUpMap() {
@@ -112,7 +147,15 @@ public class RoomActivity extends ActionBarActivity {
         List<User> users = mRoom.getUsers();
 
         for (User user: users) {
-            ParseGeoPoint userLocation = user.getCurrentLocation().getLocation();
+            ParseGeoPoint userLocation = null;
+
+            try {
+                user.getCurrentLocation().fetchIfNeeded();
+                userLocation = user.getCurrentLocation().getLocation();
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
             if (user.equals(mCurrentUser)) {
                 continue;
@@ -147,7 +190,13 @@ public class RoomActivity extends ActionBarActivity {
     }
 
     private void startListening() {
-        Intent trackingIntent = new Intent(TrackingService.ACTION_START_MONITORING);
+        Intent trackingIntent = new Intent(LocationTrackingService.ACTION_START_MONITORING);
         startService(trackingIntent);
+    }
+
+    @Override
+    protected void onStop() {
+        stopService(mDataServiceIntent);
+        super.onStop();
     }
 }
