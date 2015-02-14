@@ -14,7 +14,6 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -24,7 +23,8 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,20 +33,38 @@
         </activity>
         <activity
             android:name=".activities.LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activities.RegisterActivity"
             android:label="@string/title_activity_register"
-            android:parentActivityName=".activities.LoginActivity" >
+            android:parentActivityName=".activities.LoginActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="bg.mentormate.academy.radarapp.activities.LoginActivity" />
         </activity>
         <activity
             android:name=".activities.RoomActivity"
-            android:label="@string/title_activity_room" >
+            android:label="@string/title_activity_room"
+            android:screenOrientation="portrait" >
         </activity>
+
+        <service
+            android:name=".services.TrackingService"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="bg.mentormate.academy.action.ACTION_START_MONITORING" />
+                <action android:name="bg.mentormate.academy.action.ACTION_STOP_MONITORING" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".services.RetrieveRoomDataService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

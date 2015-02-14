@@ -1,9 +1,11 @@
-package bg.mentormate.academy.radarapp.models;
+package bg.mentormate.academy.radarapp;
 
 /**
  * Created by tl on 10.02.15.
  */
 public class Constants {
+
+    public final static String ROOM_ID = "ROOM_ID";
 
     /**
      * Parse.com common cols

@@ -1,15 +1,10 @@
 package bg.mentormate.academy.radarapp.activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.HandlerThread;
-import android.os.Looper;
 import android.support.v7.app.ActionBarActivity;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,23 +17,22 @@ import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.SaveCallback;
 
 import java.util.List;
 
+import bg.mentormate.academy.radarapp.Constants;
+import bg.mentormate.academy.radarapp.LocalDb;
 import bg.mentormate.academy.radarapp.R;
-import bg.mentormate.academy.radarapp.models.Constants;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
+import bg.mentormate.academy.radarapp.services.TrackingService;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
 public class RoomActivity extends ActionBarActivity {
-
-    private static final String ROOM_ID = "ROOM_ID";
-
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
-    private User mUser;
+    private LocalDb mLocalDb;
+    private User mCurrentUser;
     private Room mRoom;
 
     @Override
@@ -46,32 +40,11 @@ public class RoomActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
 
-        mUser = (User) User.getCurrentUser();
+        mLocalDb = LocalDb.getInstance();
 
-        String roomId = getIntent().getStringExtra(ROOM_ID);
+        mCurrentUser = (User) User.getCurrentUser();
 
-        if (roomId != null) {
-            retrieveRoom(roomId);
-        }
-    }
-
-    private void retrieveRoom(String roomId) {
-        ParseQuery query = new ParseQuery(Constants.ROOM_TABLE);
-
-        query.getInBackground(roomId, new GetCallback() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
-                if (e == null) {
-                    mRoom = (Room) parseObject;
-
-                    setUpMapIfNeeded();
-                } else {
-                    AlertHelper.alert(RoomActivity.this,
-                            getString(R.string.dialog_error_title),
-                            e.getMessage());
-                }
-            }
-        });
+        setUpMapIfNeeded();
     }
 
     private void setUpMapIfNeeded() {
@@ -88,116 +61,84 @@ public class RoomActivity extends ActionBarActivity {
     }
 
     private void setUpMap() {
-        ParseGeoPoint currentLocation = addingMarkers();
+        mMap.setMyLocationEnabled(true);
 
-//        mMap.setMyLocationEnabled(true);
+        LatLng currentLocation = new LatLng(mCurrentUser.getCurrentLocation().getLatitude(),
+                mCurrentUser.getCurrentLocation().getLongitude());
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(currentLocation.getLatitude(),
-                currentLocation.getLongitude())));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 13));
 
-        // Zoom in the Google Map
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
+        String roomId = getIntent().getStringExtra(Constants.ROOM_ID);
+
+        if (roomId != null) {
+            retrieveRoomById(roomId);
+        }
 
         startListening();
     }
 
-    private ParseGeoPoint addingMarkers() {
-        mMap.clear();
+    private void retrieveRoomById(String roomId) {
+        ParseQuery query = new ParseQuery(Constants.ROOM_TABLE);
 
-        try {
-            mRoom.fetchIfNeeded();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        query.getInBackground(roomId, new GetCallback() {
+            @Override
+            public void done(ParseObject room, ParseException e) {
+                if (e == null) {
+                    mRoom = (Room) room;
+                    mLocalDb.setSelectedRoom(mRoom);
+
+                    addMarkers();
+                } else {
+                    AlertHelper.alert(RoomActivity.this,
+                            getString(R.string.dialog_error_title),
+                            e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void addMarkers() {
+        mMap.clear();
 
         List<User> users = mRoom.getUsers();
 
-        ParseGeoPoint currentLocation = mUser.getCurrentLocation();
-
         for (User user: users) {
-            MarkerOptions marker = new MarkerOptions();
-
             ParseGeoPoint userLocation = user.getCurrentLocation();
+
+            if (user.equals(mCurrentUser)) {
+                continue;
+            }
+
+            MarkerOptions marker = new MarkerOptions();
 
             marker.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
                     .title(user.getUsername());
 
-            byte[] bytes = new byte[0];
-
-            try {
-                bytes = user.getAvatar().getData();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            Bitmap scaledBmp = Bitmap.createScaledBitmap(
-                    BitmapFactory.decodeByteArray(bytes, 0, bytes.length),
-                    50, 50,
-                    true);
+            Bitmap scaledBmp = getBitmapAvatar(user);
 
             marker.icon(BitmapDescriptorFactory.fromBitmap(scaledBmp));
 
             mMap.addMarker(marker);
         }
-        return currentLocation;
+    }
+
+    private Bitmap getBitmapAvatar(User user) {
+        byte[] bytes = new byte[0];
+
+        try {
+            bytes = user.getAvatar().getData();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return Bitmap.createScaledBitmap(
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.length),
+                50, 50,
+                true);
     }
 
     private void startListening() {
-        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        HandlerThread thread = new HandlerThread("locationThread");
-        thread.start();
-
-        Looper looper = thread.getLooper();
-
-        CustomLocationListener gpsListener = new CustomLocationListener();
-        CustomLocationListener networkListener = new CustomLocationListener();
-
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, gpsListener, looper);
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, networkListener, looper);
-    }
-
-    private class CustomLocationListener implements LocationListener {
-
-        @Override
-        public void onLocationChanged(final Location location) {
-            mUser.setCurrentLocation(new ParseGeoPoint(location.getLatitude(),
-                    location.getLongitude()));
-            mUser.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                        RoomActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(RoomActivity.this, "Location: " + location.getLatitude() + "/" + location.getLongitude(),
-                                        Toast.LENGTH_LONG).show();
-
-                                addingMarkers();
-                            }
-                        });
-                    } else {
-                        AlertHelper.alert(RoomActivity.this,
-                                getString(R.string.dialog_error_title),
-                                e.getMessage());
-                    }
-                }
-            });
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
+        Intent trackingIntent = new Intent(TrackingService.ACTION_START_MONITORING);
+        startService(trackingIntent);
     }
 }

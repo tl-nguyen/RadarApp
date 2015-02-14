@@ -14,7 +14,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
 import bg.mentormate.academy.radarapp.R;
-import bg.mentormate.academy.radarapp.models.Constants;
+import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 

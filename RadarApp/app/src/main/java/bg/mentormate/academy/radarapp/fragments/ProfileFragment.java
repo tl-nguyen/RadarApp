@@ -23,15 +23,15 @@ import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 
+import bg.mentormate.academy.radarapp.LocalDb;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.activities.RoomActivity;
-import bg.mentormate.academy.radarapp.models.Constants;
+import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
@@ -46,8 +46,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    private static final String ROOM_ID = "ROOM_ID";
-
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -60,6 +58,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         return fragment;
     }
 
+    private LocalDb mLocalDb;
     private User mUser;
     private Room mMyRoom;
 
@@ -81,7 +80,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        mUser = (User) ParseUser.getCurrentUser();
+        mLocalDb = LocalDb.getInstance();
+        mUser = mLocalDb.getCurrentUser();
 
         init(rootView);
 
@@ -201,7 +201,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (!mMyRoom.getUsers().contains(mUser)) {
             checkForPassKey(mMyRoom);
         } else {
-            goToRoom(mMyRoom.getObjectId());
+            goToRoom(mMyRoom);
         }
     }
 
@@ -227,7 +227,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                 @Override
                                 public void done(ParseException e) {
                                     if (e == null) {
-                                        goToRoom(mMyRoom.getObjectId());
+                                        goToRoom(mMyRoom);
                                     } else {
                                         AlertHelper.alert(getActivity(),
                                                 getString(R.string.dialog_error_title),
@@ -248,9 +248,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         dialog.show();
     }
 
-    private void goToRoom(String roomId) {
+    private void goToRoom(Room room) {
         Intent roomIntent = new Intent(getActivity(), RoomActivity.class);
-        roomIntent.putExtra(ROOM_ID, roomId);
+        roomIntent.putExtra(Constants.ROOM_ID, room.getObjectId());
         startActivity(roomIntent);
     }
 

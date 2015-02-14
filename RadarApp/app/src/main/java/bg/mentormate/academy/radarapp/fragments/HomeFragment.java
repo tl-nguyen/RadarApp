@@ -19,6 +19,8 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
 
+import bg.mentormate.academy.radarapp.Constants;
+import bg.mentormate.academy.radarapp.LocalDb;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.activities.RoomActivity;
@@ -37,8 +39,6 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    private static final String ROOM_ID = "ROOM_ID";
-
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -51,6 +51,8 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
         return fragment;
     }
 
+    private LocalDb mLocalDb;
+
     private User mCurrentUser;
     private Room mMyRoom;
 
@@ -62,6 +64,8 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
     private Button mBtnJoin;
 
     public HomeFragment() {
+        mLocalDb = LocalDb.getInstance();
+        mLocalDb.setCurrentUser((User) User.getCurrentUser());
     }
 
     @Override
@@ -69,7 +73,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        mCurrentUser = (User) User.getCurrentUser();
+        mCurrentUser = mLocalDb.getCurrentUser();
 
         try {
             mCurrentUser.fetch();
@@ -151,7 +155,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
         if (!room.getUsers().contains(mCurrentUser)) {
             checkForPassKey(room);
         } else {
-            goToRoom(room.getObjectId());
+            goToRoom(room);
         }
     }
 
@@ -177,7 +181,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
                                 @Override
                                 public void done(ParseException e) {
                                     if (e == null) {
-                                        goToRoom(room.getObjectId());
+                                        goToRoom(room);
                                     } else {
                                         AlertHelper.alert(getActivity(),
                                                 getString(R.string.dialog_error_title),
@@ -198,9 +202,9 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
         dialog.show();
     }
 
-    private void goToRoom(String roomId) {
+    private void goToRoom(Room room) {
         Intent roomIntent = new Intent(getActivity(), RoomActivity.class);
-        roomIntent.putExtra(ROOM_ID, roomId);
+        roomIntent.putExtra(Constants.ROOM_ID, room.getObjectId());
         startActivity(roomIntent);
     }
 }

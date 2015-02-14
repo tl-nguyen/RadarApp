@@ -7,6 +7,8 @@ import com.parse.ParseUser;
 
 import java.util.List;
 
+import bg.mentormate.academy.radarapp.Constants;
+
 /**
  * Created by tl on 05.02.15.
  */
