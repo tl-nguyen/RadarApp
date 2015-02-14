@@ -29,6 +29,7 @@ import java.util.ArrayList;
 
 import bg.mentormate.academy.radarapp.LocalDb;
 import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.activities.EditProfileActivity;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.activities.RoomActivity;
 import bg.mentormate.academy.radarapp.Constants;
@@ -70,6 +71,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Button mBtnJoin;
     private Button mBtnCreate;
     private Button mBtnDestroy;
+    private Button mBtnEdit;
     private ProgressBar mProgressBar;
 
     public ProfileFragment() {
@@ -97,11 +99,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mBtnJoin = (Button) rootView.findViewById(R.id.btnJoin);
         mBtnCreate = (Button) rootView.findViewById(R.id.btnCreate);
         mBtnDestroy = (Button) rootView.findViewById(R.id.btnDestroy);
+        mBtnEdit = (Button) rootView.findViewById(R.id.btnEditProfile);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
         mBtnJoin.setOnClickListener(this);
         mBtnCreate.setOnClickListener(this);
         mBtnDestroy.setOnClickListener(this);
+        mBtnEdit.setOnClickListener(this);
 
         mTvFollowersCount.setText(mUser.getFollowers().size() + "");
         mTvFollowingCount.setText(mUser.getFollowing().size() + "");
@@ -194,6 +198,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.btnDestroy:
                 onDestroyClicked();
                 break;
+            case R.id.btnEditProfile:
+                startActivity(new Intent(getActivity(), EditProfileActivity.class));
         }
     }
 
