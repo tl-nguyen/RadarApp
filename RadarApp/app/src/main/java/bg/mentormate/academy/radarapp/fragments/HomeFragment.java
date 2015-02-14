@@ -64,8 +64,6 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
     private Button mBtnJoin;
 
     public HomeFragment() {
-        mLocalDb = LocalDb.getInstance();
-        mLocalDb.setCurrentUser((User) User.getCurrentUser());
     }
 
     @Override
@@ -73,13 +71,13 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        mCurrentUser = mLocalDb.getCurrentUser();
+        mLocalDb = LocalDb.getInstance();
 
-        try {
-            mCurrentUser.fetch();
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (mLocalDb.getCurrentUser() == null) {
+            mLocalDb.setCurrentUser((User) User.getCurrentUser());
         }
+
+        mCurrentUser = mLocalDb.getCurrentUser();
 
         mMyRoom = mCurrentUser.getRoom();
 

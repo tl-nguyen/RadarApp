@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import bg.mentormate.academy.radarapp.LocalDb;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.fragments.HomeFragment;
 import bg.mentormate.academy.radarapp.fragments.NavigationDrawerFragment;
@@ -46,7 +47,9 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        User currentUser = (User) User.getCurrentUser();
+        LocalDb.getInstance().setCurrentUser((User) User.getCurrentUser());
+
+        User currentUser = LocalDb.getInstance().getCurrentUser();
 
         if (currentUser == null) {
             Intent loginIntent = new Intent(this, LoginActivity.class);
@@ -84,7 +87,6 @@ public class MainActivity extends ActionBarActivity
 
                     fragmentManager.beginTransaction()
                             .replace(R.id.container, mHomeFragment, HOME_TAG)
-                            .addToBackStack(HOME_TAG)
                             .commit();
 
                     break;

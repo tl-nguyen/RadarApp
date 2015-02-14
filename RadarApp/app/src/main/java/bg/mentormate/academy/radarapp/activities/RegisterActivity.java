@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.models.CurrentLocation;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
@@ -83,9 +84,19 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         newUser.setUsername(username);
         newUser.setPassword(password);
         newUser.setEmail(email);
-        newUser.setCurrentLocation(new ParseGeoPoint(0f, 0f));
         newUser.setFollowers(new ArrayList<User>());
         newUser.setFollowing(new ArrayList<User>());
+
+        CurrentLocation emptyLocation = new CurrentLocation();
+        emptyLocation.setLocation(new ParseGeoPoint(0f, 0f));
+
+        try {
+            emptyLocation.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        newUser.setCurrentLocation(emptyLocation);
 
         // Putting ic_launcher as a default avatar
         if (mBlankAvatar == null) {

@@ -45,8 +45,9 @@ public class RecentRoomsAdapter extends ParseQueryAdapter<Room> {
     }
 
     @Override
-    public View getItemView(final Room room, View v, ViewGroup parent) {
+    public View getItemView(Room room, View v, ViewGroup parent) {
         View row = v;
+        final Room selectedRoom = room;
         final RoomHolder holder;
 
         if (row == null) {
@@ -62,7 +63,7 @@ public class RecentRoomsAdapter extends ParseQueryAdapter<Room> {
             holder = (RoomHolder) row.getTag();
         }
 
-        super.getItemView(room, v, parent);
+        super.getItemView(selectedRoom, v, parent);
 
         if (room != null) {
             final User owner = room.getCreatedBy();
@@ -70,7 +71,7 @@ public class RecentRoomsAdapter extends ParseQueryAdapter<Room> {
             owner.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
                 @Override
                 public void done(ParseObject parseObject, ParseException e) {
-                    holder.roomName.setText(room.getName());
+                    holder.roomName.setText(selectedRoom.getName());
                     holder.username.setText(owner.getUsername());
                     holder.avatar.setParseFile(owner.getAvatar());
                     holder.avatar.loadInBackground();

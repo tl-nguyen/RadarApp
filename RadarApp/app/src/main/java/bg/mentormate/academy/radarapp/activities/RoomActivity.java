@@ -23,6 +23,7 @@ import java.util.List;
 import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.LocalDb;
 import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.models.CurrentLocation;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.services.TrackingService;
@@ -63,10 +64,18 @@ public class RoomActivity extends ActionBarActivity {
     private void setUpMap() {
         mMap.setMyLocationEnabled(true);
 
-        LatLng currentLocation = new LatLng(mCurrentUser.getCurrentLocation().getLatitude(),
-                mCurrentUser.getCurrentLocation().getLongitude());
+        CurrentLocation currentLocation = mCurrentUser.getCurrentLocation();
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 13));
+        try {
+            currentLocation.fetchIfNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(currentLocation.getLocation().getLatitude(),
+                        currentLocation.getLocation().getLongitude()),
+                13));
 
         String roomId = getIntent().getStringExtra(Constants.ROOM_ID);
 
@@ -103,7 +112,7 @@ public class RoomActivity extends ActionBarActivity {
         List<User> users = mRoom.getUsers();
 
         for (User user: users) {
-            ParseGeoPoint userLocation = user.getCurrentLocation();
+            ParseGeoPoint userLocation = user.getCurrentLocation().getLocation();
 
             if (user.equals(mCurrentUser)) {
                 continue;

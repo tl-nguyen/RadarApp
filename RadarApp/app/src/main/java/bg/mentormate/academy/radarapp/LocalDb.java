@@ -1,7 +1,5 @@
 package bg.mentormate.academy.radarapp;
 
-import com.parse.ParseException;
-
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 
@@ -27,12 +25,6 @@ public class LocalDb {
     }
 
     public User getCurrentUser() {
-        try {
-            currentUser.fetchIfNeeded();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
         return currentUser;
     }
 
@@ -41,12 +33,6 @@ public class LocalDb {
     }
 
     public Room getSelectedRoom() {
-        try {
-            selectedRoom.fetchIfNeeded();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
         return selectedRoom;
     }
 

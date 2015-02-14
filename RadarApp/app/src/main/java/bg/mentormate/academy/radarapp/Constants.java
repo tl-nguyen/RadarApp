@@ -12,6 +12,13 @@ public class Constants {
      */
     public final static String PARSE_COL_CREATED_AT = "createdAt";
 
+
+    /**
+     * Parse.com CurrentLocation table constants
+     */
+    public final static String CURRENT_LOCATION_TABLE = "CurrentLocation";
+    public final static String CURRENT_LOCATION_COL_LOCATION = "location";
+
     /**
      * Parse.com Room table constants
      */

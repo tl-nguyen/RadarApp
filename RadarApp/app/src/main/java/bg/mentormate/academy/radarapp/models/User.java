@@ -2,7 +2,6 @@ package bg.mentormate.academy.radarapp.models;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
-import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 
 import java.util.List;
@@ -16,11 +15,11 @@ import bg.mentormate.academy.radarapp.Constants;
 @ParseClassName(Constants.USER_TABLE)
 public class User extends ParseUser{
 
-    public ParseGeoPoint getCurrentLocation() {
-        return getParseGeoPoint(Constants.USER_COL_CURRENT_LOCATION);
+    public CurrentLocation getCurrentLocation() {
+        return (CurrentLocation) getParseObject(Constants.USER_COL_CURRENT_LOCATION);
     }
 
-    public void setCurrentLocation(ParseGeoPoint currentLocation) {
+    public void setCurrentLocation(CurrentLocation currentLocation) {
         put(Constants.USER_COL_CURRENT_LOCATION, currentLocation);
     }
 
