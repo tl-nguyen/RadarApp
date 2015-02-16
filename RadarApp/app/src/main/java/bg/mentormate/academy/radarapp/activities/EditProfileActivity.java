@@ -5,12 +5,16 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +25,7 @@ import android.widget.Toast;
 
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -30,8 +35,11 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
+import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.LocalDb;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.models.User;
@@ -40,22 +48,27 @@ import bg.mentormate.academy.radarapp.tools.AlertHelper;
 public class EditProfileActivity extends ActionBarActivity implements View.OnClickListener {
 
     private static final int SELECT_PHOTO = 100;
+    ParseFile mNewAvatar;
 
     private LocalDb mLocalDb;
     private User mUser;
     private ImageView mEditAvatar;
     private Button saveChangesBtn;
     private Button changeAvatarBtn;
+    private Button takePiButton;
     private EditText editPassword;
     private EditText confirmPassword;
     private EditText editEmail;
     private ImageView mIvAvatar;
 
+    private Bitmap imageBitmap;
+    private String currentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+        avatarChanged = false;
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -71,10 +84,11 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
 
         saveChangesBtn = (Button) findViewById(R.id.saveChangesBtn);
         changeAvatarBtn = (Button) findViewById(R.id.saveAvatarBtn);
+        takePiButton = (Button) findViewById(R.id.takePicBtn);
 
         saveChangesBtn.setOnClickListener(this);
         changeAvatarBtn.setOnClickListener(this);
-
+        takePiButton.setOnClickListener(this);
 
         mUser.getAvatar().getDataInBackground(new GetDataCallback() {
             @Override
@@ -124,18 +138,24 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
         }
     }
 
+    boolean avatarChanged = false;
+
     @Override
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.saveChangesBtn:
                 boolean emailChanged = false;
-                boolean avatarChanged = false;
                 boolean passChanged = false;
                 boolean passChangeAttempt = false;
 
                 String newEmail = editEmail.getText().toString();
                 String pass = editPassword.getText().toString();
                 String confirmPass = confirmPassword.getText().toString();
+
+                if(avatarChanged){
+                   mNewAvatar = new ParseFile(getBitmapAsByteArray(bitmap));
+                   mUser.setAvatar(mNewAvatar);
+                }
 
                 if(newEmail != "" && newEmail.contains("@")){
                     mUser.setEmail(newEmail);
@@ -152,9 +172,8 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                     }
                 }
 
-                mUser.saveInBackground();
-
                 if(emailChanged || passChanged || avatarChanged){
+                    mUser.saveInBackground();
                     if(passChangeAttempt) {
                         Toast.makeText(this, "You details have been changed but your password change failed!", Toast.LENGTH_SHORT).show();
                     }else{
@@ -170,13 +189,47 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                 startActivityForResult(photoPickerIntent, SELECT_PHOTO);
 
                 break;
+            case R.id.takePicBtn:
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String imageFileName = Constants.JPEG_FILE_PREFIX + timeStamp;
+
+                File albumFolder = null;
+                if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                    albumFolder = new File(Environment.getExternalStorageDirectory() + Constants.CAMERA_DIR + Constants.ALBUM_NAME);
+                    if (albumFolder != null) {
+                        if (!albumFolder.mkdirs()) {
+                            if (!albumFolder.exists()) {
+                                Log.d("Camera:", "failed to create directory");
+                                albumFolder = null;
+                            }
+                        }
+                    }
+                } else {
+                    Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
+                }
+
+                File photoFile = new File(albumFolder, imageFileName + Constants.JPEG_FILE_SUFFIX);
+                currentPhotoPath = photoFile.getAbsolutePath();
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+
+                startActivityForResult(takePictureIntent, Constants.ACTION_TAKE_PHOTO);
+                break;
         }
 
 
     }
 
-    final int GET_CAM_IMG = 2;
-    final int GET_GAL_IMG = 1;
+    private byte[] getBitmapAsByteArray(Bitmap image) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    final int GET_CAM_IMG = 0;
+    final int GET_GAL_IMG = 100;
+    Bitmap bitmap;
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -187,26 +240,56 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
 
             switch (requestCode) {
                 case GET_CAM_IMG:
-                    bmp_image = getImageFromCamera(intent);
+                    if (currentPhotoPath != null) {
+                        bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+
+                        mEditAvatar.setImageBitmap(bitmap);
+                        mEditAvatar.setVisibility(View.VISIBLE);
+                        currentPhotoPath = null;
+                        avatarChanged = true;
+                    }
+
+                    //bmp_image = getImageFromCamera(intent);
                     break;
                 case GET_GAL_IMG:
-                    bmp_image = getImageFromGallery(intent);
+                    bitmap = getImageFromGallery(intent);
+
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+                    if (bitmap != null) {
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+                        byte[] image = byteArrayOutputStream.toByteArray();
+                        InputStream stream = new ByteArrayInputStream(image);
+                        avatarChanged = true;
+                        mEditAvatar.setImageBitmap(BitmapFactory.decodeStream(stream));
+                        mEditAvatar.setVisibility(View.VISIBLE);
+                    }
+
+
+
                     break;
             }
 
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-            if (bmp_image != null) {
-                bmp_image.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
-                byte[] image = byteArrayOutputStream.toByteArray();
-                InputStream stream = new ByteArrayInputStream(image);
-
-
-            }
         }
+
     }
+/*
+    private void setBitmapAvatar(Bitmap picture) {
+        byte[] bytes = new byte[0];
 
+        try {
+            bytes = picture.getRowBytes();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
+        return Bitmap.createScaledBitmap(
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.length),
+                50, 50,
+                true);
+    }
+*/
     private Bitmap getImageFromCamera(Intent intent) {
         Uri selectedImage = intent.getData();
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
