@@ -40,7 +40,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import bg.mentormate.academy.radarapp.Constants;
-import bg.mentormate.academy.radarapp.LocalDb;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
