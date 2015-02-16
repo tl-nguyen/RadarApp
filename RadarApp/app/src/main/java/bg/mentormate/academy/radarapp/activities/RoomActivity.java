@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,7 +27,7 @@ import com.parse.ParseQuery;
 import java.util.List;
 
 import bg.mentormate.academy.radarapp.Constants;
-import bg.mentormate.academy.radarapp.LocalDb;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.models.CurrentLocation;
 import bg.mentormate.academy.radarapp.models.Room;
@@ -45,12 +44,9 @@ public class RoomActivity extends ActionBarActivity {
     private Room mRoom;
     private Intent mDataServiceIntent;
 
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+    private BroadcastReceiver positionsUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            Toast.makeText(RoomActivity.this, "updated", Toast.LENGTH_SHORT).show();
-
             mRoom = mLocalDb.getSelectedRoom();
             addMarkers();
         }
@@ -67,10 +63,10 @@ public class RoomActivity extends ActionBarActivity {
 
         setUpMapIfNeeded();
 
-        registerReceiver(receiver,
+        registerReceiver(positionsUpdateReceiver,
                 new IntentFilter(RetrieveRoomDataService.BROADCAST_RESULT));
 
-        startServiceForData();
+        startServiceForUpdatingPositions();
     }
 
     private void setUpMapIfNeeded() {
@@ -86,7 +82,7 @@ public class RoomActivity extends ActionBarActivity {
         }
     }
 
-    private void startServiceForData() {
+    private void startServiceForUpdatingPositions() {
         final long ALARM_TRIGGER_AT_TIME = SystemClock.elapsedRealtime() + 20000;
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 
@@ -118,7 +114,7 @@ public class RoomActivity extends ActionBarActivity {
             retrieveRoomById(roomId);
         }
 
-        startListening();
+        startServiceForLocationTracking();
     }
 
     private void retrieveRoomById(String roomId) {
@@ -163,12 +159,16 @@ public class RoomActivity extends ActionBarActivity {
 
             MarkerOptions marker = new MarkerOptions();
 
-            marker.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
-                    .title(user.getUsername());
+            if (userLocation != null) {
+                marker.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
+                        .title(user.getUsername());
+            }
 
             Bitmap scaledBmp = getBitmapAvatar(user);
 
-            marker.icon(BitmapDescriptorFactory.fromBitmap(scaledBmp));
+            if (scaledBmp != null) {
+                marker.icon(BitmapDescriptorFactory.fromBitmap(scaledBmp));
+            }
 
             mMap.addMarker(marker);
         }
@@ -176,6 +176,7 @@ public class RoomActivity extends ActionBarActivity {
 
     private Bitmap getBitmapAvatar(User user) {
         byte[] bytes = new byte[0];
+        Bitmap scaledBitmap = null;
 
         try {
             bytes = user.getAvatar().getData();
@@ -183,13 +184,19 @@ public class RoomActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
-        return Bitmap.createScaledBitmap(
-                BitmapFactory.decodeByteArray(bytes, 0, bytes.length),
-                50, 50,
-                true);
+        Bitmap fetchedAvatar = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+        if (fetchedAvatar != null) {
+             scaledBitmap = Bitmap.createScaledBitmap(
+                    fetchedAvatar,
+                    50, 50,
+                    true);
+        }
+
+        return scaledBitmap;
     }
 
-    private void startListening() {
+    private void startServiceForLocationTracking() {
         Intent trackingIntent = new Intent(LocationTrackingService.ACTION_START_MONITORING);
         startService(trackingIntent);
     }
@@ -197,6 +204,7 @@ public class RoomActivity extends ActionBarActivity {
     @Override
     protected void onStop() {
         stopService(mDataServiceIntent);
+        unregisterReceiver(positionsUpdateReceiver);
         super.onStop();
     }
 }

@@ -7,7 +7,7 @@ import com.parse.ParseException;
 
 import java.util.List;
 
-import bg.mentormate.academy.radarapp.LocalDb;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.CurrentLocation;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
@@ -37,7 +37,6 @@ public class RetrieveRoomDataService extends IntentService {
 
                 Intent broadcastIntent = new Intent(BROADCAST_RESULT);
                 sendBroadcast(broadcastIntent);
-
             } catch (ParseException e) {
                 e.printStackTrace();
             }

@@ -20,7 +20,7 @@ import com.parse.ParseObject;
 import com.parse.SaveCallback;
 
 import bg.mentormate.academy.radarapp.Constants;
-import bg.mentormate.academy.radarapp.LocalDb;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.activities.RoomActivity;

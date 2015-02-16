@@ -27,7 +27,7 @@ import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 
-import bg.mentormate.academy.radarapp.LocalDb;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.EditProfileActivity;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
