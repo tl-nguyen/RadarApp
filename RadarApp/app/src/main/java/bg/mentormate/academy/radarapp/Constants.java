@@ -6,7 +6,6 @@ package bg.mentormate.academy.radarapp;
 public class Constants {
 
     public final static String ROOM_ID = "ROOM_ID";
-    public final static String RECENT_ROOMS = "RECENT_ROOMS";
 
     /**
      * Parse.com common cols
@@ -41,9 +40,9 @@ public class Constants {
     /***
      * Constants for working with the camera
      */
-    public static final int    ACTION_TAKE_PHOTO                   = 0;
-    public static final String CAMERA_DIR                          = "/DCIM/";
-    public static final String JPEG_FILE_PREFIX                    = "IMG_";
-    public static final String JPEG_FILE_SUFFIX                    = ".jpg";
-    public static final String ALBUM_NAME                          = "CameraSample";
+    public static final int ACTION_TAKE_PHOTO = 0;
+    public static final String CAMERA_DIR = "/DCIM/";
+    public static final String JPEG_FILE_PREFIX = "IMG_";
+    public static final String JPEG_FILE_SUFFIX = ".jpg";
+    public static final String ALBUM_NAME = "CameraSample";
 }

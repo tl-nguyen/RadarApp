@@ -17,7 +17,7 @@ public class RetrieveRoomDataService extends IntentService {
     public static final String BROADCAST_RESULT = "bg.mentormate.academy.BROADCAST_RESULT";
 
     public RetrieveRoomDataService() {
-        super("RetrieveRoomDataService");
+        super(RetrieveRoomDataService.class.getSimpleName());
     }
 
     @Override
@@ -33,7 +33,7 @@ public class RetrieveRoomDataService extends IntentService {
                 for (User user: users) {
                     user.fetchIfNeeded();
                     CurrentLocation currentLocation = user.getCurrentLocation();
-                    currentLocation.fetchIfNeeded();
+                    currentLocation.fetch();
                 }
 
                 Intent broadcastIntent = new Intent(BROADCAST_RESULT);

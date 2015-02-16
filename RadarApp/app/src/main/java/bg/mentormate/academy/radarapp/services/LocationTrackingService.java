@@ -76,13 +76,17 @@ public class LocationTrackingService extends Service implements Handler.Callback
     }
 
     private void doStopTracking() {
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (mGpsListener != null) {
-            LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
             lm.removeUpdates(mGpsListener);
             mGpsListener = null;
         }
 
+        if (mNetworkListener != null) {
+            lm.removeUpdates(mNetworkListener);
+            mNetworkListener = null;
+        }
     }
 
     @Override
