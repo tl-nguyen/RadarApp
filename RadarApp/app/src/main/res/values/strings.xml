@@ -50,9 +50,10 @@
     <string name="changePassLabel">Change Password:</string>
     <string name="changePass">Change password</string>
     <string name="changeEmail">Please enter a new email</string>
-    <string name="changeAvatarBtn">Change avatar</string>
+    <string name="changeAvatarBtn">Browse local picture</string>
     <string name="saveChangesBtn">Save changes</string>
     <string name="reTypePass">Re-type new password</string>
+    <string name="takePictureBtnLabel">Take a picture</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="rooms_search_title">Rooms</string>
     <string name="users_search_title">Users</string>

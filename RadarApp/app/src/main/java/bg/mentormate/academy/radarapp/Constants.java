@@ -37,4 +37,13 @@ public class Constants {
     public final static String USER_COL_AVATAR = "avatar";
     public final static String USER_COL_FOLLOWERS = "followers";
     public final static String USER_COL_FOLLOWING = "following";
+
+    /***
+     * Constants for working with the camera
+     */
+    public static final int    ACTION_TAKE_PHOTO                   = 0;
+    public static final String CAMERA_DIR                          = "/DCIM/";
+    public static final String JPEG_FILE_PREFIX                    = "IMG_";
+    public static final String JPEG_FILE_SUFFIX                    = ".jpg";
+    public static final String ALBUM_NAME                          = "CameraSample";
 }

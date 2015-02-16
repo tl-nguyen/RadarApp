@@ -73,4 +73,15 @@
         android:layout_alignRight="@+id/editPassword"
         android:layout_alignEnd="@+id/editPassword" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/takePictureBtnLabel"
+        android:id="@+id/takePicBtn"
+        android:layout_above="@+id/saveAvatarBtn"
+        android:layout_alignLeft="@+id/saveAvatarBtn"
+        android:layout_alignStart="@+id/saveAvatarBtn"
+        android:layout_alignRight="@+id/saveAvatarBtn"
+        android:layout_alignEnd="@+id/saveAvatarBtn" />
+
 </RelativeLayout>

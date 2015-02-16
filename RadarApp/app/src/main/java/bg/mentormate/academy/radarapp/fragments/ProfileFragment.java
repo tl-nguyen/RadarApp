@@ -73,6 +73,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Button mBtnDestroy;
     private Button mBtnEdit;
     private ProgressBar mProgressBar;
+    View rootView;
 
     public ProfileFragment() {
     }
@@ -80,7 +81,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
         mLocalDb = LocalDb.getInstance();
         mUser = mLocalDb.getCurrentUser();
@@ -323,6 +324,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 });
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        init(rootView);
     }
 
     private void onDestroyClicked() {
