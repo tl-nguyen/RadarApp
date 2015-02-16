@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,8 +29,8 @@ import com.parse.ParseQuery;
 import java.util.List;
 
 import bg.mentormate.academy.radarapp.Constants;
-import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.CurrentLocation;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
@@ -47,8 +49,9 @@ public class RoomActivity extends ActionBarActivity {
     private BroadcastReceiver positionsUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Toast.makeText(RoomActivity.this, "updated", Toast.LENGTH_SHORT).show();
             mRoom = mLocalDb.getSelectedRoom();
-            addMarkers();
+            updateMarkers();
         }
     };
 
@@ -62,6 +65,11 @@ public class RoomActivity extends ActionBarActivity {
         mCurrentUser = (User) User.getCurrentUser();
 
         setUpMapIfNeeded();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         registerReceiver(positionsUpdateReceiver,
                 new IntentFilter(RetrieveRoomDataService.BROADCAST_RESULT));
@@ -127,7 +135,7 @@ public class RoomActivity extends ActionBarActivity {
                     mRoom = (Room) room;
                     mLocalDb.setSelectedRoom(mRoom);
 
-                    addMarkers();
+                    updateMarkers();
                 } else {
                     AlertHelper.alert(RoomActivity.this,
                             getString(R.string.dialog_error_title),
@@ -137,41 +145,9 @@ public class RoomActivity extends ActionBarActivity {
         });
     }
 
-    private void addMarkers() {
-        mMap.clear();
-
-        List<User> users = mRoom.getUsers();
-
-        for (User user: users) {
-            ParseGeoPoint userLocation = null;
-
-            try {
-                user.getCurrentLocation().fetchIfNeeded();
-                userLocation = user.getCurrentLocation().getLocation();
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            if (user.equals(mCurrentUser)) {
-                continue;
-            }
-
-            MarkerOptions marker = new MarkerOptions();
-
-            if (userLocation != null) {
-                marker.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
-                        .title(user.getUsername());
-            }
-
-            Bitmap scaledBmp = getBitmapAvatar(user);
-
-            if (scaledBmp != null) {
-                marker.icon(BitmapDescriptorFactory.fromBitmap(scaledBmp));
-            }
-
-            mMap.addMarker(marker);
-        }
+    private void updateMarkers() {
+        MarkersUpdateTask markersUpdateTask = new MarkersUpdateTask();
+        markersUpdateTask.execute();
     }
 
     private Bitmap getBitmapAvatar(User user) {
@@ -212,5 +188,58 @@ public class RoomActivity extends ActionBarActivity {
         }
 
         super.onStop();
+    }
+
+    private class MarkersUpdateTask extends AsyncTask<Void, MarkerOptions, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            mMap.clear();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            List<User> users = mRoom.getUsers();
+
+            for (User user: users) {
+                ParseGeoPoint userLocation = null;
+
+                try {
+                    user.fetchIfNeeded();
+                    user.getCurrentLocation().fetchIfNeeded();
+
+                    userLocation = user.getCurrentLocation().getLocation();
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                if (user.equals(mCurrentUser)) {
+                    continue;
+                }
+
+                final MarkerOptions marker = new MarkerOptions();
+
+                if (userLocation != null) {
+                    marker.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
+                            .title(user.getUsername());
+                }
+
+                Bitmap scaledBmp = getBitmapAvatar(user);
+
+                if (scaledBmp != null) {
+                    marker.icon(BitmapDescriptorFactory.fromBitmap(scaledBmp));
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMap.addMarker(marker);
+                    }
+                });
+            }
+
+            return null;
+        }
     }
 }

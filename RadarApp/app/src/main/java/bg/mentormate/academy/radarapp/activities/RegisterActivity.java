@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -14,8 +15,6 @@ import android.widget.ProgressBar;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
-import com.parse.SaveCallback;
-import com.parse.SignUpCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -80,59 +79,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void createUser(String username, String password, String email) {
-        final User newUser = new User();
-        newUser.setUsername(username);
-        newUser.setPassword(password);
-        newUser.setEmail(email);
-        newUser.setFollowers(new ArrayList<User>());
-        newUser.setFollowing(new ArrayList<User>());
-
-        CurrentLocation emptyLocation = new CurrentLocation();
-        emptyLocation.setLocation(new ParseGeoPoint(0f, 0f));
-
-        try {
-            emptyLocation.save();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        newUser.setCurrentLocation(emptyLocation);
-
-        // Putting ic_launcher as a default avatar
-        if (mBlankAvatar == null) {
-            mBlankAvatar = new ParseFile(
-                    getBitmapFromDrawableId(R.drawable.ic_launcher));
-        }
-
-        showProgressBar();
-        // Save the avatar file
-        mBlankAvatar.saveInBackground(new SaveCallback() {
-
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    newUser.setAvatar(mBlankAvatar);
-
-                    // sign-up the new user
-                    newUser.signUpInBackground(new SignUpCallback() {
-
-                        @Override
-                        public void done(ParseException e) {
-                            hideProgressBar();
-                            if (e == null) {
-                                // Signed up successfully
-                                goToMain();
-                            } else {
-                                AlertHelper.alert(RegisterActivity.this, getString(R.string.dialog_error_title), e.getMessage());
-                            }
-                        }
-                    });
-                } else {
-                    hideProgressBar();
-                    AlertHelper.alert(RegisterActivity.this, getString(R.string.dialog_error_title), e.getMessage());
-                }
-            }
-        });
+        CreateUserTask createUserTask = new CreateUserTask();
+        createUserTask.execute(username, password, email);
     }
 
     private byte[] getBitmapFromDrawableId(int id) {
@@ -156,5 +104,65 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(homeIntent);
+    }
+
+    private class CreateUserTask extends AsyncTask<String, ParseException, Void> {
+        @Override
+        protected void onPreExecute() {
+            showProgressBar();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            String username = params[0];
+            String password = params[1];
+            String email = params[2];
+
+            User newUser = new User();
+            newUser.setUsername(username);
+            newUser.setPassword(password);
+            newUser.setEmail(email);
+            newUser.setFollowers(new ArrayList<User>());
+            newUser.setFollowing(new ArrayList<User>());
+
+            CurrentLocation emptyLocation = new CurrentLocation();
+            emptyLocation.setLocation(new ParseGeoPoint(0f, 0f));
+
+            // Putting ic_launcher as a default avatar
+            if (mBlankAvatar == null) {
+                mBlankAvatar = new ParseFile(
+                        getBitmapFromDrawableId(R.drawable.ic_launcher));
+            }
+
+            try {
+                // Save the avatar file
+                mBlankAvatar.save();
+                newUser.setAvatar(mBlankAvatar);
+
+                // Save empty location (0,9)
+                emptyLocation.save();
+                newUser.setCurrentLocation(emptyLocation);
+
+                // sign-up the new user
+                newUser.signUp();
+                goToMain();
+            } catch (final ParseException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AlertHelper.alert(RegisterActivity.this,
+                                getString(R.string.dialog_error_title),
+                                e.getMessage());
+                    }
+                });
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            hideProgressBar();
+        }
     }
 }

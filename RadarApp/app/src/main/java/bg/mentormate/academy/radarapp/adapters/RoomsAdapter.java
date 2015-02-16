@@ -21,18 +21,17 @@ import bg.mentormate.academy.radarapp.models.User;
 /**
  * Created by tl on 10.02.15.
  */
-public class RecentRoomsAdapter extends ParseQueryAdapter<Room> {
+public class RoomsAdapter extends ParseQueryAdapter<Room> {
 
     private static final int LIMIT = 50;
 
     private Context mContext;
 
-    public RecentRoomsAdapter(Context context) {
+    public RoomsAdapter(final Context context) {
         super(context, new QueryFactory<Room>() {
 
             @Override
             public ParseQuery<Room> create() {
-
                 ParseQuery query = new ParseQuery(Constants.ROOM_TABLE);
                 query.orderByDescending(Constants.PARSE_COL_CREATED_AT);
                 query.setLimit(LIMIT);

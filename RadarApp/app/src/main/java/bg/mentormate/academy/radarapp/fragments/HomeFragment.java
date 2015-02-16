@@ -24,7 +24,7 @@ import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.activities.RoomActivity;
-import bg.mentormate.academy.radarapp.adapters.RecentRoomsAdapter;
+import bg.mentormate.academy.radarapp.adapters.RoomsAdapter;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
@@ -56,7 +56,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
     private User mCurrentUser;
     private Room mMyRoom;
 
-    private RecentRoomsAdapter mRecentRoomsAdapter;
+    private RoomsAdapter mRecentRoomsAdapter;
 
     private TextView mTvMyRoomName;
     private TextView mTvNoRoomInfo;
@@ -101,7 +101,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
             roomNotOwnedVisibility();
         }
 
-        mRecentRoomsAdapter = new RecentRoomsAdapter(getActivity());
+        mRecentRoomsAdapter = new RoomsAdapter(getActivity());
 
         setListAdapter(mRecentRoomsAdapter);
 

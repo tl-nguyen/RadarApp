@@ -6,6 +6,7 @@ package bg.mentormate.academy.radarapp;
 public class Constants {
 
     public final static String ROOM_ID = "ROOM_ID";
+    public final static String RECENT_ROOMS = "RECENT_ROOMS";
 
     /**
      * Parse.com common cols

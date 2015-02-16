@@ -31,8 +31,9 @@ public class RetrieveRoomDataService extends IntentService {
                 List<User> users = selectedRoom.getUsers();
 
                 for (User user: users) {
+                    user.fetchIfNeeded();
                     CurrentLocation currentLocation = user.getCurrentLocation();
-                    currentLocation.fetch();
+                    currentLocation.fetchIfNeeded();
                 }
 
                 Intent broadcastIntent = new Intent(BROADCAST_RESULT);

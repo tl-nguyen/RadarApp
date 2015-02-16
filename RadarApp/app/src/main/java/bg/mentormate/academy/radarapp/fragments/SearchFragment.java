@@ -47,7 +47,7 @@ public class SearchFragment extends Fragment implements ActionBar.OnNavigationLi
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_search, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
         return rootView;
     }
