@@ -1,0 +1,43 @@
+package bg.mentormate.academy.radarapp.fragments;
+
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import bg.mentormate.academy.radarapp.R;
+
+/**
+ * Created by tl on 16.02.15.
+ */
+public class SearchRoomsFragment extends Fragment {
+    /**
+     * The fragment argument representing the section number for this
+     * fragment.
+     */
+    private static final String ARG_TAB_NUMBER = "tab_number";
+
+    /**
+     * Returns a new instance of this fragment for the given section
+     * number.
+     */
+    public static SearchRoomsFragment newInstance(int sectionNumber) {
+        SearchRoomsFragment fragment = new SearchRoomsFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_TAB_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public SearchRoomsFragment() {
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_rooms_search, container, false);
+        return rootView;
+    }
+}

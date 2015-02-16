@@ -53,7 +53,7 @@
         </activity>
 
         <service
-            android:name=".services.TrackingService"
+            android:name=".services.LocationTrackingService"
             android:enabled="true"
             android:exported="true" >
             <intent-filter>

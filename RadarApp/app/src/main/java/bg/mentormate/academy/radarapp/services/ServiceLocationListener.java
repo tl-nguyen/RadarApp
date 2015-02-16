@@ -8,7 +8,7 @@ import android.util.Log;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 
-import bg.mentormate.academy.radarapp.LocalDb;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.CurrentLocation;
 import bg.mentormate.academy.radarapp.models.User;
 

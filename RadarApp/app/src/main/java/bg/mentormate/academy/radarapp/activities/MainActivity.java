@@ -9,11 +9,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import bg.mentormate.academy.radarapp.LocalDb;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.fragments.HomeFragment;
 import bg.mentormate.academy.radarapp.fragments.NavigationDrawerFragment;
 import bg.mentormate.academy.radarapp.fragments.ProfileFragment;
+import bg.mentormate.academy.radarapp.fragments.SearchFragment;
 import bg.mentormate.academy.radarapp.models.User;
 
 
@@ -24,13 +25,14 @@ public class MainActivity extends ActionBarActivity
      */
     private final static String HOME_TAG = "HOME";
     private final static String MY_PROFILE_TAG = "MY_PROFILE";
+    private final static String SEARCH_TAG = "SEARCH";
 
     /**
      * Fragments relating to the drawer menu items
      */
     private HomeFragment mHomeFragment;
     private ProfileFragment mMyProfileFragment;
-
+    private SearchFragment mSearchFragment;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -87,6 +89,7 @@ public class MainActivity extends ActionBarActivity
 
                     fragmentManager.beginTransaction()
                             .replace(R.id.container, mHomeFragment, HOME_TAG)
+                            .addToBackStack(HOME_TAG)
                             .commit();
 
                     break;
@@ -102,6 +105,18 @@ public class MainActivity extends ActionBarActivity
                             .addToBackStack(MY_PROFILE_TAG)
                             .commit();
                     break;
+                case 2:
+                    mSearchFragment = (SearchFragment) fragmentManager.findFragmentByTag(SEARCH_TAG);
+
+                    if (mSearchFragment == null) {
+                        mSearchFragment = SearchFragment.newInstance(position + 1);
+                    }
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, mSearchFragment, SEARCH_TAG)
+                            .addToBackStack(SEARCH_TAG)
+                            .commit();
+                    break;
             }
         }
     }
@@ -115,7 +130,7 @@ public class MainActivity extends ActionBarActivity
                 mTitle = title;
                 break;
             case 3:
-                mTitle = getString(R.string.title_section3);
+                mTitle = title;
         }
     }
 
@@ -134,7 +149,9 @@ public class MainActivity extends ActionBarActivity
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.menu_main, menu);
-            restoreActionBar();
+            if (mTitle != null) {
+                restoreActionBar();
+            }
             return true;
         }
         return super.onCreateOptionsMenu(menu);

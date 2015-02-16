@@ -1,4 +1,4 @@
-package bg.mentormate.academy.radarapp;
+package bg.mentormate.academy.radarapp.data;
 
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;

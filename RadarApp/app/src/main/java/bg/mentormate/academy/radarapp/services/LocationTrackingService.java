@@ -10,7 +10,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 
-public class TrackingService extends Service implements Handler.Callback {
+public class LocationTrackingService extends Service implements Handler.Callback {
 
     public final static String ACTION_START_MONITORING = "bg.mentormate.academy.action.ACTION_START_MONITORING";
     public final static String ACTION_STOP_MONITORING = "bg.mentormate.academy.action.ACTION_STOP_MONITORING";
@@ -21,7 +21,7 @@ public class TrackingService extends Service implements Handler.Callback {
     private Looper mLooper;
     private Handler mHandler;
 
-    public TrackingService() {
+    public LocationTrackingService() {
     }
 
     @Override
@@ -68,7 +68,7 @@ public class TrackingService extends Service implements Handler.Callback {
 
         // Track with GPS provider
         mGpsListener = new ServiceLocationListener();
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, mGpsListener, mLooper);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mGpsListener, mLooper);
 
         // Track with Network provider
         mNetworkListener = new ServiceLocationListener();
