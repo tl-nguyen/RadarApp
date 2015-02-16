@@ -53,5 +53,8 @@
     <string name="changeAvatarBtn">Change avatar</string>
     <string name="saveChangesBtn">Save changes</string>
     <string name="reTypePass">Re-type new password</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="rooms_search_title">Rooms</string>
+    <string name="users_search_title">Users</string>
 
 </resources>

@@ -203,8 +203,14 @@ public class RoomActivity extends ActionBarActivity {
 
     @Override
     protected void onStop() {
-        stopService(mDataServiceIntent);
-        unregisterReceiver(positionsUpdateReceiver);
+        if (mDataServiceIntent != null) {
+            stopService(mDataServiceIntent);
+        }
+
+        if (positionsUpdateReceiver != null) {
+            unregisterReceiver(positionsUpdateReceiver);
+        }
+
         super.onStop();
     }
 }
