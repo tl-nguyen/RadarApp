@@ -16,6 +16,9 @@ import bg.mentormate.academy.radarapp.adapters.RoomAdapter;
  * Created by tl on 16.02.15.
  */
 public class SearchRoomsFragment extends ListFragment implements View.OnClickListener {
+
+    private static final String QUERY = "query";
+
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -52,9 +55,21 @@ public class SearchRoomsFragment extends ListFragment implements View.OnClickLis
         mEtQuery = (EditText) rootView.findViewById(R.id.etQuery);
         mBtnSearch = (Button) rootView.findViewById(R.id.btnSeach);
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(QUERY)) {
+                String query = savedInstanceState.getString(QUERY);
+                mEtQuery.setText(query);
+            }
+        }
+
         mBtnSearch.setOnClickListener(this);
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(QUERY, mEtQuery.getText().toString());
     }
 
     @Override

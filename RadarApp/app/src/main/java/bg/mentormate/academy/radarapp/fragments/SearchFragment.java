@@ -4,6 +4,7 @@ package bg.mentormate.academy.radarapp.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -18,6 +19,10 @@ import bg.mentormate.academy.radarapp.activities.MainActivity;
  * Created by tl on 16.02.15.
  */
 public class SearchFragment extends Fragment implements ActionBar.OnNavigationListener {
+
+    private static final String ROOMS_TAG = "ROOMS";
+    private static final String USERS_TAG = "USERS";
+
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -42,6 +47,9 @@ public class SearchFragment extends Fragment implements ActionBar.OnNavigationLi
         return fragment;
     }
 
+    private SearchRoomsFragment mSearchRoomsFragment;
+    private SearchUsersFragment mSearchUsersFragment;
+
     public SearchFragment() {
     }
 
@@ -62,13 +70,6 @@ public class SearchFragment extends Fragment implements ActionBar.OnNavigationLi
                     null);
         }
 
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-                ((ActionBarActivity)getActivity()).getSupportActionBar().setSelectedNavigationItem(
-                        savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
-            }
-        }
-
         // Set up the action bar to show a dropdown list.
         final ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
@@ -77,7 +78,7 @@ public class SearchFragment extends Fragment implements ActionBar.OnNavigationLi
         // Set up the dropdown list navigation in the action bar.
         actionBar.setListNavigationCallbacks(
                 // Specify a SpinnerAdapter to populate the dropdown list.
-                new ArrayAdapter<String>(
+                new ArrayAdapter<>(
                         actionBar.getThemedContext(),
                         android.R.layout.simple_list_item_1,
                         android.R.id.text1,
@@ -86,29 +87,51 @@ public class SearchFragment extends Fragment implements ActionBar.OnNavigationLi
                                 getString(R.string.users_search_title)
                         }),
                 this);
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
+                ((ActionBarActivity)getActivity()).getSupportActionBar().setSelectedNavigationItem(
+                        savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
+            }
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         // Serialize the current dropdown position.
         outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
-                ((ActionBarActivity)getActivity()).getSupportActionBar().getSelectedNavigationIndex());
+                ((ActionBarActivity) getActivity()).getSupportActionBar().getSelectedNavigationIndex());
     }
 
     @Override
     public boolean onNavigationItemSelected(int position, long id) {
         // When the given dropdown item is selected, show its contents in the
         // container view.
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
         switch (position) {
             case 0:
+                mSearchRoomsFragment = (SearchRoomsFragment) fragmentManager.findFragmentByTag(ROOMS_TAG);
+
+                if (mSearchRoomsFragment == null) {
+                    mSearchRoomsFragment = SearchRoomsFragment.newInstance(position + 1);
+                }
+
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, SearchRoomsFragment.newInstance(position + 1))
+                        .replace(R.id.container, mSearchRoomsFragment, ROOMS_TAG)
+                        .addToBackStack(ROOMS_TAG)
                         .commit();
                 break;
             case 1:
+                mSearchUsersFragment = (SearchUsersFragment) fragmentManager.findFragmentByTag(USERS_TAG);
+
+                if (mSearchUsersFragment == null) {
+                    mSearchUsersFragment = SearchUsersFragment.newInstance(position + 1);
+                }
+
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, SearchUsersFragment.newInstance(position + 1))
+                        .replace(R.id.container, mSearchUsersFragment, USERS_TAG)
+                        .addToBackStack(USERS_TAG)
                         .commit();
                 break;
         }
