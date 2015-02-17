@@ -6,14 +6,16 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import bg.mentormate.academy.radarapp.R;
-import bg.mentormate.academy.radarapp.adapters.RoomsAdapter;
+import bg.mentormate.academy.radarapp.adapters.RoomAdapter;
 
 /**
  * Created by tl on 16.02.15.
  */
-public class SearchRoomsFragment extends ListFragment {
+public class SearchRoomsFragment extends ListFragment implements View.OnClickListener {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -32,7 +34,9 @@ public class SearchRoomsFragment extends ListFragment {
         return fragment;
     }
 
-    private RoomsAdapter mRoomsAdapter;
+    private RoomAdapter mRoomAdapter;
+    private EditText mEtQuery;
+    private Button mBtnSearch;
 
     public SearchRoomsFragment() {
     }
@@ -42,9 +46,33 @@ public class SearchRoomsFragment extends ListFragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search_list, container, false);
 
-        mRoomsAdapter = new RoomsAdapter(getActivity(), null);
-        setListAdapter(mRoomsAdapter);
+        mRoomAdapter = new RoomAdapter(getActivity(), null);
+        setListAdapter(mRoomAdapter);
+
+        mEtQuery = (EditText) rootView.findViewById(R.id.etQuery);
+        mBtnSearch = (Button) rootView.findViewById(R.id.btnSeach);
+
+        mBtnSearch.setOnClickListener(this);
 
         return rootView;
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+
+        switch (id) {
+            case R.id.btnSeach:
+                searchForRooms();
+                break;
+        }
+    }
+
+    private void searchForRooms() {
+        String query = mEtQuery.getText().toString();
+
+        mRoomAdapter = new RoomAdapter(getActivity(), query);
+
+        setListAdapter(mRoomAdapter);
     }
 }

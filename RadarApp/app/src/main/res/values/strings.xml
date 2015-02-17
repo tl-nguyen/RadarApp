@@ -57,5 +57,8 @@
     <string name="title_activity_search">SearchActivity</string>
     <string name="rooms_search_title">Rooms</string>
     <string name="users_search_title">Users</string>
+    <string name="empty_list">No found!</string>
+    <string name="search_hint">...</string>
+    <string name="search_btn">Search</string>
 
 </resources>

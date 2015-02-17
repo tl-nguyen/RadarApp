@@ -6,13 +6,16 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.adapters.UserAdapter;
 
 /**
  * Created by tl on 16.02.15.
  */
-public class SearchUsersFragment extends ListFragment {
+public class SearchUsersFragment extends ListFragment implements View.OnClickListener {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -31,6 +34,10 @@ public class SearchUsersFragment extends ListFragment {
         return fragment;
     }
 
+    private UserAdapter mUserAdapter;
+    private EditText mEtQuery;
+    private Button mBtnSearch;
+
     public SearchUsersFragment() {
     }
 
@@ -38,6 +45,34 @@ public class SearchUsersFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search_list, container, false);
+
+        mUserAdapter = new UserAdapter(getActivity(), null);
+        setListAdapter(mUserAdapter);
+
+        mEtQuery = (EditText) rootView.findViewById(R.id.etQuery);
+        mBtnSearch = (Button) rootView.findViewById(R.id.btnSeach);
+
+        mBtnSearch.setOnClickListener(this);
+
         return rootView;
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+
+        switch (id) {
+            case R.id.btnSeach:
+                searchForRooms();
+                break;
+        }
+    }
+
+    private void searchForRooms() {
+        String query = mEtQuery.getText().toString();
+
+        mUserAdapter = new UserAdapter(getActivity(), query);
+
+        setListAdapter(mUserAdapter);
     }
 }

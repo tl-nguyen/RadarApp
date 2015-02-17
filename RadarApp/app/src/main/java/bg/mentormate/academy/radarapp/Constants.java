@@ -36,6 +36,7 @@ public class Constants {
     public final static String USER_COL_AVATAR = "avatar";
     public final static String USER_COL_FOLLOWERS = "followers";
     public final static String USER_COL_FOLLOWING = "following";
+    public final static String USER_COL_USERNAME = "username";
 
     /***
      * Constants for working with the camera

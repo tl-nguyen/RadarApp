@@ -21,13 +21,13 @@ import bg.mentormate.academy.radarapp.models.User;
 /**
  * Created by tl on 10.02.15.
  */
-public class RoomsAdapter extends ParseQueryAdapter<Room> {
+public class RoomAdapter extends ParseQueryAdapter<Room> {
 
     private static final int LIMIT = 50;
 
     private Context mContext;
 
-    public RoomsAdapter(final Context context, final String searchQuery) {
+    public RoomAdapter(final Context context, final String searchQuery) {
         super(context, new QueryFactory<Room>() {
 
             @Override

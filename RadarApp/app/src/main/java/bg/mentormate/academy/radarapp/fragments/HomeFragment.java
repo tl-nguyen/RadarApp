@@ -24,7 +24,7 @@ import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.activities.RoomActivity;
-import bg.mentormate.academy.radarapp.adapters.RoomsAdapter;
+import bg.mentormate.academy.radarapp.adapters.RoomAdapter;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
@@ -56,7 +56,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
     private User mCurrentUser;
     private Room mMyRoom;
 
-    private RoomsAdapter mRecentRoomsAdapter;
+    private RoomAdapter mRecentRoomAdapter;
 
     private TextView mTvMyRoomName;
     private TextView mTvNoRoomInfo;
@@ -101,9 +101,9 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
             roomNotOwnedVisibility();
         }
 
-        mRecentRoomsAdapter = new RoomsAdapter(getActivity(), null);
+        mRecentRoomAdapter = new RoomAdapter(getActivity(), null);
 
-        setListAdapter(mRecentRoomsAdapter);
+        setListAdapter(mRecentRoomAdapter);
 
         return rootView;
     }
@@ -144,7 +144,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        Room selectedRoom = mRecentRoomsAdapter.getItem(position);
+        Room selectedRoom = mRecentRoomAdapter.getItem(position);
 
         onJoinClicked(selectedRoom);
     }
