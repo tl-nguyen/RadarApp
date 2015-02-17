@@ -101,7 +101,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
             roomNotOwnedVisibility();
         }
 
-        mRecentRoomsAdapter = new RoomsAdapter(getActivity());
+        mRecentRoomsAdapter = new RoomsAdapter(getActivity(), null);
 
         setListAdapter(mRecentRoomsAdapter);
 

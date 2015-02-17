@@ -27,13 +27,18 @@ public class RoomsAdapter extends ParseQueryAdapter<Room> {
 
     private Context mContext;
 
-    public RoomsAdapter(final Context context) {
+    public RoomsAdapter(final Context context, final String searchQuery) {
         super(context, new QueryFactory<Room>() {
 
             @Override
             public ParseQuery<Room> create() {
                 ParseQuery query = new ParseQuery(Constants.ROOM_TABLE);
                 query.orderByDescending(Constants.PARSE_COL_CREATED_AT);
+
+                if (searchQuery != null) {
+                    query.whereContains(Constants.ROOM_COL_NAME, searchQuery);
+                }
+
                 query.setLimit(LIMIT);
 
                 return query;

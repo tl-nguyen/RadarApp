@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,6 +38,9 @@ import bg.mentormate.academy.radarapp.services.RetrieveRoomDataService;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
 public class RoomActivity extends ActionBarActivity {
+
+    private final static long DATA_UPDATE_INTERVAL = 4000;
+
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     private LocalDb mLocalDb;
@@ -49,7 +51,6 @@ public class RoomActivity extends ActionBarActivity {
     private BroadcastReceiver positionsUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(RoomActivity.this, "updated", Toast.LENGTH_SHORT).show();
             mRoom = mLocalDb.getSelectedRoom();
             updateMarkers();
         }
@@ -97,7 +98,7 @@ public class RoomActivity extends ActionBarActivity {
         mDataServiceIntent = new Intent(this, RetrieveRoomDataService.class);
 
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, mDataServiceIntent, 0);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, ALARM_TRIGGER_AT_TIME, 5000,pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, ALARM_TRIGGER_AT_TIME, DATA_UPDATE_INTERVAL,pendingIntent);
     }
 
     private void setUpMap() {

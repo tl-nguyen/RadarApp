@@ -73,7 +73,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Button mBtnDestroy;
     private Button mBtnEdit;
     private ProgressBar mProgressBar;
-    View rootView;
 
     public ProfileFragment() {
     }
@@ -81,7 +80,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
         mLocalDb = LocalDb.getInstance();
         mUser = mLocalDb.getCurrentUser();
@@ -111,6 +110,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mTvFollowersCount.setText(mUser.getFollowers().size() + "");
         mTvFollowingCount.setText(mUser.getFollowing().size() + "");
 
+        getAvatar();
+
+        mMyRoom = mUser.getRoom();
+
+        setRoomManagementElements();
+    }
+
+    private void getAvatar() {
         mUser.getAvatar().getDataInBackground(new GetDataCallback() {
             @Override
             public void done(byte[] bytes, ParseException e) {
@@ -126,14 +133,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
-
-        mMyRoom = mUser.getRoom();
-
-        setRoomManagementElements();
     }
 
     private void showErrorAlert(ParseException e) {
-        AlertHelper.alert(getActivity(), getString(R.string.dialog_error_title), e.getMessage());
+        AlertHelper.alert(getActivity(),
+                getString(R.string.dialog_error_title),
+                e.getMessage());
     }
 
     private void hideProgressBar() {
@@ -184,6 +189,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     getArguments().getInt(ARG_SECTION_NUMBER),
                     mUser.getUsername());
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAvatar();
     }
 
     @Override
@@ -324,12 +335,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 });
             }
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        init(rootView);
     }
 
     private void onDestroyClicked() {

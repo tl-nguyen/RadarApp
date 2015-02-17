@@ -16,6 +16,9 @@ public class LocationTrackingService extends Service implements Handler.Callback
     public final static String ACTION_STOP_MONITORING = "bg.mentormate.academy.action.ACTION_STOP_MONITORING";
     public final static String HANDLER_THREAD_NAME = "trackingservicethread";
 
+    private final static long GPS_INTERVAL_TRACKING = 0;
+    private final static long NETWORK_INTERVAL_TRACKING = 20000;
+
     private LocationListener mGpsListener;
     private LocationListener mNetworkListener;
     private Looper mLooper;
@@ -68,11 +71,11 @@ public class LocationTrackingService extends Service implements Handler.Callback
 
         // Track with GPS provider
         mGpsListener = new ServiceLocationListener();
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mGpsListener, mLooper);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_INTERVAL_TRACKING, 0, mGpsListener, mLooper);
 
         // Track with Network provider
         mNetworkListener = new ServiceLocationListener();
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 20000, 0, mNetworkListener, mLooper);
+        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, NETWORK_INTERVAL_TRACKING, 0, mNetworkListener, mLooper);
     }
 
     private void doStopTracking() {

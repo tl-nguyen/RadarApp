@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.adapters.RoomsAdapter;
 
 /**
  * Created by tl on 16.02.15.
@@ -31,6 +32,8 @@ public class SearchRoomsFragment extends ListFragment {
         return fragment;
     }
 
+    private RoomsAdapter mRoomsAdapter;
+
     public SearchRoomsFragment() {
     }
 
@@ -38,6 +41,10 @@ public class SearchRoomsFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search_list, container, false);
+
+        mRoomsAdapter = new RoomsAdapter(getActivity(), null);
+        setListAdapter(mRoomsAdapter);
+
         return rootView;
     }
 }
