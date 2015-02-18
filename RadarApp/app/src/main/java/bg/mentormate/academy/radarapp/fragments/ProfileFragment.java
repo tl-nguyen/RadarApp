@@ -3,8 +3,6 @@ package bg.mentormate.academy.radarapp.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,26 +11,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.parse.DeleteCallback;
 import com.parse.GetCallback;
-import com.parse.GetDataCallback;
 import com.parse.ParseException;
+import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 
-import bg.mentormate.academy.radarapp.data.LocalDb;
+import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.EditProfileActivity;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.activities.RoomActivity;
-import bg.mentormate.academy.radarapp.Constants;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
@@ -65,9 +62,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private TextView mTvFollowersCount;
     private TextView mTvFollowingCount;
-    private ImageView mIvAvatar;
+    private ParseImageView mPivBigAvatar;
     private LinearLayout mLlMyRoom;
-    private TextView mTvMyRoomName;
+    private TextView mTvRoomName;
+    private ParseImageView mPivAvatar;
     private Button mBtnJoin;
     private Button mBtnCreate;
     private Button mBtnDestroy;
@@ -93,9 +91,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private void init(View rootView) {
         mTvFollowersCount = (TextView) rootView.findViewById(R.id.tvFollowersCount);
         mTvFollowingCount = (TextView) rootView.findViewById(R.id.tvFollowingCount);
-        mIvAvatar = (ImageView) rootView.findViewById(R.id.ivAvatar);
+        mPivBigAvatar = (ParseImageView) rootView.findViewById(R.id.pivBigAvatar);
         mLlMyRoom = (LinearLayout) rootView.findViewById(R.id.llMyRoom);
-        mTvMyRoomName = (TextView) rootView.findViewById(R.id.tvMyRoomName);
+        mTvRoomName = (TextView) rootView.findViewById(R.id.tvRoomName);
+        mPivAvatar = (ParseImageView) rootView.findViewById(R.id.pivBigAvatar);
         mBtnJoin = (Button) rootView.findViewById(R.id.btnJoin);
         mBtnCreate = (Button) rootView.findViewById(R.id.btnCreate);
         mBtnDestroy = (Button) rootView.findViewById(R.id.btnDestroy);
@@ -110,29 +109,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mTvFollowersCount.setText(mUser.getFollowers().size() + "");
         mTvFollowingCount.setText(mUser.getFollowing().size() + "");
 
-        getAvatar();
-
         mMyRoom = mUser.getRoom();
 
         setRoomManagementElements();
-    }
-
-    private void getAvatar() {
-        mUser.getAvatar().getDataInBackground(new GetDataCallback() {
-            @Override
-            public void done(byte[] bytes, ParseException e) {
-                if (e == null) {
-                    Bitmap imgBitmap = BitmapFactory.decodeByteArray(
-                            bytes,
-                            0,
-                            bytes.length);
-
-                    mIvAvatar.setImageBitmap(imgBitmap);
-                } else {
-                    showErrorAlert(e);
-                }
-            }
-        });
     }
 
     private void showErrorAlert(ParseException e) {
@@ -159,7 +138,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void done(ParseObject parseObject, ParseException e) {
                     if (e == null) {
-                        mTvMyRoomName.setText(mMyRoom.getName());
+                        mTvRoomName.setText(mMyRoom.getName());
+                        mPivAvatar.setParseFile(mUser.getAvatar());
+                        mPivAvatar.loadInBackground();
                     } else {
                         showErrorAlert(e);
                     }
@@ -194,7 +175,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        getAvatar();
+        mPivBigAvatar.setParseFile(mUser.getAvatar());
+        mPivBigAvatar.loadInBackground();
     }
 
     @Override

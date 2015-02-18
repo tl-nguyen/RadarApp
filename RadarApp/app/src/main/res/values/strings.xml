@@ -34,7 +34,7 @@
     <string name="make_room_btn">Make it!</string>
     <string name="cancel_btn">Don\'t want no more</string>
     <string name="create_room_invalid_inputs_message">The Room Name and KeyPass field must not be empty</string>
-    <string name="by_label">By:</string>
+    <string name="by_label">by: </string>
     <string name="room_name_sample">Cool Room</string>
     <string name="username_sample">tlnguyen</string>
     <string name="no_room_info_tv">Don\'t have any room yet, create one to get one ;-)</string>
@@ -44,7 +44,7 @@
     <string name="check_keypass_title">Enter the passkey to get in!</string>
     <string name="got_it_btn">Got it!</string>
     <string name="passkey_incorrect_message">The passkey is incorrect :-(</string>
-    <string name="title_activity_room">RoomActivity</string>
+    <string name="title_activity_room">Room</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_edit_profile">Edit Profile</string>
     <string name="changePassLabel">Change Password:</string>

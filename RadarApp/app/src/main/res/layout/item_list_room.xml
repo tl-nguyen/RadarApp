@@ -1,62 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="600dp"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/name_label"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_weight="2"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvRoomName"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
             android:text="@string/room_name_sample"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/by_label"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="3">
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/by_label" />
 
             <com.parse.ParseImageView
-                android:id="@+id/pivAvatar"
+                android:id="@+id/pivBigAvatar"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/ic_launcher"/>
+                android:src="@drawable/ic_launcher" />
+
             <TextView
                 android:id="@+id/tvUsername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/username_sample"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#ff0697ff" />
 
         </LinearLayout>
     </LinearLayout>
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/join_btn"
+        android:id="@+id/btnJoin"/>
 </LinearLayout>

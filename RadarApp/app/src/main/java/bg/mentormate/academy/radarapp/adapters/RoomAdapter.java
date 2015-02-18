@@ -1,9 +1,14 @@
 package bg.mentormate.academy.radarapp.adapters;
 
-import android.content.Context;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.parse.GetCallback;
@@ -12,11 +17,15 @@ import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+import com.parse.SaveCallback;
 
-import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.Constants;
+import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.activities.RoomActivity;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
+import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
 /**
  * Created by tl on 10.02.15.
@@ -25,10 +34,11 @@ public class RoomAdapter extends ParseQueryAdapter<Room> {
 
     private static final int LIMIT = 50;
 
-    private Context mContext;
+    private Activity mHostActivity;
+    private User mCurrentUser;
 
-    public RoomAdapter(final Context context, final String searchQuery) {
-        super(context, new QueryFactory<Room>() {
+    public RoomAdapter(final Activity hostActivity, final String searchQuery) {
+        super(hostActivity, new QueryFactory<Room>() {
 
             @Override
             public ParseQuery<Room> create() {
@@ -45,27 +55,29 @@ public class RoomAdapter extends ParseQueryAdapter<Room> {
             }
         });
 
-        mContext = context;
+        mHostActivity = hostActivity;
+        mCurrentUser = LocalDb.getInstance().getCurrentUser();
     }
 
     @Override
     public View getItemView(Room room, View v, ViewGroup parent) {
-        View row = v;
         final Room selectedRoom = room;
-        final RoomHolder holder;
 
-        if (row == null) {
-            row = LayoutInflater.from(mContext).inflate(R.layout.item_list_room, parent, false);
-
-            holder = new RoomHolder();
-            holder.roomName = (TextView) row.findViewById(R.id.tvRoomName);
-            holder.username = (TextView) row.findViewById(R.id.tvUsername);
-            holder.avatar = (ParseImageView) row.findViewById(R.id.pivAvatar);
-
-            row.setTag(holder);
-        } else {
-            holder = (RoomHolder) row.getTag();
+        if (v == null) {
+            v = LayoutInflater.from(getContext()).inflate(R.layout.item_list_room, parent, false);
         }
+
+        final TextView tvRoomName = (TextView) v.findViewById(R.id.tvRoomName);
+        final TextView tvUsername = (TextView) v.findViewById(R.id.tvUsername);
+        final ParseImageView pivAvatar = (ParseImageView) v.findViewById(R.id.pivBigAvatar);
+        Button btnJoin = (Button) v.findViewById(R.id.btnJoin);
+
+        btnJoin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onJoinClicked(selectedRoom);
+            }
+        });
 
         super.getItemView(selectedRoom, v, parent);
 
@@ -75,20 +87,71 @@ public class RoomAdapter extends ParseQueryAdapter<Room> {
             owner.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
                 @Override
                 public void done(ParseObject parseObject, ParseException e) {
-                    holder.roomName.setText(selectedRoom.getName());
-                    holder.username.setText(owner.getUsername());
-                    holder.avatar.setParseFile(owner.getAvatar());
-                    holder.avatar.loadInBackground();
+                    tvRoomName.setText(selectedRoom.getName());
+                    tvUsername.setText(owner.getUsername());
+                    pivAvatar.setParseFile(owner.getAvatar());
+                    pivAvatar.loadInBackground();
                 }
             });
         }
 
-        return row;
+        return v;
     }
 
-    static class RoomHolder {
-        private TextView roomName;
-        private TextView username;
-        private ParseImageView avatar;
+    private void onJoinClicked(Room room) {
+        if (!room.getUsers().contains(mCurrentUser)) {
+            checkForPassKey(room);
+        } else {
+            goToRoom(room);
+        }
+    }
+
+    private void checkForPassKey(final Room room) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mHostActivity);
+
+        LayoutInflater inflater = mHostActivity.getLayoutInflater();
+        final View dvCreateRoom = inflater.inflate(R.layout.dialog_passkey_check, null);
+
+        final EditText etPassKey = (EditText) dvCreateRoom.findViewById(R.id.etPassKey);
+
+        builder.setView(dvCreateRoom)
+                .setTitle(mHostActivity.getString(R.string.check_keypass_title))
+                .setPositiveButton(mHostActivity.getString(R.string.got_it_btn), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String passKey = etPassKey.getText().toString().trim();
+
+                        if (passKey.equals(room.getPassKey())) {
+                            // Go to Room if the passkey is correct
+                            room.getUsers().add(mCurrentUser);
+                            room.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e == null) {
+                                        goToRoom(room);
+                                    } else {
+                                        AlertHelper.alert(mHostActivity,
+                                                mHostActivity.getString(R.string.dialog_error_title),
+                                                e.getMessage());
+                                    }
+                                }
+                            });
+                        } else {
+                            AlertHelper.alert(mHostActivity,
+                                    mHostActivity.getString(R.string.dialog_error_title),
+                                    mHostActivity.getString(R.string.passkey_incorrect_message));
+                        }
+                    }
+                })
+                .setNegativeButton(mHostActivity.getString(R.string.cancel_btn), null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void goToRoom(Room room) {
+        Intent roomIntent = new Intent(mHostActivity, RoomActivity.class);
+        roomIntent.putExtra(Constants.ROOM_ID, room.getObjectId());
+        mHostActivity.startActivity(roomIntent);
     }
 }

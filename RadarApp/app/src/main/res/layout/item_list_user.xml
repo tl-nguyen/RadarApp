@@ -5,7 +5,7 @@
     android:orientation="horizontal">
 
     <com.parse.ParseImageView
-        android:id="@+id/pivAvatar"
+        android:id="@+id/pivBigAvatar"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:src="@drawable/ic_launcher" />

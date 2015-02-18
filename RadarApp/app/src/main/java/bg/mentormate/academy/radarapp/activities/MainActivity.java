@@ -160,7 +160,7 @@ public class MainActivity extends ActionBarActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_logout) {
+        if (id == R.id.actionLogout) {
             logout();
             return true;
         }

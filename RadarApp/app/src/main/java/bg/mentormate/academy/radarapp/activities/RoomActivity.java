@@ -12,6 +12,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -61,6 +63,8 @@ public class RoomActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mLocalDb = LocalDb.getInstance();
 
         mCurrentUser = (User) User.getCurrentUser();
@@ -98,7 +102,7 @@ public class RoomActivity extends ActionBarActivity {
         mDataServiceIntent = new Intent(this, RetrieveRoomDataService.class);
 
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, mDataServiceIntent, 0);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, ALARM_TRIGGER_AT_TIME, DATA_UPDATE_INTERVAL,pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, ALARM_TRIGGER_AT_TIME, DATA_UPDATE_INTERVAL, pendingIntent);
     }
 
     private void setUpMap() {
@@ -136,6 +140,9 @@ public class RoomActivity extends ActionBarActivity {
                     mRoom = (Room) room;
                     mLocalDb.setSelectedRoom(mRoom);
 
+                    // Set activity title
+                    getSupportActionBar().setTitle(mRoom.getName());
+
                     updateMarkers();
                 } else {
                     AlertHelper.alert(RoomActivity.this,
@@ -151,31 +158,29 @@ public class RoomActivity extends ActionBarActivity {
         markersUpdateTask.execute();
     }
 
-    private Bitmap getBitmapAvatar(User user) {
-        byte[] bytes = new byte[0];
-        Bitmap scaledBitmap = null;
-
-        try {
-            bytes = user.getAvatar().getData();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Bitmap fetchedAvatar = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-        if (fetchedAvatar != null) {
-             scaledBitmap = Bitmap.createScaledBitmap(
-                    fetchedAvatar,
-                    50, 50,
-                    true);
-        }
-
-        return scaledBitmap;
-    }
-
     private void startServiceForLocationTracking() {
         Intent trackingIntent = new Intent(LocationTrackingService.ACTION_START_MONITORING);
         startService(trackingIntent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_room, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -203,33 +208,33 @@ public class RoomActivity extends ActionBarActivity {
             List<User> users = mRoom.getUsers();
 
             for (User user: users) {
+                final MarkerOptions marker = new MarkerOptions();
                 ParseGeoPoint userLocation = null;
+                Bitmap scaledAvatar = null;
 
                 try {
                     user.fetchIfNeeded();
+
+                    if (user.equals(mCurrentUser)) {
+                        continue;
+                    }
+
                     user.getCurrentLocation().fetchIfNeeded();
 
                     userLocation = user.getCurrentLocation().getLocation();
 
+                    scaledAvatar = getBitmapAvatar(user);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
-                if (user.equals(mCurrentUser)) {
-                    continue;
-                }
-
-                final MarkerOptions marker = new MarkerOptions();
 
                 if (userLocation != null) {
                     marker.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
                             .title(user.getUsername());
                 }
 
-                Bitmap scaledBmp = getBitmapAvatar(user);
-
-                if (scaledBmp != null) {
-                    marker.icon(BitmapDescriptorFactory.fromBitmap(scaledBmp));
+                if (scaledAvatar != null) {
+                    marker.icon(BitmapDescriptorFactory.fromBitmap(scaledAvatar));
                 }
 
                 runOnUiThread(new Runnable() {
@@ -241,6 +246,26 @@ public class RoomActivity extends ActionBarActivity {
             }
 
             return null;
+        }
+
+        private Bitmap getBitmapAvatar(User user) {
+            Bitmap scaledBitmap = null;
+
+            try {
+                byte[] bytes = user.getAvatar().getData();
+                Bitmap fetchedAvatar = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                if (fetchedAvatar != null) {
+                    scaledBitmap = Bitmap.createScaledBitmap(
+                            fetchedAvatar,
+                            50, 50,
+                            true);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return scaledBitmap;
         }
     }
 }

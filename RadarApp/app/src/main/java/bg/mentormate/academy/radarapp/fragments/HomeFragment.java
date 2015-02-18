@@ -11,20 +11,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
 
 import bg.mentormate.academy.radarapp.Constants;
-import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.activities.RoomActivity;
 import bg.mentormate.academy.radarapp.adapters.RoomAdapter;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
@@ -59,6 +59,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
     private RoomAdapter mRecentRoomAdapter;
 
     private TextView mTvMyRoomName;
+    private ParseImageView mPivMyAvatar;
     private TextView mTvNoRoomInfo;
     private LinearLayout mLlMyRoom;
     private Button mBtnJoin;
@@ -81,7 +82,8 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
 
         mMyRoom = mCurrentUser.getRoom();
 
-        mTvMyRoomName = (TextView) rootView.findViewById(R.id.tvMyRoomName);
+        mTvMyRoomName = (TextView) rootView.findViewById(R.id.tvRoomName);
+        mPivMyAvatar = (ParseImageView) rootView.findViewById(R.id.pivBigAvatar);
         mTvNoRoomInfo = (TextView) rootView.findViewById(R.id.tvNoRoomInfo);
         mLlMyRoom = (LinearLayout) rootView.findViewById(R.id.llMyRoom);
         mBtnJoin = (Button) rootView.findViewById(R.id.btnJoin);
@@ -93,6 +95,8 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
                 @Override
                 public void done(ParseObject parseObject, ParseException e) {
                     mTvMyRoomName.setText(mMyRoom.getName());
+                    mPivMyAvatar.setParseFile(mCurrentUser.getAvatar());
+                    mPivMyAvatar.loadInBackground();
                 }
             });
 
@@ -138,15 +142,6 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
                 onJoinClicked(mMyRoom);
                 break;
         }
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-
-        Room selectedRoom = mRecentRoomAdapter.getItem(position);
-
-        onJoinClicked(selectedRoom);
     }
 
     private void onJoinClicked(Room room) {

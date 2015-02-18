@@ -85,6 +85,7 @@ public class SearchRoomsFragment extends ListFragment implements View.OnClickLis
 
     private void searchForRooms() {
         String query = mEtQuery.getText().toString();
+        mEtQuery.setText("");
 
         mRoomAdapter = new RoomAdapter(getActivity(), query);
 

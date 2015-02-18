@@ -58,7 +58,7 @@ public class UserAdapter extends ParseQueryAdapter<User> {
 
             holder = new UserHolder();
             holder.username = (TextView) row.findViewById(R.id.tvUsername);
-            holder.avatar = (ParseImageView) row.findViewById(R.id.pivAvatar);
+            holder.avatar = (ParseImageView) row.findViewById(R.id.pivBigAvatar);
 
             row.setTag(holder);
         } else {
