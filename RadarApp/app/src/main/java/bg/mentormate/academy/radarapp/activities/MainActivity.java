@@ -170,6 +170,7 @@ public class MainActivity extends ActionBarActivity
 
     private void logout() {
         User.logOut();
+        LocalDb.getInstance().setCurrentUser(null);
         goToLoginScreen();
     }
 

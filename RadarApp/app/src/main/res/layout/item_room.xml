@@ -15,7 +15,6 @@
             android:id="@+id/tvRoomName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/room_name_sample"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <LinearLayout
@@ -31,14 +30,12 @@
             <com.parse.ParseImageView
                 android:id="@+id/pivAvatar"
                 android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_launcher" />
+                android:layout_height="25dp" />
 
             <TextView
                 android:id="@+id/tvUsername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/username_sample"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#ff0697ff" />
 
@@ -46,10 +43,10 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/btnJoin"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="@string/join_btn"
-        android:id="@+id/btnJoin"/>
+        android:text="@string/join_btn" />
 </LinearLayout>

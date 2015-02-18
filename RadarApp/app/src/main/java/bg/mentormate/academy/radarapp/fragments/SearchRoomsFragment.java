@@ -45,6 +45,12 @@ public class SearchRoomsFragment extends ListFragment implements View.OnClickLis
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search_list, container, false);
@@ -69,7 +75,8 @@ public class SearchRoomsFragment extends ListFragment implements View.OnClickLis
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString(QUERY, mEtQuery.getText().toString());
+        String query = mEtQuery.getText().toString();
+        outState.putString(QUERY, query);
     }
 
     @Override

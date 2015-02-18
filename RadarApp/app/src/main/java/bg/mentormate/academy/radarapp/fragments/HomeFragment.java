@@ -84,7 +84,7 @@ public class HomeFragment extends ListFragment {
             mMyRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
                 @Override
                 public void done(ParseObject room, ParseException e) {
-                    mRiMyRoom.setData((Room) room, mCurrentUser);
+                    mRiMyRoom.setData(mMyRoom, mCurrentUser);
                 }
             });
         } else {

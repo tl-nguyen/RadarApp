@@ -75,6 +75,8 @@ public class RoomActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
 
+        startServiceForLocationTracking();
+
         registerReceiver(positionsUpdateReceiver,
                 new IntentFilter(RetrieveRoomDataService.BROADCAST_RESULT));
 
@@ -125,8 +127,6 @@ public class RoomActivity extends ActionBarActivity {
         if (roomId != null) {
             retrieveRoomById(roomId);
         }
-
-        startServiceForLocationTracking();
     }
 
     private void retrieveRoomById(String roomId) {

@@ -28,6 +28,7 @@ import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.EditProfileActivity;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
+import bg.mentormate.academy.radarapp.activities.ProfileActivity;
 import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
@@ -103,6 +104,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         if (!isCurrentUser) {
             ParseQuery query = new ParseQuery(Constants.USER_TABLE);
+
             try {
                 mUser = (User) query.get(id);
             } catch (ParseException e) {
@@ -198,6 +200,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             ((MainActivity) getActivity()).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER),
                     mUser.getUsername());
+        } else if (getActivity() instanceof ProfileActivity) {
+            ((ProfileActivity) getActivity()).getSupportActionBar().setTitle(mUser.getUsername());
         }
     }
 
