@@ -223,18 +223,18 @@ public class RoomActivity extends ActionBarActivity {
                 if (userLocation != null) {
                     marker.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
                             .title(user.getUsername());
-                }
 
-                if (scaledAvatar != null) {
-                    marker.icon(BitmapDescriptorFactory.fromBitmap(scaledAvatar));
-                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMap.addMarker(marker);
+                    if (scaledAvatar != null) {
+                        marker.icon(BitmapDescriptorFactory.fromBitmap(scaledAvatar));
                     }
-                });
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mMap.addMarker(marker);
+                        }
+                    });
+                }
             }
 
             return null;

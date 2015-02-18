@@ -32,6 +32,7 @@ import bg.mentormate.academy.radarapp.tools.AlertHelper;
 public class RoomItem extends LinearLayout implements View.OnClickListener {
 
     private static final String USER_ID = "USER_ID";
+
     private TextView mTvRoomName;
     private TextView mTvUsername;
     private ParseImageView mPivAvatar;
