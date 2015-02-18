@@ -22,30 +22,10 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/number_sample"
-        android:id="@+id/tvFollowersCount"
-        android:layout_alignTop="@+id/pivBigAvatar"
-        android:layout_alignLeft="@+id/tvFollowersLabel"
-        android:layout_alignStart="@+id/tvFollowersLabel" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/number_sample"
         android:id="@+id/tvFollowingCount"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/tvFollowersCount"
-        android:layout_toEndOf="@+id/tvFollowersCount"
         android:layout_marginLeft="45dp"
-        android:layout_marginStart="45dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/followers_label"
-        android:id="@+id/tvFollowersLabel"
-        android:layout_below="@+id/tvFollowersCount"
+        android:layout_marginStart="45dp"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -104,6 +84,16 @@
         android:indeterminate="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
+
+    <bg.mentormate.academy.radarapp.views.FollowButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tbFollow"
+        android:checked="false"
+        android:layout_alignBottom="@+id/pivBigAvatar"
+        android:layout_toRightOf="@+id/pivBigAvatar"
+        android:layout_toEndOf="@+id/pivBigAvatar"
         android:visibility="gone"/>
 
 </RelativeLayout>

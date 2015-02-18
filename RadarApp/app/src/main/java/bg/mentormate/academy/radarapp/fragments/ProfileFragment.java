@@ -32,6 +32,7 @@ import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
+import bg.mentormate.academy.radarapp.views.FollowButton;
 import bg.mentormate.academy.radarapp.views.RoomItem;
 
 /**
@@ -64,7 +65,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Room mMyRoom;
     private boolean isCurrentUser;
 
-    private TextView mTvFollowersCount;
     private TextView mTvFollowingCount;
     private ParseImageView mPivBigAvatar;
 
@@ -73,6 +73,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Button mBtnCreate;
     private Button mBtnDestroy;
     private Button mBtnEdit;
+    private FollowButton mFbFollow;
     private ProgressBar mProgressBar;
 
     public ProfileFragment() {
@@ -107,29 +108,27 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
         }
 
-        mTvFollowersCount = (TextView) rootView.findViewById(R.id.tvFollowersCount);
         mTvFollowingCount = (TextView) rootView.findViewById(R.id.tvFollowingCount);
         mPivBigAvatar = (ParseImageView) rootView.findViewById(R.id.pivBigAvatar);
         mRiMyRoom = (RoomItem) rootView.findViewById(R.id.riMyRoom);
         mBtnCreate = (Button) rootView.findViewById(R.id.btnCreate);
         mBtnDestroy = (Button) rootView.findViewById(R.id.btnDestroy);
         mBtnEdit = (Button) rootView.findViewById(R.id.btnEditProfile);
+        mFbFollow = (FollowButton) rootView.findViewById(R.id.tbFollow);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-
-        if (!isCurrentUser) {
-            mBtnEdit.setVisibility(View.GONE);
-        }
 
         mBtnCreate.setOnClickListener(this);
         mBtnDestroy.setOnClickListener(this);
         mBtnEdit.setOnClickListener(this);
+        mFbFollow.setOnClickListener(this);
 
-        mTvFollowersCount.setText(mUser.getFollowers().size() + "");
         mTvFollowingCount.setText(mUser.getFollowing().size() + "");
 
         mMyRoom = mUser.getRoom();
 
-        setRoomManagementElements();
+        mFbFollow.setData(LocalDb.getInstance().getCurrentUser(), mUser);
+
+        setRoomUIElementsVisibility();
     }
 
     private void showErrorAlert(ParseException e) {
@@ -146,7 +145,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
-    private void setRoomManagementElements() {
+    private void setRoomUIElementsVisibility() {
+        if (!isCurrentUser) {
+            mBtnEdit.setVisibility(View.GONE);
+            mFbFollow.setVisibility(View.VISIBLE);
+            mBtnDestroy.setVisibility(View.GONE);
+            mBtnCreate.setVisibility(View.GONE);
+        }
+
         if (mMyRoom == null) {
             roomNotCreatedVisibility();
         } else {
@@ -165,14 +171,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void roomCreatedVisibility() {
         mRiMyRoom.setVisibility(View.VISIBLE);
-        mBtnCreate.setVisibility(View.GONE);
-        mBtnDestroy.setVisibility(View.VISIBLE);
+
+        if (isCurrentUser) {
+            mBtnCreate.setVisibility(View.GONE);
+            mBtnDestroy.setVisibility(View.VISIBLE);
+        }
     }
 
     private void roomNotCreatedVisibility() {
         mRiMyRoom.setVisibility(View.INVISIBLE);
-        mBtnCreate.setVisibility(View.VISIBLE);
-        mBtnDestroy.setVisibility(View.GONE);
+
+        if (isCurrentUser) {
+            mBtnCreate.setVisibility(View.VISIBLE);
+            mBtnDestroy.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -204,7 +216,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 onDestroyClicked();
                 break;
             case R.id.btnEditProfile:
-                startActivity(new Intent(getActivity(), EditProfileActivity.class));
+                onEditClicked();
+                break;
+            case R.id.tbFollow:
+                onFollowClicked();
+                break;
         }
     }
 
@@ -253,7 +269,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         hideProgressBar();
                         if (e == null) {
                             // managing UI elements
-                            setRoomManagementElements();
+                            setRoomUIElementsVisibility();
 
                             mUser.setRoom(mMyRoom);
                             mUser.saveInBackground(new SaveCallback() {
@@ -288,7 +304,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                             public void done(ParseException e) {
                                 hideProgressBar();
                                 if (e == null) {
-                                    setRoomManagementElements();
+                                    setRoomUIElementsVisibility();
                                 } else {
                                     showErrorAlert(e);
                                 }
@@ -301,5 +317,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 }
             });
         }
+    }
+
+    private void onEditClicked() {
+        Intent editIntent = new Intent(getActivity(), EditProfileActivity.class);
+        startActivity(editIntent);
+    }
+
+    private void onFollowClicked() {
+
     }
 }
