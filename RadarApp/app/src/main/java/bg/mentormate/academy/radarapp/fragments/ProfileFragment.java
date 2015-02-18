@@ -64,6 +64,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private TextView mTvFollowingCount;
     private ParseImageView mPivBigAvatar;
     private LinearLayout mLlMyRoom;
+    private TextView mTvUsername;
     private TextView mTvRoomName;
     private ParseImageView mPivAvatar;
     private Button mBtnJoin;
@@ -93,8 +94,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mTvFollowingCount = (TextView) rootView.findViewById(R.id.tvFollowingCount);
         mPivBigAvatar = (ParseImageView) rootView.findViewById(R.id.pivBigAvatar);
         mLlMyRoom = (LinearLayout) rootView.findViewById(R.id.llMyRoom);
+        mTvUsername = (TextView) rootView.findViewById(R.id.tvUsername);
         mTvRoomName = (TextView) rootView.findViewById(R.id.tvRoomName);
-        mPivAvatar = (ParseImageView) rootView.findViewById(R.id.pivBigAvatar);
+        mPivAvatar = (ParseImageView) rootView.findViewById(R.id.pivAvatar);
         mBtnJoin = (Button) rootView.findViewById(R.id.btnJoin);
         mBtnCreate = (Button) rootView.findViewById(R.id.btnCreate);
         mBtnDestroy = (Button) rootView.findViewById(R.id.btnDestroy);
@@ -138,6 +140,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void done(ParseObject parseObject, ParseException e) {
                     if (e == null) {
+                        mTvUsername.setText(mUser.getUsername());
                         mTvRoomName.setText(mMyRoom.getName());
                         mPivAvatar.setParseFile(mUser.getAvatar());
                         mPivAvatar.loadInBackground();

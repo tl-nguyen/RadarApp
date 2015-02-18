@@ -58,6 +58,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
 
     private RoomAdapter mRecentRoomAdapter;
 
+    private TextView mTvMyUsername;
     private TextView mTvMyRoomName;
     private ParseImageView mPivMyAvatar;
     private TextView mTvNoRoomInfo;
@@ -82,8 +83,9 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
 
         mMyRoom = mCurrentUser.getRoom();
 
+        mTvMyUsername = (TextView) rootView.findViewById(R.id.tvUsername);
         mTvMyRoomName = (TextView) rootView.findViewById(R.id.tvRoomName);
-        mPivMyAvatar = (ParseImageView) rootView.findViewById(R.id.pivBigAvatar);
+        mPivMyAvatar = (ParseImageView) rootView.findViewById(R.id.pivAvatar);
         mTvNoRoomInfo = (TextView) rootView.findViewById(R.id.tvNoRoomInfo);
         mLlMyRoom = (LinearLayout) rootView.findViewById(R.id.llMyRoom);
         mBtnJoin = (Button) rootView.findViewById(R.id.btnJoin);
@@ -94,6 +96,7 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
             mMyRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
                 @Override
                 public void done(ParseObject parseObject, ParseException e) {
+                    mTvMyUsername.setText(mCurrentUser.getUsername());
                     mTvMyRoomName.setText(mMyRoom.getName());
                     mPivMyAvatar.setParseFile(mCurrentUser.getAvatar());
                     mPivMyAvatar.loadInBackground();

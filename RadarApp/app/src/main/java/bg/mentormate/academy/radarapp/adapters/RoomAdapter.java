@@ -69,7 +69,7 @@ public class RoomAdapter extends ParseQueryAdapter<Room> {
 
         final TextView tvRoomName = (TextView) v.findViewById(R.id.tvRoomName);
         final TextView tvUsername = (TextView) v.findViewById(R.id.tvUsername);
-        final ParseImageView pivAvatar = (ParseImageView) v.findViewById(R.id.pivBigAvatar);
+        final ParseImageView pivAvatar = (ParseImageView) v.findViewById(R.id.pivAvatar);
         Button btnJoin = (Button) v.findViewById(R.id.btnJoin);
 
         btnJoin.setOnClickListener(new View.OnClickListener() {
