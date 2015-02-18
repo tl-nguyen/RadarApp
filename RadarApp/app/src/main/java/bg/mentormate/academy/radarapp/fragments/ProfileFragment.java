@@ -95,7 +95,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mLocalDb = LocalDb.getInstance();
         mUser = mLocalDb.getCurrentUser();
 
-        isCurrentUser = mUser.getObjectId().equals(id);
+        if (id != null) {
+            isCurrentUser = mUser.getObjectId().equals(id);
+        } else {
+            isCurrentUser = true;
+        }
 
         if (!isCurrentUser) {
             ParseQuery query = new ParseQuery(Constants.USER_TABLE);
@@ -114,13 +118,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mBtnCreate = (Button) rootView.findViewById(R.id.btnCreate);
         mBtnDestroy = (Button) rootView.findViewById(R.id.btnDestroy);
         mBtnEdit = (Button) rootView.findViewById(R.id.btnEditProfile);
-        mFbFollow = (FollowButton) rootView.findViewById(R.id.tbFollow);
+        mFbFollow = (FollowButton) rootView.findViewById(R.id.fbFollow);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
         mBtnCreate.setOnClickListener(this);
         mBtnDestroy.setOnClickListener(this);
         mBtnEdit.setOnClickListener(this);
-        mFbFollow.setOnClickListener(this);
 
         mTvFollowingCount.setText(mUser.getFollowing().size() + "");
 
@@ -217,9 +220,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.btnEditProfile:
                 onEditClicked();
-                break;
-            case R.id.tbFollow:
-                onFollowClicked();
                 break;
         }
     }
@@ -322,9 +322,5 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private void onEditClicked() {
         Intent editIntent = new Intent(getActivity(), EditProfileActivity.class);
         startActivity(editIntent);
-    }
-
-    private void onFollowClicked() {
-
     }
 }

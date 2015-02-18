@@ -78,12 +78,12 @@ public class SearchUsersFragment extends ListFragment implements View.OnClickLis
 
         switch (id) {
             case R.id.btnSeach:
-                searchForRooms();
+                searchForUsers();
                 break;
         }
     }
 
-    private void searchForRooms() {
+    private void searchForUsers() {
         String query = mEtQuery.getText().toString();
         mEtQuery.setText("");
 

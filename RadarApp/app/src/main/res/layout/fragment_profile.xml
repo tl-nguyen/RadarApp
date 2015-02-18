@@ -89,7 +89,7 @@
     <bg.mentormate.academy.radarapp.views.FollowButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tbFollow"
+        android:id="@+id/fbFollow"
         android:checked="false"
         android:layout_alignBottom="@+id/pivBigAvatar"
         android:layout_toRightOf="@+id/pivBigAvatar"

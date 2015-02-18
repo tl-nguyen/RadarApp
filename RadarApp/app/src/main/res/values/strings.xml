@@ -61,7 +61,7 @@
     <string name="search_hint">...</string>
     <string name="search_btn">Search</string>
     <string name="title_activity_profile">ProfileActivity</string>
-    <string name="unfollow_text_btn">UNFOLLOW</string>
-    <string name="follow_text_btn">FOLLOW</string>
+    <string name="unfollow_text_btn">UnFollow</string>
+    <string name="follow_text_btn">Follow</string>
 
 </resources>
