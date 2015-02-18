@@ -20,6 +20,7 @@ import com.parse.SaveCallback;
 
 import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.activities.ProfileActivity;
 import bg.mentormate.academy.radarapp.activities.RoomActivity;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
@@ -30,6 +31,7 @@ import bg.mentormate.academy.radarapp.tools.AlertHelper;
  */
 public class RoomItem extends LinearLayout implements View.OnClickListener {
 
+    private static final String USER_ID = "USER_ID";
     private TextView mTvRoomName;
     private TextView mTvUsername;
     private ParseImageView mPivAvatar;
@@ -57,6 +59,8 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
         mPivAvatar = (ParseImageView) findViewById(R.id.pivAvatar);
         mBtnJoin = (Button) findViewById(R.id.btnJoin);
 
+        mTvUsername.setOnClickListener(this);
+        mPivAvatar.setOnClickListener(this);
         mBtnJoin.setOnClickListener(this);
     }
 
@@ -86,10 +90,20 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
         int id = v.getId();
 
         switch (id) {
+            case R.id.tvUsername:
+            case R.id.pivAvatar:
+                goToProfile();
+                break;
             case R.id.btnJoin:
                 onJoinClicked();
                 break;
         }
+    }
+
+    private void goToProfile() {
+        Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
+        profileIntent.putExtra(USER_ID, mUser.getObjectId());
+        getContext().startActivity(profileIntent);
     }
 
     private void onJoinClicked() {

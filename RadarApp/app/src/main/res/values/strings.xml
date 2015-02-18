@@ -60,5 +60,6 @@
     <string name="empty_list">No found!</string>
     <string name="search_hint">...</string>
     <string name="search_btn">Search</string>
+    <string name="title_activity_profile">ProfileActivity</string>
 
 </resources>

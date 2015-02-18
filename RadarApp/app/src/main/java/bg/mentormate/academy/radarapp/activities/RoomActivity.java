@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -161,13 +160,6 @@ public class RoomActivity extends ActionBarActivity {
     private void startServiceForLocationTracking() {
         Intent trackingIntent = new Intent(LocationTrackingService.ACTION_START_MONITORING);
         startService(trackingIntent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_room, menu);
-
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

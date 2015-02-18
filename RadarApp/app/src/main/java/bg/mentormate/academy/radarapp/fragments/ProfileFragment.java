@@ -19,6 +19,7 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseImageView;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
@@ -37,6 +38,9 @@ import bg.mentormate.academy.radarapp.views.RoomItem;
  * Created by tl on 08.02.15.
  */
 public class ProfileFragment extends Fragment implements View.OnClickListener {
+
+    private static final String USER_ID = "USER_ID";
+
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -58,6 +62,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private LocalDb mLocalDb;
     private User mUser;
     private Room mMyRoom;
+    private boolean isCurrentUser;
 
     private TextView mTvFollowersCount;
     private TextView mTvFollowingCount;
@@ -78,15 +83,30 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        mLocalDb = LocalDb.getInstance();
-        mUser = mLocalDb.getCurrentUser();
-
         init(rootView);
 
         return rootView;
     }
 
     private void init(View rootView) {
+        String id = getArguments().getString(USER_ID);
+
+        mLocalDb = LocalDb.getInstance();
+        mUser = mLocalDb.getCurrentUser();
+
+        isCurrentUser = mUser.getObjectId().equals(id);
+
+        if (!isCurrentUser) {
+            ParseQuery query = new ParseQuery(Constants.USER_TABLE);
+            try {
+                mUser = (User) query.get(id);
+            } catch (ParseException e) {
+                AlertHelper.alert(getActivity(),
+                        getString(R.string.dialog_error_title),
+                        e.getMessage());
+            }
+        }
+
         mTvFollowersCount = (TextView) rootView.findViewById(R.id.tvFollowersCount);
         mTvFollowingCount = (TextView) rootView.findViewById(R.id.tvFollowingCount);
         mPivBigAvatar = (ParseImageView) rootView.findViewById(R.id.pivBigAvatar);
@@ -95,6 +115,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mBtnDestroy = (Button) rootView.findViewById(R.id.btnDestroy);
         mBtnEdit = (Button) rootView.findViewById(R.id.btnEditProfile);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+
+        if (!isCurrentUser) {
+            mBtnEdit.setVisibility(View.GONE);
+        }
 
         mBtnCreate.setOnClickListener(this);
         mBtnDestroy.setOnClickListener(this);
