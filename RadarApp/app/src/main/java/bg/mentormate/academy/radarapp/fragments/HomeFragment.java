@@ -1,38 +1,28 @@
 package bg.mentormate.academy.radarapp.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseImageView;
 import com.parse.ParseObject;
-import com.parse.SaveCallback;
 
-import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
-import bg.mentormate.academy.radarapp.activities.RoomActivity;
 import bg.mentormate.academy.radarapp.adapters.RoomAdapter;
 import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
-import bg.mentormate.academy.radarapp.tools.AlertHelper;
+import bg.mentormate.academy.radarapp.views.RoomItem;
 
 /**
  * Created by tl on 09.02.15.
  */
-public class HomeFragment extends ListFragment implements View.OnClickListener {
+public class HomeFragment extends ListFragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -58,12 +48,8 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
 
     private RoomAdapter mRecentRoomAdapter;
 
-    private TextView mTvMyUsername;
-    private TextView mTvMyRoomName;
-    private ParseImageView mPivMyAvatar;
+    private RoomItem mRiMyRoom;
     private TextView mTvNoRoomInfo;
-    private LinearLayout mLlMyRoom;
-    private Button mBtnJoin;
 
     public HomeFragment() {
     }
@@ -73,6 +59,12 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
+        init(rootView);
+
+        return rootView;
+    }
+
+    private void init(View rootView) {
         mLocalDb = LocalDb.getInstance();
 
         if (mLocalDb.getCurrentUser() == null) {
@@ -83,27 +75,18 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
 
         mMyRoom = mCurrentUser.getRoom();
 
-        mTvMyUsername = (TextView) rootView.findViewById(R.id.tvUsername);
-        mTvMyRoomName = (TextView) rootView.findViewById(R.id.tvRoomName);
-        mPivMyAvatar = (ParseImageView) rootView.findViewById(R.id.pivAvatar);
+        mRiMyRoom = (RoomItem) rootView.findViewById(R.id.riMyRoom);
         mTvNoRoomInfo = (TextView) rootView.findViewById(R.id.tvNoRoomInfo);
-        mLlMyRoom = (LinearLayout) rootView.findViewById(R.id.llMyRoom);
-        mBtnJoin = (Button) rootView.findViewById(R.id.btnJoin);
 
         if (mMyRoom != null) {
             roomOwnedVisibility();
 
             mMyRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
                 @Override
-                public void done(ParseObject parseObject, ParseException e) {
-                    mTvMyUsername.setText(mCurrentUser.getUsername());
-                    mTvMyRoomName.setText(mMyRoom.getName());
-                    mPivMyAvatar.setParseFile(mCurrentUser.getAvatar());
-                    mPivMyAvatar.loadInBackground();
+                public void done(ParseObject room, ParseException e) {
+                    mRiMyRoom.setData((Room) room, mCurrentUser);
                 }
             });
-
-            mBtnJoin.setOnClickListener(this);
         } else {
             roomNotOwnedVisibility();
         }
@@ -111,17 +94,15 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
         mRecentRoomAdapter = new RoomAdapter(getActivity(), null);
 
         setListAdapter(mRecentRoomAdapter);
-
-        return rootView;
     }
 
     private void roomNotOwnedVisibility() {
-        mLlMyRoom.setVisibility(View.GONE);
+        mRiMyRoom.setVisibility(View.GONE);
         mTvNoRoomInfo.setVisibility(View.VISIBLE);
     }
 
     private void roomOwnedVisibility() {
-        mLlMyRoom.setVisibility(View.VISIBLE);
+        mRiMyRoom.setVisibility(View.VISIBLE);
         mTvNoRoomInfo.setVisibility(View.GONE);
     }
 
@@ -134,73 +115,5 @@ public class HomeFragment extends ListFragment implements View.OnClickListener {
                     getArguments().getInt(ARG_SECTION_NUMBER),
                     null);
         }
-    }
-
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-
-        switch (id) {
-            case R.id.btnJoin:
-                onJoinClicked(mMyRoom);
-                break;
-        }
-    }
-
-    private void onJoinClicked(Room room) {
-        if (!room.getUsers().contains(mCurrentUser)) {
-            checkForPassKey(room);
-        } else {
-            goToRoom(room);
-        }
-    }
-
-    private void checkForPassKey(final Room room) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View dvCreateRoom = inflater.inflate(R.layout.dialog_passkey_check, null);
-
-        final EditText etPassKey = (EditText) dvCreateRoom.findViewById(R.id.etPassKey);
-
-        builder.setView(dvCreateRoom)
-                .setTitle(getString(R.string.check_keypass_title))
-                .setPositiveButton(getString(R.string.got_it_btn), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        String passKey = etPassKey.getText().toString().trim();
-
-                        if (passKey.equals(room.getPassKey())) {
-                            // Go to Room if the passkey is correct
-                            room.getUsers().add(mCurrentUser);
-                            room.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    if (e == null) {
-                                        goToRoom(room);
-                                    } else {
-                                        AlertHelper.alert(getActivity(),
-                                                getString(R.string.dialog_error_title),
-                                                e.getMessage());
-                                    }
-                                }
-                            });
-                        } else {
-                            AlertHelper.alert(getActivity(),
-                                    getString(R.string.dialog_error_title),
-                                    getString(R.string.passkey_incorrect_message));
-                        }
-                    }
-                })
-                .setNegativeButton(getString(R.string.cancel_btn), null);
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    private void goToRoom(Room room) {
-        Intent roomIntent = new Intent(getActivity(), RoomActivity.class);
-        roomIntent.putExtra(Constants.ROOM_ID, room.getObjectId());
-        startActivity(roomIntent);
     }
 }

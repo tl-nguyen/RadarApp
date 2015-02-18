@@ -70,24 +70,20 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
+    <bg.mentormate.academy.radarapp.views.RoomItem
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/llMyRoom"
+        android:id="@+id/riMyRoom"
         android:layout_centerVertical="true"
         android:layout_alignRight="@+id/btnEditProfile"
-        android:layout_alignEnd="@+id/btnEditProfile">
-
-        <include layout="@layout/item_list_room" />
-    </LinearLayout>
+        android:layout_alignEnd="@+id/btnEditProfile"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/create_btn"
         android:id="@+id/btnCreate"
-        android:layout_below="@+id/llMyRoom"
+        android:layout_below="@+id/riMyRoom"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -95,7 +91,7 @@
         android:layout_height="wrap_content"
         android:text="@string/destroy_btn"
         android:id="@+id/btnDestroy"
-        android:layout_below="@+id/llMyRoom"
+        android:layout_below="@+id/riMyRoom"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 

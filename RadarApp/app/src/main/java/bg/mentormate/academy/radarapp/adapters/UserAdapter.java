@@ -54,7 +54,7 @@ public class UserAdapter extends ParseQueryAdapter<User> {
         final UserHolder holder;
 
         if (row == null) {
-            row = LayoutInflater.from(mContext).inflate(R.layout.item_list_user, parent, false);
+            row = LayoutInflater.from(mContext).inflate(R.layout.item_user, parent, false);
 
             holder = new UserHolder();
             holder.username = (TextView) row.findViewById(R.id.tvUsername);

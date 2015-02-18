@@ -25,7 +25,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/llMyRoom">
 
-        <include layout="@layout/item_list_room" />
+        <bg.mentormate.academy.radarapp.views.RoomItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/riMyRoom"/>
     </LinearLayout>
 
     <TextView

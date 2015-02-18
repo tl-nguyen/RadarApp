@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -28,11 +27,11 @@ import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.EditProfileActivity;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
-import bg.mentormate.academy.radarapp.activities.RoomActivity;
 import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
+import bg.mentormate.academy.radarapp.views.RoomItem;
 
 /**
  * Created by tl on 08.02.15.
@@ -63,11 +62,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private TextView mTvFollowersCount;
     private TextView mTvFollowingCount;
     private ParseImageView mPivBigAvatar;
-    private LinearLayout mLlMyRoom;
-    private TextView mTvUsername;
-    private TextView mTvRoomName;
-    private ParseImageView mPivAvatar;
-    private Button mBtnJoin;
+
+    private RoomItem mRiMyRoom;
+
     private Button mBtnCreate;
     private Button mBtnDestroy;
     private Button mBtnEdit;
@@ -93,17 +90,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mTvFollowersCount = (TextView) rootView.findViewById(R.id.tvFollowersCount);
         mTvFollowingCount = (TextView) rootView.findViewById(R.id.tvFollowingCount);
         mPivBigAvatar = (ParseImageView) rootView.findViewById(R.id.pivBigAvatar);
-        mLlMyRoom = (LinearLayout) rootView.findViewById(R.id.llMyRoom);
-        mTvUsername = (TextView) rootView.findViewById(R.id.tvUsername);
-        mTvRoomName = (TextView) rootView.findViewById(R.id.tvRoomName);
-        mPivAvatar = (ParseImageView) rootView.findViewById(R.id.pivAvatar);
-        mBtnJoin = (Button) rootView.findViewById(R.id.btnJoin);
+        mRiMyRoom = (RoomItem) rootView.findViewById(R.id.riMyRoom);
         mBtnCreate = (Button) rootView.findViewById(R.id.btnCreate);
         mBtnDestroy = (Button) rootView.findViewById(R.id.btnDestroy);
         mBtnEdit = (Button) rootView.findViewById(R.id.btnEditProfile);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
-        mBtnJoin.setOnClickListener(this);
         mBtnCreate.setOnClickListener(this);
         mBtnDestroy.setOnClickListener(this);
         mBtnEdit.setOnClickListener(this);
@@ -138,14 +130,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
             mMyRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
                 @Override
-                public void done(ParseObject parseObject, ParseException e) {
+                public void done(ParseObject room, ParseException e) {
                     if (e == null) {
-                        mTvUsername.setText(mUser.getUsername());
-                        mTvRoomName.setText(mMyRoom.getName());
-                        mPivAvatar.setParseFile(mUser.getAvatar());
-                        mPivAvatar.loadInBackground();
-                    } else {
-                        showErrorAlert(e);
+                        mRiMyRoom.setData((Room) room, mUser);
                     }
                 }
             });
@@ -153,13 +140,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void roomCreatedVisibility() {
-        mLlMyRoom.setVisibility(View.VISIBLE);
+        mRiMyRoom.setVisibility(View.VISIBLE);
         mBtnCreate.setVisibility(View.GONE);
         mBtnDestroy.setVisibility(View.VISIBLE);
     }
 
     private void roomNotCreatedVisibility() {
-        mLlMyRoom.setVisibility(View.INVISIBLE);
+        mRiMyRoom.setVisibility(View.INVISIBLE);
         mBtnCreate.setVisibility(View.VISIBLE);
         mBtnDestroy.setVisibility(View.GONE);
     }
@@ -186,9 +173,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.btnJoin:
-                onJoinClicked();
-                break;
             case R.id.btnCreate:
                 onCreateClicked();
                 break;
@@ -198,63 +182,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.btnEditProfile:
                 startActivity(new Intent(getActivity(), EditProfileActivity.class));
         }
-    }
-
-    private void onJoinClicked() {
-        if (!mMyRoom.getUsers().contains(mUser)) {
-            checkForPassKey(mMyRoom);
-        } else {
-            goToRoom(mMyRoom);
-        }
-    }
-
-    private void checkForPassKey(final Room room) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View dvCreateRoom = inflater.inflate(R.layout.dialog_passkey_check, null);
-
-        final EditText etPassKey = (EditText) dvCreateRoom.findViewById(R.id.etPassKey);
-
-        builder.setView(dvCreateRoom)
-                .setTitle(getString(R.string.check_keypass_title))
-                .setPositiveButton(getString(R.string.got_it_btn), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        String passKey = etPassKey.getText().toString().trim();
-
-                        if (passKey.equals(room.getPassKey())) {
-                            // Go to Room if the passkey is correct
-                            room.getUsers().add(mUser);
-                            room.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    if (e == null) {
-                                        goToRoom(mMyRoom);
-                                    } else {
-                                        AlertHelper.alert(getActivity(),
-                                                getString(R.string.dialog_error_title),
-                                                e.getMessage());
-                                    }
-                                }
-                            });
-                        } else {
-                            AlertHelper.alert(getActivity(),
-                                    getString(R.string.dialog_error_title),
-                                    getString(R.string.passkey_incorrect_message));
-                        }
-                    }
-                })
-                .setNegativeButton(getString(R.string.cancel_btn), null);
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    private void goToRoom(Room room) {
-        Intent roomIntent = new Intent(getActivity(), RoomActivity.class);
-        roomIntent.putExtra(Constants.ROOM_ID, room.getObjectId());
-        startActivity(roomIntent);
     }
 
     private void onCreateClicked() {
