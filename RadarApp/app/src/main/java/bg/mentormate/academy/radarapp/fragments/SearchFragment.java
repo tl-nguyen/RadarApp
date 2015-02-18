@@ -90,7 +90,7 @@ public class SearchFragment extends Fragment implements ActionBar.OnNavigationLi
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-                ((ActionBarActivity)getActivity()).getSupportActionBar().setSelectedNavigationItem(
+                actionBar.setSelectedNavigationItem(
                         savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
             }
         }

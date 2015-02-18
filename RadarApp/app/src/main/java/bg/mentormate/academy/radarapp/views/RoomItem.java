@@ -35,9 +35,8 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     private ParseImageView mPivAvatar;
     private Button mBtnJoin;
 
-    private User mCurrentUser;
+    private User mUser;
     private Room mRoom;
-
 
     public RoomItem(Context context) {
         super(context);
@@ -47,22 +46,6 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     public RoomItem(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
-    }
-
-    public void setData(Room room, User user) {
-        mRoom = room;
-        mCurrentUser = user;
-
-        mTvRoomName.setText(room.getName());
-
-        user.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
-                mTvUsername.setText(mCurrentUser.getUsername());
-                mPivAvatar.setParseFile(mCurrentUser.getAvatar());
-                mPivAvatar.loadInBackground();
-            }
-        });
     }
 
     private void init() {
@@ -77,8 +60,40 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
         mBtnJoin.setOnClickListener(this);
     }
 
+    public void setData(Room room, User user) {
+        mRoom = room;
+        mUser = user;
+
+        mRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                mTvRoomName.setText(mRoom.getName());
+            }
+        });
+
+        mUser.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                mTvUsername.setText(mUser.getUsername());
+                mPivAvatar.setParseFile(mUser.getAvatar());
+                mPivAvatar.loadInBackground();
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+
+        switch (id) {
+            case R.id.btnJoin:
+                onJoinClicked();
+                break;
+        }
+    }
+
     private void onJoinClicked() {
-        if (!mRoom.getUsers().contains(mCurrentUser)) {
+        if (!mRoom.getUsers().contains(mUser)) {
             checkForPassKey();
         } else {
             goToRoom();
@@ -102,7 +117,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
 
                         if (passKey.equals(mRoom.getPassKey())) {
                             // Go to Room if the passkey is correct
-                            mRoom.getUsers().add(mCurrentUser);
+                            mRoom.getUsers().add(mUser);
                             mRoom.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
@@ -132,16 +147,5 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
         Intent roomIntent = new Intent(getContext(), RoomActivity.class);
         roomIntent.putExtra(Constants.ROOM_ID, mRoom.getObjectId());
         getContext().startActivity(roomIntent);
-    }
-
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-
-        switch (id) {
-            case R.id.btnJoin:
-                onJoinClicked();
-                break;
-        }
     }
 }
