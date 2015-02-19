@@ -124,9 +124,17 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
 
     private void onRegisterClicked() {
         if (!mRbRegister.isChecked()) {
-            removeUserFromRoom();
+            if (mRoom.getUsers().contains(mCurrentUser)) {
+                removeUserFromRoom();
+            } else {
+                setUnregisteredVisibility();
+            }
         } else {
-            checkForPassKey();
+            if (!mRoom.getUsers().contains(mCurrentUser)) {
+                checkForPassKey();
+            } else {
+                setRegisteredVisibility();
+            }
         }
     }
 
