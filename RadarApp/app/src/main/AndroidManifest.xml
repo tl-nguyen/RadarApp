@@ -72,6 +72,10 @@
             android:name=".activities.FollowingActivity"
             android:label="@string/title_activity_following" >
         </activity>
+        <activity
+            android:name=".activities.EditRoomActivity"
+            android:label="@string/title_activity_edit_room" >
+        </activity>
     </application>
 
 </manifest>
