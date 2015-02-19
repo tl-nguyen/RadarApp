@@ -55,18 +55,18 @@ public class SearchUsersFragment extends ListFragment implements View.OnClickLis
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search_list, container, false);
 
-        mUserAdapter = new UserAdapter(getActivity(), null);
+        if (savedInstanceState != null) {
+            String query = savedInstanceState.getString(QUERY);
+            mEtQuery.setText(query);
+            mUserAdapter = new UserAdapter(getActivity(), query);
+        } else {
+            mUserAdapter = new UserAdapter(getActivity(), null);
+        }
+
         setListAdapter(mUserAdapter);
 
         mEtQuery = (EditText) rootView.findViewById(R.id.etQuery);
         mBtnSearch = (Button) rootView.findViewById(R.id.btnSeach);
-
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(QUERY)) {
-                String query = savedInstanceState.getString(QUERY);
-                mEtQuery.setText(query);
-            }
-        }
 
         mBtnSearch.setOnClickListener(this);
 
@@ -91,7 +91,6 @@ public class SearchUsersFragment extends ListFragment implements View.OnClickLis
 
     private void searchForUsers() {
         String query = mEtQuery.getText().toString();
-        mEtQuery.setText("");
 
         mUserAdapter = new UserAdapter(getActivity(), query);
 

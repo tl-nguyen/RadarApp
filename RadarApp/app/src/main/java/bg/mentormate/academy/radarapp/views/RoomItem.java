@@ -140,7 +140,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
 
     private void goToProfile() {
         Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
-        profileIntent.putExtra(USER_ID, mCurrentUser.getObjectId());
+        profileIntent.putExtra(USER_ID, mRoom.getCreatedBy().getObjectId());
         getContext().startActivity(profileIntent);
     }
 
@@ -218,7 +218,6 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     private void setUnregisteredVisibility() {
         mRbRegister.setChecked(false);
         mBtnJoin.setVisibility(View.GONE);
-
     }
 
     private void setRegisteredVisibility() {

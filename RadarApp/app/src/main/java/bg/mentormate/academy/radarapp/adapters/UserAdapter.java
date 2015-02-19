@@ -18,8 +18,6 @@ public class UserAdapter extends ParseQueryAdapter<User> {
 
     private static final int LIMIT = 50;
 
-    private Context mContext;
-
     public UserAdapter(final Context context, final String searchQuery) {
         super(context, new QueryFactory<User>() {
 
@@ -37,8 +35,6 @@ public class UserAdapter extends ParseQueryAdapter<User> {
                 return query;
             }
         });
-
-        mContext = context;
     }
 
     @Override

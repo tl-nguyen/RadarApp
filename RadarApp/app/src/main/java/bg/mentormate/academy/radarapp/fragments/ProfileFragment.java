@@ -72,8 +72,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private RoomItem mRiMyRoom;
 
     private Button mBtnCreate;
+    private Button mBtnEditRoom;
     private Button mBtnDestroy;
-    private Button mBtnEdit;
+    private Button mBtnEditProfile;
     private FollowButton mFbFollow;
     private ProgressBar mProgressBar;
 
@@ -118,14 +119,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mPivBigAvatar = (ParseImageView) rootView.findViewById(R.id.pivBigAvatar);
         mRiMyRoom = (RoomItem) rootView.findViewById(R.id.riMyRoom);
         mBtnCreate = (Button) rootView.findViewById(R.id.btnCreate);
+        mBtnEditRoom = (Button) rootView.findViewById(R.id.btnEditRoom);
         mBtnDestroy = (Button) rootView.findViewById(R.id.btnDestroy);
-        mBtnEdit = (Button) rootView.findViewById(R.id.btnEditProfile);
+        mBtnEditProfile = (Button) rootView.findViewById(R.id.btnEditProfile);
         mFbFollow = (FollowButton) rootView.findViewById(R.id.fbFollow);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
         mBtnCreate.setOnClickListener(this);
         mBtnDestroy.setOnClickListener(this);
-        mBtnEdit.setOnClickListener(this);
+        mBtnEditProfile.setOnClickListener(this);
 
         mTvFollowingCount.setText(mUser.getFollowing().size() + "");
 
@@ -152,8 +154,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void setRoomUIElementsVisibility() {
         if (!isCurrentUser) {
-            mBtnEdit.setVisibility(View.GONE);
+            mBtnEditProfile.setVisibility(View.GONE);
             mFbFollow.setVisibility(View.VISIBLE);
+            mBtnEditRoom.setVisibility(View.GONE);
             mBtnDestroy.setVisibility(View.GONE);
             mBtnCreate.setVisibility(View.GONE);
         }
@@ -179,6 +182,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         if (isCurrentUser) {
             mBtnCreate.setVisibility(View.GONE);
+            mBtnEditRoom.setVisibility(View.VISIBLE);
             mBtnDestroy.setVisibility(View.VISIBLE);
         }
     }

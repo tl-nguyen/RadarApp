@@ -1,6 +1,6 @@
 package bg.mentormate.academy.radarapp.adapters;
 
-import android.app.Activity;
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,8 +19,8 @@ public class RoomAdapter extends ParseQueryAdapter<Room> {
 
     private static final int LIMIT = 50;
 
-    public RoomAdapter(final Activity hostActivity, final String searchQuery) {
-        super(hostActivity, new QueryFactory<Room>() {
+    public RoomAdapter(final Context context, final String searchQuery) {
+        super(context, new QueryFactory<Room>() {
 
             @Override
             public ParseQuery<Room> create() {

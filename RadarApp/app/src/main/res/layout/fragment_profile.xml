@@ -69,8 +69,8 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/destroy_btn"
-        android:id="@+id/btnDestroy"
+        android:text="@string/edit_room_btn"
+        android:id="@+id/btnEditRoom"
         android:layout_below="@+id/riMyRoom"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -95,5 +95,13 @@
         android:layout_toRightOf="@+id/pivBigAvatar"
         android:layout_toEndOf="@+id/pivBigAvatar"
         android:visibility="gone"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/destroy_btn"
+        android:id="@+id/btnDestroy"
+        android:layout_below="@+id/btnEditRoom"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
