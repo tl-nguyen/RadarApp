@@ -68,5 +68,6 @@
     <string name="edit_room_btn">Edit Room</string>
     <string name="title_activity_following">FollowingActivity</string>
     <string name="title_activity_edit_room">EditRoomActivity</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>
