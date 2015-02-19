@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -66,6 +67,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Room mMyRoom;
     private boolean isCurrentUser;
 
+    private LinearLayout mLlFollowing;
     private TextView mTvFollowingCount;
     private ParseImageView mPivBigAvatar;
 
@@ -115,6 +117,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
         }
 
+        mLlFollowing = (LinearLayout) rootView.findViewById(R.id.llFollowing);
         mTvFollowingCount = (TextView) rootView.findViewById(R.id.tvFollowingCount);
         mPivBigAvatar = (ParseImageView) rootView.findViewById(R.id.pivBigAvatar);
         mRiMyRoom = (RoomItem) rootView.findViewById(R.id.riMyRoom);
@@ -125,9 +128,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mFbFollow = (FollowButton) rootView.findViewById(R.id.fbFollow);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
-        mBtnCreate.setOnClickListener(this);
-        mBtnDestroy.setOnClickListener(this);
+        mLlFollowing.setOnClickListener(this);
         mBtnEditProfile.setOnClickListener(this);
+        mBtnCreate.setOnClickListener(this);
+        mBtnEditRoom.setOnClickListener(this);
+        mBtnDestroy.setOnClickListener(this);
 
         mTvFollowingCount.setText(mUser.getFollowing().size() + "");
 
@@ -193,6 +198,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (isCurrentUser) {
             mBtnCreate.setVisibility(View.VISIBLE);
             mBtnDestroy.setVisibility(View.GONE);
+            mBtnEditRoom.setVisibility(View.GONE);
         }
     }
 
@@ -220,16 +226,30 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
+            case R.id.llFollowing:
+                goToFollowingPage();
+                break;
+            case R.id.btnEditProfile:
+                goToEditProfile();
+                break;
             case R.id.btnCreate:
                 onCreateClicked();
+                break;
+            case R.id.btnEditRoom:
+                goToEditRoom();
                 break;
             case R.id.btnDestroy:
                 onDestroyClicked();
                 break;
-            case R.id.btnEditProfile:
-                onEditClicked();
-                break;
         }
+    }
+
+    private void goToFollowingPage() {
+
+    }
+
+    private void goToEditRoom() {
+        // TODO: add a new edit room activity
     }
 
     private void onCreateClicked() {
@@ -299,7 +319,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void onDestroyClicked() {
         if (mUser.containsKey(Constants.USER_COL_ROOM)) {
-
             showProgressBar();
             mUser.remove(Constants.USER_COL_ROOM);
             mMyRoom.deleteInBackground(new DeleteCallback() {
@@ -327,7 +346,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void onEditClicked() {
+    private void goToEditProfile() {
         Intent editIntent = new Intent(getActivity(), EditProfileActivity.class);
         startActivity(editIntent);
     }

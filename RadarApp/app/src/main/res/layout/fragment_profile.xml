@@ -17,26 +17,32 @@
         android:layout_alignParentStart="true"
         android:src="@drawable/ic_launcher" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/number_sample"
-        android:id="@+id/tvFollowingCount"
+        android:orientation="vertical"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="45dp"
-        android:layout_marginStart="45dp"
-        android:layout_centerHorizontal="true" />
+        android:gravity="center"
+        android:layout_toRightOf="@+id/pivBigAvatar"
+        android:layout_toEndOf="@+id/pivBigAvatar"
+        android:id="@+id/llFollowing">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/following_label"
-        android:id="@+id/tvFollowingLabel"
-        android:layout_below="@+id/tvFollowingCount"
-        android:layout_alignLeft="@+id/tvFollowingCount"
-        android:layout_alignStart="@+id/tvFollowingCount" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/number_sample"
+            android:id="@+id/tvFollowingCount" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/following_label"
+            android:id="@+id/tvFollowingLabel" />
+
+    </LinearLayout>
+
 
     <Button
         style="?android:attr/buttonStyleSmall"

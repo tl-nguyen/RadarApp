@@ -66,5 +66,6 @@
     <string name="unregister_text_btn">UnRegister</string>
     <string name="register_text_btn">Register</string>
     <string name="edit_room_btn">Edit Room</string>
+    <string name="title_activity_following">FollowingActivity</string>
 
 </resources>

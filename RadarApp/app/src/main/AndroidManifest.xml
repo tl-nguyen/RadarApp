@@ -68,6 +68,10 @@
             android:name=".activities.ProfileActivity"
             android:label="@string/title_activity_profile" >
         </activity>
+        <activity
+            android:name=".activities.FollowingActivity"
+            android:label="@string/title_activity_following" >
+        </activity>
     </application>
 
 </manifest>
