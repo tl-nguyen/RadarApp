@@ -42,6 +42,11 @@ public class FollowButton extends ToggleButton {
     public void setData(final User currentUser, final User followingUser) {
         final List<User> followingUsers = currentUser.getFollowing();
 
+        if (followingUser.equals(currentUser)) {
+            setVisibility(View.GONE);
+            return;
+        }
+
         if (followingUsers.contains(followingUser)) {
             setChecked(true);
         } else {

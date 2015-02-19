@@ -17,8 +17,11 @@ public class FollowingActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null) {
+            FollowingFragment followingFragment = new FollowingFragment();
+            followingFragment.setArguments(getIntent().getExtras());
+
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new FollowingFragment())
+                    .add(R.id.container, followingFragment)
                     .commit();
         }
     }

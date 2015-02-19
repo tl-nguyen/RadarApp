@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.views.UserItem;
@@ -18,7 +21,7 @@ public class UserAdapter extends ParseQueryAdapter<User> {
 
     private static final int LIMIT = 50;
 
-    public UserAdapter(final Context context, final String searchQuery) {
+    public UserAdapter(final Context context, final String searchQuery, final String state, final User user) {
         super(context, new QueryFactory<User>() {
 
             @Override
@@ -30,7 +33,18 @@ public class UserAdapter extends ParseQueryAdapter<User> {
                     query.whereContains(Constants.USER_COL_USERNAME, searchQuery);
                 }
 
-                query.setLimit(LIMIT);
+                if (state.equals(Constants.SEARCH)) {
+                    query.setLimit(LIMIT);
+                } else if (state.equals(Constants.FOLLOWING) && user != null) {
+                    List<User> followings = user.getFollowing();
+                    List<String> objectIds = new ArrayList<>();
+
+                    for (User user: followings) {
+                        objectIds.add(user.getObjectId());
+                    }
+
+                    query.whereContainedIn(Constants.PARSE_COL_OBJECT_ID, objectIds);
+                }
 
                 return query;
             }

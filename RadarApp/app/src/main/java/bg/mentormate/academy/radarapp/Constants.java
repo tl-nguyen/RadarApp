@@ -5,12 +5,16 @@ package bg.mentormate.academy.radarapp;
  */
 public class Constants {
 
+    public final static String FOLLOWING = "FOLLOWING";
+    public final static String SEARCH = "SEARCH";
+
     public final static String ROOM_ID = "ROOM_ID";
 
     /**
      * Parse.com common cols
      */
     public final static String PARSE_COL_CREATED_AT = "createdAt";
+    public final static String PARSE_COL_OBJECT_ID = "objectId";
 
     /**
      * Parse.com CurrentLocation table constants

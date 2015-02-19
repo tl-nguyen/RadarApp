@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.adapters.UserAdapter;
 
@@ -58,9 +59,9 @@ public class SearchUsersFragment extends ListFragment implements View.OnClickLis
         if (savedInstanceState != null) {
             String query = savedInstanceState.getString(QUERY);
             mEtQuery.setText(query);
-            mUserAdapter = new UserAdapter(getActivity(), query);
+            mUserAdapter = new UserAdapter(getActivity(), query, Constants.SEARCH, null);
         } else {
-            mUserAdapter = new UserAdapter(getActivity(), null);
+            mUserAdapter = new UserAdapter(getActivity(), null, Constants.SEARCH, null);
         }
 
         setListAdapter(mUserAdapter);
@@ -92,7 +93,7 @@ public class SearchUsersFragment extends ListFragment implements View.OnClickLis
     private void searchForUsers() {
         String query = mEtQuery.getText().toString();
 
-        mUserAdapter = new UserAdapter(getActivity(), query);
+        mUserAdapter = new UserAdapter(getActivity(), query, Constants.SEARCH, null);
 
         setListAdapter(mUserAdapter);
     }
