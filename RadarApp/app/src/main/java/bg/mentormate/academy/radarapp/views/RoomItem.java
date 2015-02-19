@@ -36,9 +36,10 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     private TextView mTvRoomName;
     private TextView mTvUsername;
     private ParseImageView mPivAvatar;
+    private RegisterButton mRbRegister;
     private Button mBtnJoin;
 
-    private User mUser;
+    private User mCurrentUser;
     private Room mRoom;
 
     public RoomItem(Context context) {
@@ -58,30 +59,47 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
         mTvRoomName = (TextView) findViewById(R.id.tvRoomName);
         mTvUsername = (TextView) findViewById(R.id.tvUsername);
         mPivAvatar = (ParseImageView) findViewById(R.id.pivAvatar);
+        mRbRegister = (RegisterButton) findViewById(R.id.rbRegister);
         mBtnJoin = (Button) findViewById(R.id.btnJoin);
 
         mTvUsername.setOnClickListener(this);
         mPivAvatar.setOnClickListener(this);
         mBtnJoin.setOnClickListener(this);
+        mRbRegister.setOnClickListener(this);
     }
 
-    public void setData(Room room, User user) {
+    public void setData(User currentUser,Room room) {
         mRoom = room;
-        mUser = user;
+        mCurrentUser = currentUser;
 
         mRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
                 mTvRoomName.setText(mRoom.getName());
-            }
-        });
 
-        mUser.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
-                mTvUsername.setText(mUser.getUsername());
-                mPivAvatar.setParseFile(mUser.getAvatar());
-                mPivAvatar.loadInBackground();
+                final User user = mRoom.getCreatedBy();
+
+                user.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                    @Override
+                    public void done(ParseObject parseObject, ParseException e) {
+                        mTvUsername.setText(user.getUsername());
+                        mPivAvatar.setParseFile(user.getAvatar());
+                        mPivAvatar.loadInBackground();
+                    }
+                });
+
+                mCurrentUser.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                    @Override
+                    public void done(ParseObject parseObject, ParseException e) {
+                        mRbRegister.setData(mCurrentUser, mRoom);
+
+                        if (mRbRegister.isChecked()) {
+                            setRegisteredVisibility();
+                        } else {
+                            setUnregisteredVisibility();
+                        }
+                    }
+                });
             }
         });
     }
@@ -95,27 +113,35 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
             case R.id.pivAvatar:
                 goToProfile();
                 break;
+            case R.id.rbRegister:
+                onRegisterClicked();
+                break;
             case R.id.btnJoin:
                 onJoinClicked();
                 break;
         }
     }
 
+    private void onRegisterClicked() {
+        if (!mRbRegister.isChecked()) {
+            removeUserFromRoom();
+        } else {
+            checkForPassKey();
+        }
+    }
+
     private void goToProfile() {
         Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
-        profileIntent.putExtra(USER_ID, mUser.getObjectId());
+        profileIntent.putExtra(USER_ID, mCurrentUser.getObjectId());
         getContext().startActivity(profileIntent);
     }
 
     private void onJoinClicked() {
-        if (!mRoom.getUsers().contains(mUser)) {
-            checkForPassKey();
-        } else {
-            goToRoom();
-        }
+        goToRoom();
     }
 
     private void checkForPassKey() {
+        setUnregisteredVisibility();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -131,20 +157,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
                         String passKey = etPassKey.getText().toString().trim();
 
                         if (passKey.equals(mRoom.getPassKey())) {
-                            // Go to Room if the passkey is correct
-                            mRoom.getUsers().add(mUser);
-                            mRoom.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    if (e == null) {
-                                        goToRoom();
-                                    } else {
-                                        AlertHelper.alert(getContext(),
-                                                getContext().getString(R.string.dialog_error_title),
-                                                e.getMessage());
-                                    }
-                                }
-                            });
+                            addUserToRoom();
                         } else {
                             AlertHelper.alert(getContext(),
                                     getContext().getString(R.string.dialog_error_title),
@@ -156,6 +169,53 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void removeUserFromRoom() {
+        mRoom.getUsers().remove(mCurrentUser);
+
+        mRoom.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    setUnregisteredVisibility();
+                } else {
+                    setUnregisteredVisibility();
+                    AlertHelper.alert(getContext(),
+                            getContext().getString(R.string.dialog_error_title),
+                            e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void addUserToRoom() {
+        mRoom.getUsers().add(mCurrentUser);
+
+        mRoom.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    setRegisteredVisibility();
+                } else {
+                    setUnregisteredVisibility();
+                    AlertHelper.alert(getContext(),
+                            getContext().getString(R.string.dialog_error_title),
+                            e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void setUnregisteredVisibility() {
+        mRbRegister.setChecked(false);
+        mBtnJoin.setVisibility(View.GONE);
+
+    }
+
+    private void setRegisteredVisibility() {
+        mRbRegister.setChecked(true);
+        mBtnJoin.setVisibility(View.VISIBLE);
     }
 
     private void goToRoom() {

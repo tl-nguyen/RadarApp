@@ -167,7 +167,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void done(ParseObject room, ParseException e) {
                     if (e == null) {
-                        mRiMyRoom.setData((Room) room, mUser);
+                        mRiMyRoom.setData(LocalDb.getInstance().getCurrentUser(), (Room) room);
                     }
                 }
             });

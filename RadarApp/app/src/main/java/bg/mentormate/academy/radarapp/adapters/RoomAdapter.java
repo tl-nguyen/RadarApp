@@ -8,8 +8,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
 import bg.mentormate.academy.radarapp.Constants;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.Room;
-import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.views.RoomItem;
 
 /**
@@ -44,9 +44,7 @@ public class RoomAdapter extends ParseQueryAdapter<Room> {
             v = new RoomItem(getContext());
         }
 
-        User owner = room.getCreatedBy();
-
-        ((RoomItem) v).setData(room, owner);
+        ((RoomItem) v).setData(LocalDb.getInstance().getCurrentUser(), room);
 
         return v;
     }

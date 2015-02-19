@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:baselineAligned="false"
     android:orientation="horizontal">
 
     <LinearLayout
@@ -39,13 +40,28 @@
                 android:textColor="#ff0697ff" />
 
         </LinearLayout>
+
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnJoin"
-        style="?android:attr/buttonStyleSmall"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/join_btn" />
+        android:layout_weight="2"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <bg.mentormate.academy.radarapp.views.RegisterButton
+            android:id="@+id/rbRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnJoin"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/join_btn" />
+
+    </LinearLayout>
+
 </LinearLayout>

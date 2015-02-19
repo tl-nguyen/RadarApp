@@ -69,7 +69,6 @@ public class UserItem extends LinearLayout implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-
         int id = v.getId();
 
         switch (id) {

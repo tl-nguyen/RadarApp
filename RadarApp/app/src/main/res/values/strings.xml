@@ -63,5 +63,7 @@
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="unfollow_text_btn">UnFollow</string>
     <string name="follow_text_btn">Follow</string>
+    <string name="unregister_text_btn">UnRegister</string>
+    <string name="register_text_btn">Register</string>
 
 </resources>
