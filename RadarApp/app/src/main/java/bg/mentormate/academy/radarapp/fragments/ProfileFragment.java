@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.EditProfileActivity;
+import bg.mentormate.academy.radarapp.activities.FollowingActivity;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.activities.ProfileActivity;
 import bg.mentormate.academy.radarapp.data.LocalDb;
@@ -245,7 +246,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void goToFollowingPage() {
-
+        Intent followingIntent = new Intent(getActivity(), FollowingActivity.class);
+        followingIntent.putExtra(USER_ID, mUser.getObjectId());
+        startActivity(followingIntent);
     }
 
     private void goToEditRoom() {
