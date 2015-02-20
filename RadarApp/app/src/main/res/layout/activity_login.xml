@@ -45,15 +45,16 @@
         android:layout_below="@+id/btnLogin"
         android:layout_centerHorizontal="true"
         android:text="@string/tv_register"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ff0697ff" />
 
     <ProgressBar
+        android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:indeterminate="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </RelativeLayout>

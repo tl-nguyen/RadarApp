@@ -6,7 +6,7 @@
     <item
         android:id="@+id/actionTrackingStatus"
         android:title="@string/tracking_status_action"
-        app:showAsAction="ifRoom|withText"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_marker_off"/>
     <item
         android:id="@+id/actionLogout"

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.ui.IconGenerator;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -190,6 +192,17 @@ public class RoomActivity extends ActionBarActivity {
 
     private class MarkersUpdateTask extends AsyncTask<Void, MarkerOptions, Void> {
 
+        private IconGenerator mIconGenerator;
+        private ImageView mImageView;
+
+
+        private MarkersUpdateTask() {
+            this.mIconGenerator = new IconGenerator(RoomActivity.this);
+            this.mImageView = new ImageView(RoomActivity.this);
+            mIconGenerator.setContentView(mImageView);
+            mIconGenerator.setStyle(IconGenerator.STYLE_GREEN);
+        }
+
         @Override
         protected void onPreExecute() {
             mMap.clear();
@@ -202,7 +215,7 @@ public class RoomActivity extends ActionBarActivity {
             for (User user: users) {
                 final MarkerOptions marker = new MarkerOptions();
                 ParseGeoPoint userLocation = null;
-                Bitmap scaledAvatar = null;
+                Bitmap avatarIcon = null;
 
                 try {
                     user.fetchIfNeeded();
@@ -215,7 +228,7 @@ public class RoomActivity extends ActionBarActivity {
 
                     userLocation = user.getCurrentLocation().getLocation();
 
-                    scaledAvatar = getBitmapAvatar(user);
+                    avatarIcon = getAvatarIcon(user);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -224,8 +237,8 @@ public class RoomActivity extends ActionBarActivity {
                     marker.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
                             .title(user.getUsername());
 
-                    if (scaledAvatar != null) {
-                        marker.icon(BitmapDescriptorFactory.fromBitmap(scaledAvatar));
+                    if (avatarIcon != null) {
+                        marker.icon(BitmapDescriptorFactory.fromBitmap(avatarIcon));
                     }
 
                     runOnUiThread(new Runnable() {
@@ -240,8 +253,9 @@ public class RoomActivity extends ActionBarActivity {
             return null;
         }
 
-        private Bitmap getBitmapAvatar(User user) {
-            Bitmap scaledBitmap = null;
+        private Bitmap getAvatarIcon(User user) {
+            Bitmap avatarIcon = null;
+            Bitmap scaledBitmap;
 
             try {
                 byte[] bytes = user.getAvatar().getData();
@@ -252,12 +266,15 @@ public class RoomActivity extends ActionBarActivity {
                             fetchedAvatar,
                             50, 50,
                             true);
+
+                    mImageView.setImageBitmap(scaledBitmap);
+                    avatarIcon = mIconGenerator.makeIcon();
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
-            return scaledBitmap;
+            return avatarIcon;
         }
     }
 }
