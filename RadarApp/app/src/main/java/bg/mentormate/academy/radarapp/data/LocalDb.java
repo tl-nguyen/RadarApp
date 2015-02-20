@@ -20,8 +20,11 @@ public class LocalDb {
 
     private User currentUser;
     private Room selectedRoom;
+    private boolean isTrackingOn;
 
     private LocalDb() {
+        currentUser = (User) User.getCurrentUser();
+        isTrackingOn = false;
     }
 
     public User getCurrentUser() {
@@ -38,5 +41,13 @@ public class LocalDb {
 
     public void setSelectedRoom(Room selectedRoom) {
         this.selectedRoom = selectedRoom;
+    }
+
+    public boolean isTrackingOn() {
+        return isTrackingOn;
+    }
+
+    public void setTrackingOn(boolean isTrackingOn) {
+        this.isTrackingOn = isTrackingOn;
     }
 }

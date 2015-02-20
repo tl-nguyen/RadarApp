@@ -123,6 +123,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     }
 
     private void onRegisterClicked() {
+        // TODO: it is not supposed to be like this, check it when have time
         if (!mRbRegister.isChecked()) {
             if (mRoom.getUsers().contains(mCurrentUser)) {
                 removeUserFromRoom();

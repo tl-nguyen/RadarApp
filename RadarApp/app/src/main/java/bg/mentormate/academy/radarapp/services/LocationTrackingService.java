@@ -10,19 +10,24 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 
+import bg.mentormate.academy.radarapp.data.LocalDb;
+
 public class LocationTrackingService extends Service implements Handler.Callback {
 
     public final static String ACTION_START_MONITORING = "bg.mentormate.academy.action.ACTION_START_MONITORING";
     public final static String ACTION_STOP_MONITORING = "bg.mentormate.academy.action.ACTION_STOP_MONITORING";
     public final static String HANDLER_THREAD_NAME = "trackingservicethread";
 
-    private final static long GPS_INTERVAL_TRACKING = 0;
-    private final static long NETWORK_INTERVAL_TRACKING = 20000;
+    private final static long GPS_INTERVAL_TRACKING = 2000;
+    private final static long NETWORK_INTERVAL_TRACKING = 60000;
+    private final static long GPS_MIN_DISTANCE = 0;
+    private final static long NETWORK_MIN_DISTANCE = 50;
 
     private LocationListener mGpsListener;
     private LocationListener mNetworkListener;
     private Looper mLooper;
     private Handler mHandler;
+    private LocalDb mLocalDb;
 
     public LocationTrackingService() {
     }
@@ -30,6 +35,8 @@ public class LocationTrackingService extends Service implements Handler.Callback
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mLocalDb = LocalDb.getInstance();
 
         HandlerThread thread = new HandlerThread(HANDLER_THREAD_NAME);
         thread.start();
@@ -55,8 +62,10 @@ public class LocationTrackingService extends Service implements Handler.Callback
         String action = intent.getAction();
 
         if (action.equalsIgnoreCase(ACTION_START_MONITORING)) {
+            mLocalDb.setTrackingOn(true);
             doStartTracking();
         } else if (action.equalsIgnoreCase(ACTION_STOP_MONITORING)) {
+            mLocalDb.setTrackingOn(false);
             doStopTracking();
             stopSelf();
         }
@@ -71,11 +80,11 @@ public class LocationTrackingService extends Service implements Handler.Callback
 
         // Track with GPS provider
         mGpsListener = new ServiceLocationListener();
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_INTERVAL_TRACKING, 0, mGpsListener, mLooper);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_INTERVAL_TRACKING, GPS_MIN_DISTANCE, mGpsListener, mLooper);
 
         // Track with Network provider
         mNetworkListener = new ServiceLocationListener();
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, NETWORK_INTERVAL_TRACKING, 0, mNetworkListener, mLooper);
+        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, NETWORK_INTERVAL_TRACKING, NETWORK_MIN_DISTANCE, mNetworkListener, mLooper);
     }
 
     private void doStopTracking() {

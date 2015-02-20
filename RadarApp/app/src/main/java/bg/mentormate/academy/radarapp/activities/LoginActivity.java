@@ -14,6 +14,7 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
@@ -25,6 +26,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private TextView mTvRegister;
     private ProgressBar mProgressBar;
 
+    private LocalDb mLocalDb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +37,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     }
 
     private void init() {
+        mLocalDb = LocalDb.getInstance();
+
         mEtUsername = (EditText) findViewById(R.id.etUsername);
         mEtPassword = (EditText) findViewById(R.id.etPassword);
         mBtnLogin = (Button) findViewById(R.id.btnLogin);
@@ -77,6 +82,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
                     if (e == null) {
                         // Logged in successfully
+                        mLocalDb.setCurrentUser((User) parseUser);
                         goToMain();
                     } else {
                         AlertHelper.alert(LoginActivity.this, getString(R.string.dialog_error_title),

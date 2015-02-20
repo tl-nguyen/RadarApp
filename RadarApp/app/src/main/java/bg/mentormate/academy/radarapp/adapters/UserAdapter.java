@@ -29,10 +29,6 @@ public class UserAdapter extends ParseQueryAdapter<User> {
                 ParseQuery query = new ParseQuery(Constants.USER_TABLE);
                 query.orderByDescending(Constants.PARSE_COL_CREATED_AT);
 
-                if (searchQuery != null) {
-                    query.whereContains(Constants.USER_COL_USERNAME, searchQuery);
-                }
-
                 if (state.equals(Constants.SEARCH)) {
                     query.setLimit(LIMIT);
                 } else if (state.equals(Constants.FOLLOWING) && user != null) {
@@ -44,6 +40,10 @@ public class UserAdapter extends ParseQueryAdapter<User> {
                     }
 
                     query.whereContainedIn(Constants.PARSE_COL_OBJECT_ID, objectIds);
+                }
+
+                if (searchQuery != null) {
+                    query.whereContains(Constants.USER_COL_USERNAME, searchQuery);
                 }
 
                 return query;

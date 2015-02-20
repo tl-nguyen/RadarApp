@@ -16,6 +16,7 @@ import bg.mentormate.academy.radarapp.fragments.NavigationDrawerFragment;
 import bg.mentormate.academy.radarapp.fragments.ProfileFragment;
 import bg.mentormate.academy.radarapp.fragments.SearchFragment;
 import bg.mentormate.academy.radarapp.models.User;
+import bg.mentormate.academy.radarapp.services.LocationTrackingService;
 
 
 public class MainActivity extends ActionBarActivity
@@ -43,15 +44,16 @@ public class MainActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private LocalDb mLocalDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LocalDb.getInstance().setCurrentUser((User) User.getCurrentUser());
+        mLocalDb = LocalDb.getInstance();
 
-        User currentUser = LocalDb.getInstance().getCurrentUser();
+        User currentUser = mLocalDb.getCurrentUser();
 
         if (currentUser == null) {
             Intent loginIntent = new Intent(this, LoginActivity.class);
@@ -69,6 +71,12 @@ public class MainActivity extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -148,6 +156,15 @@ public class MainActivity extends ActionBarActivity
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.menu_main, menu);
+
+            MenuItem trackingStatus = menu.findItem(R.id.actionTrackingStatus);
+
+            if (!mLocalDb.isTrackingOn()) {
+                trackingStatus.setIcon(getResources().getDrawable(R.drawable.ic_marker_off));
+            } else {
+                trackingStatus.setIcon(getResources().getDrawable(R.drawable.ic_marker_on));
+            }
+
             if (mTitle != null) {
                 restoreActionBar();
             }
@@ -160,12 +177,37 @@ public class MainActivity extends ActionBarActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.actionLogout) {
-            logout();
-            return true;
+        switch (id) {
+            case R.id.actionLogout:
+                logout();
+                return true;
+            case R.id.actionTrackingStatus:
+                if (!mLocalDb.isTrackingOn()) {
+                    startPositionTracking(item);
+                } else {
+                    stopPositionTracking(item);
+                }
+                return true;
+
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startPositionTracking(MenuItem item) {
+        Intent trackingIntent = new Intent(LocationTrackingService.ACTION_START_MONITORING);
+        startService(trackingIntent);
+
+        mLocalDb.setTrackingOn(true);
+        item.setIcon(getResources().getDrawable(R.drawable.ic_marker_on));
+    }
+
+    private void stopPositionTracking(MenuItem item) {
+        Intent trackingIntent = new Intent(LocationTrackingService.ACTION_STOP_MONITORING);
+        startService(trackingIntent);
+
+        mLocalDb.setTrackingOn(false);
+        item.setIcon(getResources().getDrawable(R.drawable.ic_marker_off));
     }
 
     private void logout() {

@@ -67,10 +67,6 @@ public class HomeFragment extends ListFragment {
     private void init(View rootView) {
         mLocalDb = LocalDb.getInstance();
 
-        if (mLocalDb.getCurrentUser() == null) {
-            mLocalDb.setCurrentUser((User) User.getCurrentUser());
-        }
-
         mCurrentUser = mLocalDb.getCurrentUser();
 
         mMyRoom = mCurrentUser.getRoom();
