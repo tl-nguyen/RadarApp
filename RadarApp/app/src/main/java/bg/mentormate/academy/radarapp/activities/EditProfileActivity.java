@@ -67,6 +67,7 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
 
     private final int DEFAULT_IMG_SIZE_X = 50;
     private final int DEFAULT_IMG_SIZE_Y = 50;
+    private final int DEFAULT_QUALITY_FACTOR = 80;
 
 
     @Override
@@ -251,7 +252,7 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
                         if (bitmap != null) {
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, DEFAULT_QUALITY_FACTOR, byteArrayOutputStream);
                             byte[] image = byteArrayOutputStream.toByteArray();
                             InputStream stream = new ByteArrayInputStream(image);
                             avatarChanged = true;
@@ -271,7 +272,7 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
                     if (bitmap != null) {
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, DEFAULT_QUALITY_FACTOR, byteArrayOutputStream);
                         byte[] image = byteArrayOutputStream.toByteArray();
                         InputStream stream = new ByteArrayInputStream(image);
 
