@@ -65,9 +65,9 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
     private Bitmap imageBitmap;
     private String currentPhotoPath;
 
-    private final int DEFAULT_IMG_SIZE_X = 50;
-    private final int DEFAULT_IMG_SIZE_Y = 50;
-    private final int DEFAULT_QUALITY_FACTOR = 80;
+    private final int DEFAULT_IMG_SIZE_X = 100;
+    private final int DEFAULT_IMG_SIZE_Y = 100;
+    private final int DEFAULT_QUALITY_FACTOR = 90;
 
 
     @Override
@@ -248,7 +248,7 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                 case GET_CAM_IMG:
                     if (currentPhotoPath != null) {
                         bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-                        bitmap = getResizedBitmap(bitmap, DEFAULT_IMG_SIZE_X, DEFAULT_IMG_SIZE_Y);
+                        //bitmap = getResizedBitmap(bitmap, DEFAULT_IMG_SIZE_X, DEFAULT_IMG_SIZE_Y);
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
                         if (bitmap != null) {
@@ -256,7 +256,9 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                             byte[] image = byteArrayOutputStream.toByteArray();
                             InputStream stream = new ByteArrayInputStream(image);
                             avatarChanged = true;
-                            mEditAvatar.setImageBitmap(BitmapFactory.decodeStream(stream));
+                            bitmap = BitmapFactory.decodeStream(stream);
+                            bitmap = getResizedBitmap(bitmap, DEFAULT_IMG_SIZE_X, DEFAULT_IMG_SIZE_Y);
+                            mEditAvatar.setImageBitmap(bitmap);
                             //mEditAvatar.setImageBitmap(bitmap);
                             mEditAvatar.setVisibility(View.VISIBLE);
                         }
@@ -268,7 +270,7 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                     break;
                 case GET_GAL_IMG:
                     bitmap = getImageFromGallery(intent);
-                    bitmap = getResizedBitmap(bitmap, DEFAULT_IMG_SIZE_X, DEFAULT_IMG_SIZE_Y);
+                    //bitmap = getResizedBitmap(bitmap, DEFAULT_IMG_SIZE_X, DEFAULT_IMG_SIZE_Y);
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
                     if (bitmap != null) {
@@ -276,8 +278,9 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                         byte[] image = byteArrayOutputStream.toByteArray();
                         InputStream stream = new ByteArrayInputStream(image);
 
-                        mEditAvatar.setImageBitmap(BitmapFactory.decodeStream(stream));
-                        //mEditAvatar.setImageBitmap(bitmap);
+                        bitmap = BitmapFactory.decodeStream(stream);
+                        bitmap = getResizedBitmap(bitmap, DEFAULT_IMG_SIZE_X, DEFAULT_IMG_SIZE_Y);
+                        mEditAvatar.setImageBitmap(bitmap);
                         mEditAvatar.setVisibility(View.VISIBLE);
 
                         avatarChanged = true;
@@ -290,22 +293,7 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
         }
 
     }
-/*
-    private void setBitmapAvatar(Bitmap picture) {
-        byte[] bytes = new byte[0];
 
-        try {
-            bytes = picture.getRowBytes();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return Bitmap.createScaledBitmap(
-                BitmapFactory.decodeByteArray(bytes, 0, bytes.length),
-                50, 50,
-                true);
-    }
-*/
     private Bitmap getImageFromCamera(Intent intent) {
         Uri selectedImage = intent.getData();
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
