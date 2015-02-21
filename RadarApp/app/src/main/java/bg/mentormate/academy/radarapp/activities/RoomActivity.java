@@ -13,10 +13,14 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -32,6 +36,7 @@ import java.util.List;
 
 import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.adapters.UserAdapter;
 import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.CurrentLocation;
 import bg.mentormate.academy.radarapp.models.Room;
@@ -40,7 +45,7 @@ import bg.mentormate.academy.radarapp.services.LocationTrackingService;
 import bg.mentormate.academy.radarapp.services.RetrieveRoomDataService;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
-public class RoomActivity extends ActionBarActivity {
+public class RoomActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
 
     private final static long DATA_UPDATE_INTERVAL = 4000;
 
@@ -49,7 +54,10 @@ public class RoomActivity extends ActionBarActivity {
     private LocalDb mLocalDb;
     private User mCurrentUser;
     private Room mRoom;
+    private List<User> mUsers;
     private Intent mDataServiceIntent;
+
+    private GridView mGvUsers;
 
     private BroadcastReceiver positionsUpdateReceiver = new BroadcastReceiver() {
         @Override
@@ -71,6 +79,9 @@ public class RoomActivity extends ActionBarActivity {
         mCurrentUser = (User) User.getCurrentUser();
 
         setUpMapIfNeeded();
+
+        mGvUsers = (GridView) findViewById(R.id.gvUsers);
+        mGvUsers.setOnItemClickListener(this);
     }
 
     @Override
@@ -89,12 +100,18 @@ public class RoomActivity extends ActionBarActivity {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
-            }
+            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            mMap = googleMap;
+
+                            // Check if we were successful in obtaining the map.
+                            if (mMap != null) {
+                                setUpMap();
+                            }
+                        }
+                    });
         }
     }
 
@@ -122,7 +139,7 @@ public class RoomActivity extends ActionBarActivity {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(currentLocation.getLocation().getLatitude(),
                         currentLocation.getLocation().getLongitude()),
-                13));
+                15));
 
         String roomId = getIntent().getStringExtra(Constants.ROOM_ID);
 
@@ -160,7 +177,8 @@ public class RoomActivity extends ActionBarActivity {
     }
 
     private void startServiceForLocationTracking() {
-        Intent trackingIntent = new Intent(LocationTrackingService.ACTION_START_MONITORING);
+        Intent trackingIntent = new Intent(this, LocationTrackingService.class);
+        trackingIntent.setAction(LocationTrackingService.ACTION_START_MONITORING);
         startService(trackingIntent);
     }
 
@@ -190,6 +208,17 @@ public class RoomActivity extends ActionBarActivity {
         super.onStop();
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(mUsers.get(position).getCurrentLocation().getLocation().getLatitude(),
+                        mUsers.get(position).getCurrentLocation().getLocation().getLongitude()),
+                15));
+    }
+
+    /**
+     * Using this class to do the fetching data in background
+     */
     private class MarkersUpdateTask extends AsyncTask<Void, MarkerOptions, Void> {
 
         private IconGenerator mIconGenerator;
@@ -210,9 +239,9 @@ public class RoomActivity extends ActionBarActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            List<User> users = mRoom.getUsers();
+            mUsers = mRoom.getUsers();
 
-            for (User user: users) {
+            for (User user: mUsers) {
                 final MarkerOptions marker = new MarkerOptions();
                 ParseGeoPoint userLocation = null;
                 Bitmap avatarIcon = null;
@@ -249,6 +278,15 @@ public class RoomActivity extends ActionBarActivity {
                     });
                 }
             }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    UserAdapter adapter = new UserAdapter(RoomActivity.this, mUsers);
+                    mGvUsers.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
+            });
 
             return null;
         }

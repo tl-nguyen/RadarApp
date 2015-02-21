@@ -75,31 +75,33 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
         mRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
-                mTvRoomName.setText(mRoom.getName());
+                if (mRoom.isDataAvailable()) {
+                    mTvRoomName.setText(mRoom.getName());
 
-                final User user = mRoom.getCreatedBy();
+                    final User user = mRoom.getCreatedBy();
 
-                user.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
-                    @Override
-                    public void done(ParseObject parseObject, ParseException e) {
-                        mTvUsername.setText(user.getUsername());
-                        mPivAvatar.setParseFile(user.getAvatar());
-                        mPivAvatar.loadInBackground();
-                    }
-                });
-
-                mCurrentUser.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
-                    @Override
-                    public void done(ParseObject parseObject, ParseException e) {
-                        mRbRegister.setData(mCurrentUser, mRoom);
-
-                        if (mRbRegister.isChecked()) {
-                            setRegisteredVisibility();
-                        } else {
-                            setUnregisteredVisibility();
+                    user.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject parseObject, ParseException e) {
+                            mTvUsername.setText(user.getUsername());
+                            mPivAvatar.setParseFile(user.getAvatar());
+                            mPivAvatar.loadInBackground();
                         }
-                    }
-                });
+                    });
+
+                    mCurrentUser.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject parseObject, ParseException e) {
+                            mRbRegister.setData(mCurrentUser, mRoom);
+
+                            if (mRbRegister.isChecked()) {
+                                setRegisteredVisibility();
+                            } else {
+                                setUnregisteredVisibility();
+                            }
+                        }
+                    });
+                }
             }
         });
     }
@@ -126,6 +128,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
         // TODO: it is not supposed to be like this, check it when have time
         if (!mRbRegister.isChecked()) {
             if (mRoom.getUsers().contains(mCurrentUser)) {
+                setUnregisteredVisibility();
                 removeUserFromRoom();
             } else {
                 setUnregisteredVisibility();
@@ -211,6 +214,32 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
                     AlertHelper.alert(getContext(),
                             getContext().getString(R.string.dialog_error_title),
                             e.getMessage());
+                }
+            }
+        });
+
+        followTheRoomOwner();
+    }
+
+    private void followTheRoomOwner() {
+        final User roomOwner = mRoom.getCreatedBy();
+
+        roomOwner.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if (!mCurrentUser.getFollowing().contains(roomOwner)) {
+                    mCurrentUser.getFollowing().add(roomOwner);
+                    mCurrentUser.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                setUnregisteredVisibility();
+                                AlertHelper.alert(getContext(),
+                                        getContext().getString(R.string.dialog_error_title),
+                                        e.getMessage());
+                            }
+                        }
+                    });
                 }
             }
         });

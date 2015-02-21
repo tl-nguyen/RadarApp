@@ -195,7 +195,8 @@ public class MainActivity extends ActionBarActivity
     }
 
     private void startPositionTracking(MenuItem item) {
-        Intent trackingIntent = new Intent(LocationTrackingService.ACTION_START_MONITORING);
+        Intent trackingIntent = new Intent(this, LocationTrackingService.class);
+        trackingIntent.setAction(LocationTrackingService.ACTION_START_MONITORING);
         startService(trackingIntent);
 
         mLocalDb.setTrackingOn(true);
@@ -203,7 +204,8 @@ public class MainActivity extends ActionBarActivity
     }
 
     private void stopPositionTracking(MenuItem item) {
-        Intent trackingIntent = new Intent(LocationTrackingService.ACTION_STOP_MONITORING);
+        Intent trackingIntent = new Intent(this, LocationTrackingService.class);
+        trackingIntent.setAction(LocationTrackingService.ACTION_STOP_MONITORING);
         startService(trackingIntent);
 
         mLocalDb.setTrackingOn(false);

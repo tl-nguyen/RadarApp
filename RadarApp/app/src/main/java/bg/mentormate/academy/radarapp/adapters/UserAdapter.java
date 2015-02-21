@@ -1,64 +1,63 @@
 package bg.mentormate.academy.radarapp.adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
 
-import com.parse.ParseQuery;
-import com.parse.ParseQueryAdapter;
+import com.parse.ParseImageView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import bg.mentormate.academy.radarapp.Constants;
+import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.models.User;
-import bg.mentormate.academy.radarapp.views.UserItem;
 
 /**
- * Created by tl on 17.02.15.
+ * Created by tl on 21.02.15.
  */
-public class UserAdapter extends ParseQueryAdapter<User> {
+public class UserAdapter extends BaseAdapter {
 
-    private static final int LIMIT = 50;
+    private Context mContext;
+    private List<User> mUsers;
 
-    public UserAdapter(final Context context, final String searchQuery, final String state, final User user) {
-        super(context, new QueryFactory<User>() {
-
-            @Override
-            public ParseQuery<User> create() {
-                ParseQuery query = new ParseQuery(Constants.USER_TABLE);
-                query.orderByDescending(Constants.PARSE_COL_CREATED_AT);
-
-                if (state.equals(Constants.SEARCH)) {
-                    query.setLimit(LIMIT);
-                } else if (state.equals(Constants.FOLLOWING) && user != null) {
-                    List<User> followings = user.getFollowing();
-                    List<String> objectIds = new ArrayList<>();
-
-                    for (User user: followings) {
-                        objectIds.add(user.getObjectId());
-                    }
-
-                    query.whereContainedIn(Constants.PARSE_COL_OBJECT_ID, objectIds);
-                }
-
-                if (searchQuery != null) {
-                    query.whereContains(Constants.USER_COL_USERNAME, searchQuery);
-                }
-
-                return query;
-            }
-        });
+    public UserAdapter(Context context, List<User> users) {
+        mContext = context;
+        mUsers = users;
     }
 
     @Override
-    public View getItemView(User user, View v, ViewGroup parent) {
-        if (v == null) {
-            v = new UserItem(getContext());
+    public int getCount() {
+        return mUsers.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return mUsers.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_user_cell, parent, false);
         }
 
-        ((UserItem) v).setData(user);
+        ParseImageView ivIcon = (ParseImageView) convertView.findViewById(R.id.ivIcon);
+        TextView tvUsername = (TextView) convertView.findViewById(R.id.tvUsername);
 
-        return v;
+        ivIcon.setParseFile(mUsers.get(position).getAvatar());
+        tvUsername.setText(mUsers.get(position).getUsername());
+
+        ivIcon.loadInBackground();
+
+        return convertView;
     }
 }

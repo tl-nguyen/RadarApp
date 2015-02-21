@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import bg.mentormate.academy.radarapp.R;
-import bg.mentormate.academy.radarapp.adapters.RoomAdapter;
+import bg.mentormate.academy.radarapp.adapters.RoomQueryAdapter;
 
 /**
  * Created by tl on 16.02.15.
@@ -37,7 +37,7 @@ public class SearchRoomsFragment extends ListFragment implements View.OnClickLis
         return fragment;
     }
 
-    private RoomAdapter mRoomAdapter;
+    private RoomQueryAdapter mRoomQueryAdapter;
     private EditText mEtQuery;
     private Button mBtnSearch;
 
@@ -58,12 +58,12 @@ public class SearchRoomsFragment extends ListFragment implements View.OnClickLis
         if (savedInstanceState != null) {
             String query = savedInstanceState.getString(QUERY);
             mEtQuery.setText(query);
-            mRoomAdapter = new RoomAdapter(getActivity(), query);
+            mRoomQueryAdapter = new RoomQueryAdapter(getActivity(), query);
         } else {
-            mRoomAdapter = new RoomAdapter(getActivity(), null);
+            mRoomQueryAdapter = new RoomQueryAdapter(getActivity(), null);
         }
 
-        setListAdapter(mRoomAdapter);
+        setListAdapter(mRoomQueryAdapter);
 
         mEtQuery = (EditText) rootView.findViewById(R.id.etQuery);
         mBtnSearch = (Button) rootView.findViewById(R.id.btnSeach);
@@ -93,8 +93,8 @@ public class SearchRoomsFragment extends ListFragment implements View.OnClickLis
     private void searchForRooms() {
         String query = mEtQuery.getText().toString();
 
-        mRoomAdapter = new RoomAdapter(getActivity(), query);
+        mRoomQueryAdapter = new RoomQueryAdapter(getActivity(), query);
 
-        setListAdapter(mRoomAdapter);
+        setListAdapter(mRoomQueryAdapter);
     }
 }

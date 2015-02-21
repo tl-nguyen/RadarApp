@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="google_maps_key_instructions">
+        <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=07:20:2C:61:E6:BC:F7:C3:BB:3A:8F:17:76:F5:87:48:77:5F:50:C1%3Bbg.mentormate.academy.radarapp.activities
+
+    You can also add your credentials to an existing key, using this line:
+    07:20:2C:61:E6:BC:F7:C3:BB:3A:8F:17:76:F5:87:48:77:5F:50:C1;bg.mentormate.academy.radarapp.activities
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+        -->
+    </string>
+    <string name="google_maps_key" templateMergeStrategy="preserve">YOUR_KEY_HERE</string>
+
+</resources>

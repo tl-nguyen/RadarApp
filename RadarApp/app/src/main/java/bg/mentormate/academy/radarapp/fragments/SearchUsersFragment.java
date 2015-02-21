@@ -11,7 +11,7 @@ import android.widget.EditText;
 
 import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
-import bg.mentormate.academy.radarapp.adapters.UserAdapter;
+import bg.mentormate.academy.radarapp.adapters.UserQueryAdapter;
 
 /**
  * Created by tl on 16.02.15.
@@ -38,7 +38,7 @@ public class SearchUsersFragment extends ListFragment implements View.OnClickLis
         return fragment;
     }
 
-    private UserAdapter mUserAdapter;
+    private UserQueryAdapter mUserQueryAdapter;
     private EditText mEtQuery;
     private Button mBtnSearch;
 
@@ -59,12 +59,12 @@ public class SearchUsersFragment extends ListFragment implements View.OnClickLis
         if (savedInstanceState != null) {
             String query = savedInstanceState.getString(QUERY);
             mEtQuery.setText(query);
-            mUserAdapter = new UserAdapter(getActivity(), query, Constants.SEARCH, null);
+            mUserQueryAdapter = new UserQueryAdapter(getActivity(), query, Constants.SEARCH, null);
         } else {
-            mUserAdapter = new UserAdapter(getActivity(), null, Constants.SEARCH, null);
+            mUserQueryAdapter = new UserQueryAdapter(getActivity(), null, Constants.SEARCH, null);
         }
 
-        setListAdapter(mUserAdapter);
+        setListAdapter(mUserQueryAdapter);
 
         mEtQuery = (EditText) rootView.findViewById(R.id.etQuery);
         mBtnSearch = (Button) rootView.findViewById(R.id.btnSeach);
@@ -93,8 +93,8 @@ public class SearchUsersFragment extends ListFragment implements View.OnClickLis
     private void searchForUsers() {
         String query = mEtQuery.getText().toString();
 
-        mUserAdapter = new UserAdapter(getActivity(), query, Constants.SEARCH, null);
+        mUserQueryAdapter = new UserQueryAdapter(getActivity(), query, Constants.SEARCH, null);
 
-        setListAdapter(mUserAdapter);
+        setListAdapter(mUserQueryAdapter);
     }
 }

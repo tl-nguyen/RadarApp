@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -126,7 +128,14 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             newUser.setFollowing(new ArrayList<User>());
 
             CurrentLocation emptyLocation = new CurrentLocation();
-            emptyLocation.setLocation(new ParseGeoPoint(0f, 0f));
+
+            Location location = getLocation();
+
+            if (location != null) {
+                emptyLocation.setLocation(new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
+            } else {
+                emptyLocation.setLocation(new ParseGeoPoint(0, 0));
+            }
 
             // Putting ic_launcher as a default avatar
             if (mBlankAvatar == null) {
@@ -158,6 +167,18 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             }
 
             return null;
+        }
+
+        private Location getLocation() {
+            LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            if (location == null) {
+                location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+
+            return location;
         }
 
         @Override

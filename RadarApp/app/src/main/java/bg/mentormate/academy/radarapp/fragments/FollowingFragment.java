@@ -15,7 +15,7 @@ import com.parse.ParseQuery;
 
 import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
-import bg.mentormate.academy.radarapp.adapters.UserAdapter;
+import bg.mentormate.academy.radarapp.adapters.UserQueryAdapter;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
@@ -26,7 +26,7 @@ public class FollowingFragment extends ListFragment implements View.OnClickListe
 
     private static final String USER_ID = "USER_ID";
 
-    private UserAdapter mUserAdapter;
+    private UserQueryAdapter mUserQueryAdapter;
     private EditText mEtQuery;
     private Button mBtnSearch;
 
@@ -63,9 +63,9 @@ public class FollowingFragment extends ListFragment implements View.OnClickListe
                 if (e == null) {
                     mUser = (User) user;
 
-                    mUserAdapter = new UserAdapter(getActivity(), null, Constants.FOLLOWING, mUser);
+                    mUserQueryAdapter = new UserQueryAdapter(getActivity(), null, Constants.FOLLOWING, mUser);
 
-                    setListAdapter(mUserAdapter);
+                    setListAdapter(mUserQueryAdapter);
                 } else {
                     AlertHelper.alert(getActivity(),
                             getString(R.string.dialog_error_title),
@@ -89,8 +89,8 @@ public class FollowingFragment extends ListFragment implements View.OnClickListe
     private void searchForUsers() {
         String query = mEtQuery.getText().toString();
 
-        mUserAdapter = new UserAdapter(getActivity(), query, Constants.FOLLOWING, mUser);
+        mUserQueryAdapter = new UserQueryAdapter(getActivity(), query, Constants.FOLLOWING, mUser);
 
-        setListAdapter(mUserAdapter);
+        setListAdapter(mUserQueryAdapter);
     }
 }

@@ -15,11 +15,11 @@ import bg.mentormate.academy.radarapp.views.RoomItem;
 /**
  * Created by tl on 10.02.15.
  */
-public class RoomAdapter extends ParseQueryAdapter<Room> {
+public class RoomQueryAdapter extends ParseQueryAdapter<Room> {
 
     private static final int LIMIT = 50;
 
-    public RoomAdapter(final Context context, final String searchQuery) {
+    public RoomQueryAdapter(final Context context, final String searchQuery) {
         super(context, new QueryFactory<Room>() {
 
             @Override

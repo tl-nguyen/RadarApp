@@ -18,10 +18,10 @@ public class LocationTrackingService extends Service implements Handler.Callback
     public final static String ACTION_STOP_MONITORING = "bg.mentormate.academy.action.ACTION_STOP_MONITORING";
     public final static String HANDLER_THREAD_NAME = "trackingservicethread";
 
-    private final static long GPS_INTERVAL_TRACKING = 2000;
-    private final static long NETWORK_INTERVAL_TRACKING = 60000;
+    private final static long GPS_INTERVAL_TRACKING = 0;
+    private final static long NETWORK_INTERVAL_TRACKING = 30000;
     private final static long GPS_MIN_DISTANCE = 0;
-    private final static long NETWORK_MIN_DISTANCE = 50;
+    private final static long NETWORK_MIN_DISTANCE = 0;
 
     private LocationListener mGpsListener;
     private LocationListener mNetworkListener;

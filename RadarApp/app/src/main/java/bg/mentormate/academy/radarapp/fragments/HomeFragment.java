@@ -13,7 +13,7 @@ import com.parse.ParseObject;
 
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
-import bg.mentormate.academy.radarapp.adapters.RoomAdapter;
+import bg.mentormate.academy.radarapp.adapters.RoomQueryAdapter;
 import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
@@ -46,7 +46,7 @@ public class HomeFragment extends ListFragment {
     private User mCurrentUser;
     private Room mMyRoom;
 
-    private RoomAdapter mRecentRoomAdapter;
+    private RoomQueryAdapter mRecentRoomQueryAdapter;
 
     private RoomItem mRiMyRoom;
     private TextView mTvNoRoomInfo;
@@ -87,9 +87,9 @@ public class HomeFragment extends ListFragment {
             roomNotOwnedVisibility();
         }
 
-        mRecentRoomAdapter = new RoomAdapter(getActivity(), null);
+        mRecentRoomQueryAdapter = new RoomQueryAdapter(getActivity(), null);
 
-        setListAdapter(mRecentRoomAdapter);
+        setListAdapter(mRecentRoomQueryAdapter);
     }
 
     private void roomNotOwnedVisibility() {
