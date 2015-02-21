@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -128,18 +130,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     private void setUpMap() {
         mMap.setMyLocationEnabled(true);
 
-        CurrentLocation currentLocation = mCurrentUser.getCurrentLocation();
-
-        try {
-            currentLocation.fetchIfNeeded();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(currentLocation.getLocation().getLatitude(),
-                        currentLocation.getLocation().getLongitude()),
-                15));
+        showCurrentLocationOnMap();
 
         String roomId = getIntent().getStringExtra(Constants.ROOM_ID);
 
@@ -148,6 +139,52 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
         }
     }
 
+    private void showCurrentLocationOnMap() {
+        final CurrentLocation locationOnDb = mCurrentUser.getCurrentLocation();
+        final Location lastKnownLocation = getLocation();
+
+        if (lastKnownLocation != null) {
+            // Show the position of the last know location on the map
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(lastKnownLocation.getLatitude(),
+                            lastKnownLocation.getLongitude()),
+                    15));
+
+            // Save the last know location to Db
+            locationOnDb.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject parseObject, ParseException e) {
+                    locationOnDb.setLocation(new ParseGeoPoint(lastKnownLocation.getLatitude(),
+                            lastKnownLocation.getLongitude()));
+
+                    locationOnDb.saveInBackground();
+                }
+            });
+        } else {
+            // Show the position from Db on the map
+            locationOnDb.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject parseObject, ParseException e) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(locationOnDb.getLocation().getLatitude(),
+                                    locationOnDb.getLocation().getLongitude()),
+                            15));
+                }
+            });
+        }
+    }
+
+    private Location getLocation() {
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        if (location == null) {
+            location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+
+        return location;
+    }
     private void retrieveRoomById(String roomId) {
         ParseQuery query = new ParseQuery(Constants.ROOM_TABLE);
 
@@ -223,7 +260,6 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
 
         private IconGenerator mIconGenerator;
         private ImageView mImageView;
-
 
         private MarkersUpdateTask() {
             this.mIconGenerator = new IconGenerator(RoomActivity.this);
