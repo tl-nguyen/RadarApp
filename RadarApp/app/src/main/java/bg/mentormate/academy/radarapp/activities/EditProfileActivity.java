@@ -157,14 +157,14 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                    mUser.setAvatar(mNewAvatar);
                 }
 
-                if(newEmail != "" && newEmail.contains("@")){
-                    mUser.setEmail(newEmail);
+                if(newEmail != "" && newEmail.contains("@") && newEmail.contains(".")){
+                    mUser.setEmail(newEmail.trim());
                     emailChanged = true;
                 }
 
-                if(!pass.isEmpty()) {
+                if(!pass.isEmpty() && !confirmPass.isEmpty()) {
                     if (pass.equals(confirmPass)) {
-                        mUser.setPassword(pass);
+                        mUser.setPassword(pass.trim());
                         passChanged = true;
 
                     } else {
@@ -175,9 +175,9 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                 if(emailChanged || passChanged || avatarChanged){
                     mUser.saveInBackground();
                     if(passChangeAttempt) {
-                        Toast.makeText(this, "You details have been changed but your password change failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.detailsHaveBeenSaved), Toast.LENGTH_SHORT).show();
                     }else{
-                        Toast.makeText(this, "All details have been changed successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.allDetailsHaveBeenSaved), Toast.LENGTH_SHORT).show();
                         this.finish();
                     }
                 }
