@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -63,6 +64,10 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
 
     private Bitmap imageBitmap;
     private String currentPhotoPath;
+
+    private final int DEFAULT_IMG_SIZE_X = 50;
+    private final int DEFAULT_IMG_SIZE_Y = 50;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,10 +247,19 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                 case GET_CAM_IMG:
                     if (currentPhotoPath != null) {
                         bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+                        bitmap = getResizedBitmap(bitmap, DEFAULT_IMG_SIZE_X, DEFAULT_IMG_SIZE_Y);
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-                        mEditAvatar.setImageBitmap(bitmap);
-                        mEditAvatar.setVisibility(View.VISIBLE);
-                        currentPhotoPath = null;
+                        if (bitmap != null) {
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+                            byte[] image = byteArrayOutputStream.toByteArray();
+                            InputStream stream = new ByteArrayInputStream(image);
+                            avatarChanged = true;
+                            mEditAvatar.setImageBitmap(BitmapFactory.decodeStream(stream));
+                            //mEditAvatar.setImageBitmap(bitmap);
+                            mEditAvatar.setVisibility(View.VISIBLE);
+                        }
+
                         avatarChanged = true;
                     }
 
@@ -253,19 +267,20 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                     break;
                 case GET_GAL_IMG:
                     bitmap = getImageFromGallery(intent);
-
+                    bitmap = getResizedBitmap(bitmap, DEFAULT_IMG_SIZE_X, DEFAULT_IMG_SIZE_Y);
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
                     if (bitmap != null) {
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
                         byte[] image = byteArrayOutputStream.toByteArray();
                         InputStream stream = new ByteArrayInputStream(image);
-                        avatarChanged = true;
+
                         mEditAvatar.setImageBitmap(BitmapFactory.decodeStream(stream));
+                        //mEditAvatar.setImageBitmap(bitmap);
                         mEditAvatar.setVisibility(View.VISIBLE);
+
+                        avatarChanged = true;
                     }
-
-
 
                     break;
             }
@@ -371,5 +386,20 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
         o2.inSampleSize = scale;
         return BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o2);
 
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+        return resizedBitmap;
     }
 }
