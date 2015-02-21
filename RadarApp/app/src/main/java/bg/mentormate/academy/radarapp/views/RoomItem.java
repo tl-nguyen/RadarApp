@@ -227,7 +227,8 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
         roomOwner.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
-                if (!mCurrentUser.getFollowing().contains(roomOwner)) {
+                if (!mCurrentUser.getFollowing().contains(roomOwner) &&
+                        !(mCurrentUser.getObjectId()).equals(roomOwner.getObjectId())) {
                     mCurrentUser.getFollowing().add(roomOwner);
                     mCurrentUser.saveInBackground(new SaveCallback() {
                         @Override

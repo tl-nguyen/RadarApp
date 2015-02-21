@@ -182,11 +182,7 @@ public class MainActivity extends ActionBarActivity
                 logout();
                 return true;
             case R.id.actionTrackingStatus:
-                if (!mLocalDb.isTrackingOn()) {
-                    startPositionTracking(item);
-                } else {
-                    stopPositionTracking(item);
-                }
+                toggleTrackingStatus(item);
                 return true;
 
         }
@@ -194,25 +190,34 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void startPositionTracking(MenuItem item) {
+    private void toggleTrackingStatus(MenuItem item) {
+        if (!mLocalDb.isTrackingOn()) {
+            startPositionTracking();
+            item.setIcon(getResources().getDrawable(R.drawable.ic_marker_on));
+        } else {
+            stopPositionTracking();
+            item.setIcon(getResources().getDrawable(R.drawable.ic_marker_off));
+        }
+    }
+
+    private void startPositionTracking() {
         Intent trackingIntent = new Intent(this, LocationTrackingService.class);
         trackingIntent.setAction(LocationTrackingService.ACTION_START_MONITORING);
         startService(trackingIntent);
 
         mLocalDb.setTrackingOn(true);
-        item.setIcon(getResources().getDrawable(R.drawable.ic_marker_on));
     }
 
-    private void stopPositionTracking(MenuItem item) {
+    private void stopPositionTracking() {
         Intent trackingIntent = new Intent(this, LocationTrackingService.class);
         trackingIntent.setAction(LocationTrackingService.ACTION_STOP_MONITORING);
         startService(trackingIntent);
 
         mLocalDb.setTrackingOn(false);
-        item.setIcon(getResources().getDrawable(R.drawable.ic_marker_off));
     }
 
     private void logout() {
+        stopPositionTracking();
         User.logOut();
         LocalDb.getInstance().setCurrentUser(null);
         goToLoginScreen();

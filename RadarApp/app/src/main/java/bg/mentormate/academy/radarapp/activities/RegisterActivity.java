@@ -127,14 +127,14 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             newUser.setFollowers(new ArrayList<User>());
             newUser.setFollowing(new ArrayList<User>());
 
-            CurrentLocation emptyLocation = new CurrentLocation();
+            CurrentLocation currentLocation = new CurrentLocation();
 
             Location location = getLocation();
 
             if (location != null) {
-                emptyLocation.setLocation(new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
+                currentLocation.setLocation(new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
             } else {
-                emptyLocation.setLocation(new ParseGeoPoint(0, 0));
+                currentLocation.setLocation(new ParseGeoPoint(0, 0));
             }
 
             // Putting ic_launcher as a default avatar
@@ -149,8 +149,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                 newUser.setAvatar(mBlankAvatar);
 
                 // Save empty location (0,9)
-                emptyLocation.save();
-                newUser.setCurrentLocation(emptyLocation);
+                currentLocation.save();
+                newUser.setCurrentLocation(currentLocation);
 
                 // sign-up the new user
                 newUser.signUp();
