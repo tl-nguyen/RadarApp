@@ -9,39 +9,20 @@
         android:layout_width="match_parent"
         android:hint="new room name"
         android:layout_height="wrap_content"
-        android:id="@+id/changeRoomName" />
+        android:id="@+id/etChangeRoomName" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:hint="change password"
-        android:ems="10"
-        android:id="@+id/changePass"
-        android:layout_gravity="center_horizontal" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:hint="re-type new password"
-        android:ems="10"
-        android:id="@+id/confirmChangePass"
+        android:hint="passkey"
+        android:id="@+id/etChangePass"
         android:layout_gravity="center_horizontal" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Apply Changes"
-        android:id="@+id/applyChangesBtn" />
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/llMyRoom">
-
-    </LinearLayout>
+        android:id="@+id/btnApplyChanges" />
 
     <TextView
         android:layout_width="wrap_content"

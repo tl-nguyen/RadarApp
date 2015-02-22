@@ -7,10 +7,8 @@
         android:id="@+id/delete_users"
         android:icon="@drawable/abc_ic_clear_mtrl_alpha"
         android:orderInCategory="100"
-        android:showAsAction="always"
-        app:showAsAction="always"
         android:title="@string/delete"
         android:visible="false"
-        tools:ignore="AppCompatResource" />
+        app:showAsAction="ifRoom" />
 
 </menu>

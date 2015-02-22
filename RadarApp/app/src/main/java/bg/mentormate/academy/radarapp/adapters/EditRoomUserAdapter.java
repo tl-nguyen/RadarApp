@@ -21,12 +21,12 @@ import bg.mentormate.academy.radarapp.models.User;
 /**
  * Created by lopi on 2/22/2015.
  */
-public class UserToDeleteAdapter extends BaseAdapter {
+public class EditRoomUserAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<User> mUsers;
 
-    public UserToDeleteAdapter(Context context, List<User> users) {
+    public EditRoomUserAdapter(Context context, List<User> users) {
         mContext = context;
         mUsers = users;
     }
@@ -56,21 +56,20 @@ public class UserToDeleteAdapter extends BaseAdapter {
         final ParseImageView ivIcon = (ParseImageView) convertView.findViewById(R.id.ivIcon);
         final TextView tvUsername = (TextView) convertView.findViewById(R.id.tvUsername);
 
-        final User u = mUsers.get(position);
-        u.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+        final User user = mUsers.get(position);
+        user.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
-                ParseFile avatar = u.getAvatar();
+                ParseFile avatar = user.getAvatar();
                 if (avatar != null)
                     ivIcon.setParseFile(avatar);
-                String username = u.getUsername();
+                String username = user.getUsername();
                 if (username != null)
                     tvUsername.setText(username);
 
                 ivIcon.loadInBackground();
             }
         });
-
 
         return convertView;
     }
