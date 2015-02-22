@@ -89,9 +89,10 @@
             android:label="@string/title_activity_edit_room"
             android:screenOrientation="portrait">
         </activity>
-        <receiver android:name="widgets.PrimaryWidget" >
+        <receiver android:name=".widgets.TrackingStatusToggleWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="bg.mentormate.academy.radarapp.action.ON_TRACKING_CLICK" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/widget_resource" />

@@ -11,12 +11,15 @@ import android.os.Looper;
 import android.os.Message;
 
 import bg.mentormate.academy.radarapp.data.LocalDb;
+import bg.mentormate.academy.radarapp.widgets.TrackingStatusToggleWidget;
 
 public class LocationTrackingService extends Service implements Handler.Callback {
 
     public final static String ACTION_START_MONITORING = "bg.mentormate.academy.action.ACTION_START_MONITORING";
     public final static String ACTION_STOP_MONITORING = "bg.mentormate.academy.action.ACTION_STOP_MONITORING";
     public final static String HANDLER_THREAD_NAME = "trackingservicethread";
+
+    private static final String ON_TRACKING_CLICK = "bg.mentormate.academy.radarapp.action.ON_TRACKING_CLICK";
 
     private final static long GPS_INTERVAL_TRACKING = 0;
     private final static long NETWORK_INTERVAL_TRACKING = 30000;
@@ -85,6 +88,8 @@ public class LocationTrackingService extends Service implements Handler.Callback
         // Track with Network provider
         mNetworkListener = new ServiceLocationListener();
         lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, NETWORK_INTERVAL_TRACKING, NETWORK_MIN_DISTANCE, mNetworkListener, mLooper);
+
+        updateWidget();
     }
 
     private void doStopTracking() {
@@ -99,6 +104,15 @@ public class LocationTrackingService extends Service implements Handler.Callback
             lm.removeUpdates(mNetworkListener);
             mNetworkListener = null;
         }
+
+        updateWidget();
+    }
+
+    private void updateWidget() {
+        Intent statusToggleIntent = new Intent(this, TrackingStatusToggleWidget.class);
+        statusToggleIntent.setAction(ON_TRACKING_CLICK);
+
+        sendBroadcast(statusToggleIntent);
     }
 
     @Override
