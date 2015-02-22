@@ -5,9 +5,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
 import bg.mentormate.academy.radarapp.R;
-import bg.mentormate.academy.radarapp.fragments.FollowingFragment;
+import bg.mentormate.academy.radarapp.fragments.FollowFragment;
 
-public class FollowingActivity extends ActionBarActivity {
+public class FollowActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,11 +17,11 @@ public class FollowingActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null) {
-            FollowingFragment followingFragment = new FollowingFragment();
-            followingFragment.setArguments(getIntent().getExtras());
+            FollowFragment followFragment = new FollowFragment();
+            followFragment.setArguments(getIntent().getExtras());
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, followingFragment)
+                    .add(R.id.container, followFragment)
                     .commit();
         }
     }

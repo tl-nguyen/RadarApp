@@ -22,6 +22,7 @@ import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.ProfileActivity;
 import bg.mentormate.academy.radarapp.activities.RoomActivity;
+import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
@@ -40,6 +41,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     private Button mBtnJoin;
 
     private User mCurrentUser;
+    private Follow mFollow;
     private Room mRoom;
 
     public RoomItem(Context context) {
@@ -71,6 +73,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     public void setData(User currentUser,Room room) {
         mRoom = room;
         mCurrentUser = currentUser;
+        mFollow = mCurrentUser.getFollow();
 
         mRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @Override
@@ -227,21 +230,28 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
         roomOwner.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
-                if (!mCurrentUser.getFollowing().contains(roomOwner) &&
-                        !(mCurrentUser.getObjectId()).equals(roomOwner.getObjectId())) {
-                    mCurrentUser.getFollowing().add(roomOwner);
-                    mCurrentUser.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e != null) {
-                                setUnregisteredVisibility();
-                                AlertHelper.alert(getContext(),
-                                        getContext().getString(R.string.dialog_error_title),
-                                        e.getMessage());
-                            }
+                mFollow.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                    @Override
+                    public void done(ParseObject parseObject, ParseException e) {
+                        if (!mFollow.getFollowings().contains(roomOwner) &&
+                                !(mCurrentUser.getObjectId()).equals(roomOwner.getObjectId())) {
+                            mFollow.getFollowings().add(roomOwner);
+                            mCurrentUser.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e != null) {
+                                        setUnregisteredVisibility();
+                                        AlertHelper.alert(getContext(),
+                                                getContext().getString(R.string.dialog_error_title),
+                                                e.getMessage());
+                                    }
+                                }
+                            });
                         }
-                    });
-                }
+                    }
+                });
+
+
             }
         });
     }

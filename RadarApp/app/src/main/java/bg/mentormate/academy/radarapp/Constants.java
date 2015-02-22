@@ -5,6 +5,8 @@ package bg.mentormate.academy.radarapp;
  */
 public class Constants {
 
+    public final static String STATE = "STATE";
+    public final static String FOLLOWER = "FOLLOWER";
     public final static String FOLLOWING = "FOLLOWING";
     public final static String SEARCH = "SEARCH";
 
@@ -15,6 +17,13 @@ public class Constants {
      */
     public final static String PARSE_COL_CREATED_AT = "createdAt";
     public final static String PARSE_COL_OBJECT_ID = "objectId";
+
+    /**
+     * Parse.com Follow table constants
+     */
+    public final static String FOLLOW_TABLE = "Follow";
+    public final static String FOLLOW_COL_FOLLOWERS = "followers";
+    public final static String FOLLOW_COL_FOLLOWINGS = "followings";
 
     /**
      * Parse.com CurrentLocation table constants
@@ -38,8 +47,7 @@ public class Constants {
     public final static String USER_COL_CURRENT_LOCATION = "currentLocation";
     public final static String USER_COL_ROOM = "room";
     public final static String USER_COL_AVATAR = "avatar";
-    public final static String USER_COL_FOLLOWERS = "followers";
-    public final static String USER_COL_FOLLOWING = "following";
+    public final static String USER_COL_FOLLOW = "follow";
     public final static String USER_COL_USERNAME = "username";
 
     /***

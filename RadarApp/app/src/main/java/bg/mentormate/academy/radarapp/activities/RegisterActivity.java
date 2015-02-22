@@ -22,7 +22,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import bg.mentormate.academy.radarapp.R;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.CurrentLocation;
+import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
@@ -101,7 +103,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         mProgresBar.setVisibility(View.VISIBLE);
     }
 
-    private void goToMain() {
+    private void goToMain(User user) {
+        LocalDb.getInstance().setCurrentUser(user);
         Intent homeIntent = new Intent(this, MainActivity.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -124,18 +127,21 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             newUser.setUsername(username);
             newUser.setPassword(password);
             newUser.setEmail(email);
-            newUser.setFollowers(new ArrayList<User>());
-            newUser.setFollowing(new ArrayList<User>());
 
+            // Retrieve user current Location
             CurrentLocation currentLocation = new CurrentLocation();
-
             Location location = getLocation();
-
             if (location != null) {
-                currentLocation.setLocation(new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
+                currentLocation.setLocation(new ParseGeoPoint(location.getLatitude(),
+                        location.getLongitude()));
             } else {
                 currentLocation.setLocation(new ParseGeoPoint(0, 0));
             }
+
+            // Create an empty follow row
+            Follow emptyFollow = new Follow();
+            emptyFollow.setFollowers(new ArrayList<User>());
+            emptyFollow.setFollowings(new ArrayList<User>());
 
             // Putting ic_launcher as a default avatar
             if (mBlankAvatar == null) {
@@ -144,6 +150,10 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             }
 
             try {
+                // Save the new follow table
+                emptyFollow.save();
+                newUser.setFollow(emptyFollow);
+
                 // Save the avatar file
                 mBlankAvatar.save();
                 newUser.setAvatar(mBlankAvatar);
@@ -154,7 +164,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
                 // sign-up the new user
                 newUser.signUp();
-                goToMain();
+                goToMain(newUser);
             } catch (final ParseException e) {
                 runOnUiThread(new Runnable() {
                     @Override

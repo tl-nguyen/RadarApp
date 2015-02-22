@@ -80,7 +80,7 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".activities.FollowingActivity"
+            android:name=".activities.FollowActivity"
             android:label="@string/title_activity_following"
             android:screenOrientation="portrait">
         </activity>

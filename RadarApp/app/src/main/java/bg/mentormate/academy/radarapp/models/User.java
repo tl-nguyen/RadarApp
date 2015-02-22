@@ -4,8 +4,6 @@ import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
-import java.util.List;
-
 import bg.mentormate.academy.radarapp.Constants;
 
 /**
@@ -39,19 +37,11 @@ public class User extends ParseUser{
         put(Constants.USER_COL_AVATAR, avatar);
     }
 
-    public List<User> getFollowers() {
-        return getList(Constants.USER_COL_FOLLOWERS);
+    public Follow getFollow() {
+        return (Follow) getParseObject(Constants.USER_COL_FOLLOW);
     }
 
-    public void setFollowers(List<User> followers) {
-        put(Constants.USER_COL_FOLLOWERS, followers);
-    }
-
-    public List<User> getFollowing() {
-        return getList(Constants.USER_COL_FOLLOWING);
-    }
-
-    public void setFollowing(List<User> following) {
-        put(Constants.USER_COL_FOLLOWING, following);
+    public void setFollow(Follow follow) {
+        put(Constants.USER_COL_FOLLOW, follow);
     }
 }

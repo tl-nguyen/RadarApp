@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bg.mentormate.academy.radarapp.Constants;
+import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.views.UserItem;
 
@@ -32,12 +34,17 @@ public class UserQueryAdapter extends ParseQueryAdapter<User> {
                 if (state.equals(Constants.SEARCH)) {
                     query.setLimit(LIMIT);
                 } else if (state.equals(Constants.FOLLOWING) && user != null) {
-                    List<User> followings = user.getFollowing();
-                    List<String> objectIds = new ArrayList<>();
+                    Follow follow = getFollowObject(user);
 
-                    for (User user: followings) {
-                        objectIds.add(user.getObjectId());
-                    }
+                    List<User> users = follow.getFollowings();
+                    List<String> objectIds = fetchUsersObjectIds(users);
+
+                    query.whereContainedIn(Constants.PARSE_COL_OBJECT_ID, objectIds);
+                } else if (state.equals(Constants.FOLLOWER) && user != null) {
+                    Follow follow = getFollowObject(user);
+
+                    List<User> users = follow.getFollowers();
+                    List<String> objectIds = fetchUsersObjectIds(users);
 
                     query.whereContainedIn(Constants.PARSE_COL_OBJECT_ID, objectIds);
                 }
@@ -49,6 +56,27 @@ public class UserQueryAdapter extends ParseQueryAdapter<User> {
                 return query;
             }
         });
+    }
+
+    private static List<String> fetchUsersObjectIds(List<User> users) {
+        List<String> objectIds = new ArrayList<>();
+
+        for (User user: users) {
+            objectIds.add(user.getObjectId());
+        }
+        return objectIds;
+    }
+
+    private static Follow getFollowObject(User user) {
+        Follow follow = null;
+
+        try {
+            follow = user.getFollow();
+            follow.fetchIfNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return follow;
     }
 
     @Override

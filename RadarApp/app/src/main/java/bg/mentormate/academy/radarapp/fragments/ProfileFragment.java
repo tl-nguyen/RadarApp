@@ -29,10 +29,11 @@ import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.EditProfileActivity;
 import bg.mentormate.academy.radarapp.activities.EditRoomActivity;
-import bg.mentormate.academy.radarapp.activities.FollowingActivity;
+import bg.mentormate.academy.radarapp.activities.FollowActivity;
 import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.activities.ProfileActivity;
 import bg.mentormate.academy.radarapp.data.LocalDb;
+import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
@@ -67,10 +68,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private LocalDb mLocalDb;
     private User mUser;
     private Room mMyRoom;
-    private boolean isCurrentUser;
+    private boolean mIsCurrentUser;
+    private Follow mFollow;
 
     private LinearLayout mLlFollowing;
+    private LinearLayout mLlFollower;
     private TextView mTvFollowingCount;
+    private TextView mTvFollowerCount;
     private ParseImageView mPivBigAvatar;
 
     private RoomItem mRiMyRoom;
@@ -100,18 +104,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         mLocalDb = LocalDb.getInstance();
         mUser = mLocalDb.getCurrentUser();
+        mFollow = mUser.getFollow();
 
         if (id != null) {
-            isCurrentUser = mUser.getObjectId().equals(id);
+            mIsCurrentUser = mUser.getObjectId().equals(id);
         } else {
-            isCurrentUser = true;
+            mIsCurrentUser = true;
         }
 
-        if (!isCurrentUser) {
+        if (!mIsCurrentUser) {
             ParseQuery query = new ParseQuery(Constants.USER_TABLE);
 
             try {
                 mUser = (User) query.get(id);
+                mFollow = mUser.getFollow();
             } catch (ParseException e) {
                 AlertHelper.alert(getActivity(),
                         getString(R.string.dialog_error_title),
@@ -120,7 +126,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
 
         mLlFollowing = (LinearLayout) rootView.findViewById(R.id.llFollowing);
+        mLlFollower = (LinearLayout) rootView.findViewById(R.id.llFollower);
         mTvFollowingCount = (TextView) rootView.findViewById(R.id.tvFollowingCount);
+        mTvFollowerCount = (TextView) rootView.findViewById(R.id.tvFollowerCount);
         mPivBigAvatar = (ParseImageView) rootView.findViewById(R.id.pivBigAvatar);
         mRiMyRoom = (RoomItem) rootView.findViewById(R.id.riMyRoom);
         mBtnCreate = (Button) rootView.findViewById(R.id.btnCreate);
@@ -131,12 +139,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
         mLlFollowing.setOnClickListener(this);
+        mLlFollower.setOnClickListener(this);
         mBtnEditProfile.setOnClickListener(this);
         mBtnCreate.setOnClickListener(this);
         mBtnEditRoom.setOnClickListener(this);
         mBtnDestroy.setOnClickListener(this);
 
-        mTvFollowingCount.setText(mUser.getFollowing().size() + "");
+        mFollow.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                mTvFollowingCount.setText(mFollow.getFollowings().size() + "");
+                mTvFollowerCount.setText(mFollow.getFollowers().size() + "");
+            }
+        });
 
         mMyRoom = mUser.getRoom();
 
@@ -160,7 +175,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setRoomUIElementsVisibility() {
-        if (!isCurrentUser) {
+        if (!mIsCurrentUser) {
             mBtnEditProfile.setVisibility(View.GONE);
             mFbFollow.setVisibility(View.VISIBLE);
             mBtnEditRoom.setVisibility(View.GONE);
@@ -187,7 +202,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private void roomCreatedVisibility() {
         mRiMyRoom.setVisibility(View.VISIBLE);
 
-        if (isCurrentUser) {
+        if (mIsCurrentUser) {
             mBtnCreate.setVisibility(View.GONE);
             mBtnEditRoom.setVisibility(View.VISIBLE);
             mBtnDestroy.setVisibility(View.VISIBLE);
@@ -197,7 +212,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private void roomNotCreatedVisibility() {
         mRiMyRoom.setVisibility(View.INVISIBLE);
 
-        if (isCurrentUser) {
+        if (mIsCurrentUser) {
             mBtnCreate.setVisibility(View.VISIBLE);
             mBtnDestroy.setVisibility(View.GONE);
             mBtnEditRoom.setVisibility(View.GONE);
@@ -229,7 +244,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         int id = v.getId();
         switch (id) {
             case R.id.llFollowing:
-                goToFollowingPage();
+                goToFollowingPage(Constants.FOLLOWING);
+                break;
+            case R.id.llFollower:
+                goToFollowingPage(Constants.FOLLOWER);
                 break;
             case R.id.btnEditProfile:
                 goToEditProfile();
@@ -246,8 +264,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void goToFollowingPage() {
-        Intent followingIntent = new Intent(getActivity(), FollowingActivity.class);
+    private void goToFollowingPage(String state) {
+        Intent followingIntent = new Intent(getActivity(), FollowActivity.class);
+        followingIntent.putExtra(Constants.STATE, state);
         followingIntent.putExtra(USER_ID, mUser.getObjectId());
         startActivity(followingIntent);
     }

@@ -72,5 +72,6 @@
     <string name="allDetailsHaveBeenSaved">All details have been changed successfully!</string>
     <string name="title_activity_maps">Map</string>
     <string name="tracking_status_action">Tracking Status</string>
+    <string name="follower_label">follower</string>
 
 </resources>

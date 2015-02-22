@@ -22,7 +22,7 @@ import bg.mentormate.academy.radarapp.tools.AlertHelper;
 /**
  * Created by tl on 19.02.15.
  */
-public class FollowingFragment extends ListFragment implements View.OnClickListener {
+public class FollowFragment extends ListFragment implements View.OnClickListener {
 
     private static final String USER_ID = "USER_ID";
 
@@ -31,8 +31,9 @@ public class FollowingFragment extends ListFragment implements View.OnClickListe
     private Button mBtnSearch;
 
     private User mUser;
+    private String mState;
 
-    public FollowingFragment() {
+    public FollowFragment() {
     }
 
     @Override
@@ -41,8 +42,9 @@ public class FollowingFragment extends ListFragment implements View.OnClickListe
         View rootView = inflater.inflate(R.layout.fragment_search_list, container, false);
 
         String id = getArguments().getString(USER_ID);
+        mState = getArguments().getString(Constants.STATE);
 
-        if (id != null) {
+        if (id != null && mState != null) {
             retrieveUserById(id);
 
             mEtQuery = (EditText) rootView.findViewById(R.id.etQuery);
@@ -63,7 +65,7 @@ public class FollowingFragment extends ListFragment implements View.OnClickListe
                 if (e == null) {
                     mUser = (User) user;
 
-                    mUserQueryAdapter = new UserQueryAdapter(getActivity(), null, Constants.FOLLOWING, mUser);
+                    mUserQueryAdapter = new UserQueryAdapter(getActivity(), null, mState, mUser);
 
                     setListAdapter(mUserQueryAdapter);
                 } else {
@@ -89,7 +91,7 @@ public class FollowingFragment extends ListFragment implements View.OnClickListe
     private void searchForUsers() {
         String query = mEtQuery.getText().toString();
 
-        mUserQueryAdapter = new UserQueryAdapter(getActivity(), query, Constants.FOLLOWING, mUser);
+        mUserQueryAdapter = new UserQueryAdapter(getActivity(), query, mState, mUser);
 
         setListAdapter(mUserQueryAdapter);
     }
