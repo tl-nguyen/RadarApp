@@ -16,7 +16,7 @@
         android:hint="@string/changePass"
         android:id="@+id/editPassword"
         android:layout_marginTop="26dp"
-        android:layout_below="@+id/imageView"
+        android:layout_below="@+id/avatarControlLayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -32,26 +32,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/imageView"
-        android:src="@drawable/ic_launcher"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/changeAvatarBtn"
-        android:id="@+id/saveAvatarBtn"
-        android:layout_above="@+id/editPassword"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView"
-        android:layout_marginLeft="21dp"
-        android:layout_marginStart="21dp" />
-
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,7 +40,8 @@
         android:layout_below="@+id/editEmail"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="31dp" />
+        android:layout_marginTop="15dp"
+         />
 
     <EditText
         android:layout_width="match_parent"
@@ -73,15 +54,39 @@
         android:layout_alignRight="@+id/editPassword"
         android:layout_alignEnd="@+id/editPassword" />
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/takePictureBtnLabel"
-        android:id="@+id/takePicBtn"
-        android:layout_above="@+id/saveAvatarBtn"
-        android:layout_alignLeft="@+id/saveAvatarBtn"
-        android:layout_alignStart="@+id/saveAvatarBtn"
-        android:layout_alignRight="@+id/saveAvatarBtn"
-        android:layout_alignEnd="@+id/saveAvatarBtn" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/avatarControlLayout">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/imageView"
+            android:layout_weight="1"
+            android:src="@drawable/ic_launcher"
+             />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/cameraBtn"
+            android:id="@+id/takePicBtn"
+            android:layout_weight="1"
+             />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/galeryBtn"
+            android:id="@+id/saveAvatarBtn"
+            android:layout_weight="1"
+             />
+
+        </LinearLayout>
+
 
 </RelativeLayout>

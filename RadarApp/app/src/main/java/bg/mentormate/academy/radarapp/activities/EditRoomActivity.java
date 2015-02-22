@@ -6,9 +6,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.List;
 
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.data.LocalDb;
@@ -23,6 +28,7 @@ public class EditRoomActivity extends ActionBarActivity implements View.OnClickL
     private EditText editPassword;
     private EditText editRoomName;
     private EditText confirmPassword;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +55,53 @@ public class EditRoomActivity extends ActionBarActivity implements View.OnClickL
             Log.d("EDIT_ROOM:", "Unable to resolve current room name. Please check!");
         }
         editRoomName.setHint(currentRoomName);
-
         applyChangesBtn.setOnClickListener(this);
+
+        Room myRoom = mUser.getRoom();
+
+        List<User> users;
+        String[] userNames;
+        users = myRoom.getUsers();
+        if(users != null) {
+            userNames = new String[users.size()];
+            for (int i = 0; i < users.size(); i++) {
+                userNames[i] = users.get(i).getUsername();
+            }
+        }
+        else{
+            userNames = new String[1];
+            userNames[0] = "This room is empty.";
+        }
+
+        listView = (ListView) findViewById(R.id.usersList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, userNames);
+
+
+        // Assign adapter to ListView
+        listView.setAdapter(adapter);
+
+        // ListView Item Click Listener
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                // ListView Clicked item index
+                int itemPosition     = position;
+
+                // ListView Clicked item value
+                String  itemValue    = (String) listView.getItemAtPosition(position);
+
+                // Show Alert
+                Toast.makeText(getApplicationContext(),
+                        "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
+                        .show();
+
+            }
+
+        });
     }
 
 
