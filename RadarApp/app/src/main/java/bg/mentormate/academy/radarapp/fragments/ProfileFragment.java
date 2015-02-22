@@ -94,23 +94,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        init(rootView);
+        initData();
+        initViews(rootView);
 
         return rootView;
     }
 
-    private void init(View rootView) {
+    private void initData() {
         String id = getArguments().getString(USER_ID);
 
         mLocalDb = LocalDb.getInstance();
         mUser = mLocalDb.getCurrentUser();
         mFollow = mUser.getFollow();
+        mMyRoom = mUser.getRoom();
 
-        if (id != null) {
-            mIsCurrentUser = mUser.getObjectId().equals(id);
-        } else {
-            mIsCurrentUser = true;
-        }
+        mIsCurrentUser = id == null || mUser.getObjectId().equals(id);
 
         if (!mIsCurrentUser) {
             ParseQuery query = new ParseQuery(Constants.USER_TABLE);
@@ -124,7 +122,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         e.getMessage());
             }
         }
+    }
 
+    private void initViews(View rootView) {
         mLlFollowing = (LinearLayout) rootView.findViewById(R.id.llFollowing);
         mLlFollower = (LinearLayout) rootView.findViewById(R.id.llFollower);
         mTvFollowingCount = (TextView) rootView.findViewById(R.id.tvFollowingCount);
@@ -152,8 +152,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 mTvFollowerCount.setText(mFollow.getFollowers().size() + "");
             }
         });
-
-        mMyRoom = mUser.getRoom();
 
         mFbFollow.setData(LocalDb.getInstance().getCurrentUser(), mUser);
     }

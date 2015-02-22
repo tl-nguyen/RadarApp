@@ -55,6 +55,13 @@ public class SearchRoomsFragment extends ListFragment implements View.OnClickLis
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search_list, container, false);
 
+        initData(savedInstanceState);
+        initViews(rootView);
+
+        return rootView;
+    }
+
+    private void initData(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             String query = savedInstanceState.getString(QUERY);
             mEtQuery.setText(query);
@@ -64,13 +71,13 @@ public class SearchRoomsFragment extends ListFragment implements View.OnClickLis
         }
 
         setListAdapter(mRoomQueryAdapter);
+    }
 
+    private void initViews(View rootView) {
         mEtQuery = (EditText) rootView.findViewById(R.id.etQuery);
         mBtnSearch = (Button) rootView.findViewById(R.id.btnSeach);
 
         mBtnSearch.setOnClickListener(this);
-
-        return rootView;
     }
 
     @Override

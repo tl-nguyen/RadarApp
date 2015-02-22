@@ -51,6 +51,11 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        init();
+
+    }
+
+    private void init() {
         mLocalDb = LocalDb.getInstance();
 
         User currentUser = mLocalDb.getCurrentUser();
@@ -70,7 +75,6 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-
     }
 
     @Override

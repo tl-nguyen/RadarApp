@@ -41,6 +41,12 @@ public class FollowFragment extends ListFragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search_list, container, false);
 
+        init(rootView);
+
+        return rootView;
+    }
+
+    private void init(View rootView) {
         String id = getArguments().getString(USER_ID);
         mState = getArguments().getString(Constants.STATE);
 
@@ -52,8 +58,6 @@ public class FollowFragment extends ListFragment implements View.OnClickListener
 
             mBtnSearch.setOnClickListener(this);
         }
-
-        return rootView;
     }
 
     private void retrieveUserById(String userId) {

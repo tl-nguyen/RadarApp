@@ -46,7 +46,6 @@ public class HomeFragment extends ListFragment implements SwipeRefreshLayout.OnR
 
     private User mCurrentUser;
     private Room mMyRoom;
-
     private RoomQueryAdapter mRecentRoomQueryAdapter;
 
     private RoomItem mRiMyRoom;
@@ -63,30 +62,30 @@ public class HomeFragment extends ListFragment implements SwipeRefreshLayout.OnR
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         mHeaderView = inflater.inflate(R.layout.fragment_home_header, null);
 
-        init(rootView);
+        initData();
+        initViews(rootView);
+        fetchDataToViews();
 
         return rootView;
     }
 
-    private void init(View rootView) {
+    private void initData() {
         mLocalDb = LocalDb.getInstance();
-
         mCurrentUser = mLocalDb.getCurrentUser();
-
         mMyRoom = mCurrentUser.getRoom();
 
+        mRecentRoomQueryAdapter = new RoomQueryAdapter(getActivity(), null);
+    }
+
+    private void initViews(View rootView) {
         mRiMyRoom = (RoomItem) mHeaderView.findViewById(R.id.riMyRoom);
         mTvNoRoomInfo = (TextView) mHeaderView.findViewById(R.id.tvNoRoomInfo);
         mSrlRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.srlRefresh);
 
-        setupMyRoomData();
-
-        mRecentRoomQueryAdapter = new RoomQueryAdapter(getActivity(), null);
-
         mSrlRefresh.setOnRefreshListener(this);
     }
 
-    private void setupMyRoomData() {
+    private void fetchDataToViews() {
         if (mMyRoom != null) {
             roomOwnedVisibility();
 
@@ -138,7 +137,7 @@ public class HomeFragment extends ListFragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        setupMyRoomData();
+        fetchDataToViews();
         mRecentRoomQueryAdapter = new RoomQueryAdapter(getActivity(), null);
         setListAdapter(mRecentRoomQueryAdapter);
 
