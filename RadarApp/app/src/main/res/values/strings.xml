@@ -75,5 +75,7 @@
     <string name="galeryBtn">Gallery</string>
     <string name="cameraBtn">Camera</string>
     <string name="follower_label">follower</string>
+    <string name="delete">Delete</string>
+    <string name="membersHaveBeenRemoved">"The members you've selected have been removed from your room. "</string>
 
 </resources>
