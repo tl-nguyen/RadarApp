@@ -220,40 +220,6 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
                 }
             }
         });
-
-        followTheRoomOwner();
-    }
-
-    private void followTheRoomOwner() {
-        final User roomOwner = mRoom.getCreatedBy();
-
-        roomOwner.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
-                mFollow.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
-                    @Override
-                    public void done(ParseObject parseObject, ParseException e) {
-                        if (!mFollow.getFollowings().contains(roomOwner) &&
-                                !(mCurrentUser.getObjectId()).equals(roomOwner.getObjectId())) {
-                            mFollow.getFollowings().add(roomOwner);
-                            mCurrentUser.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    if (e != null) {
-                                        setUnregisteredVisibility();
-                                        AlertHelper.alert(getContext(),
-                                                getContext().getString(R.string.dialog_error_title),
-                                                e.getMessage());
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-
-
-            }
-        });
     }
 
     private void setUnregisteredVisibility() {
