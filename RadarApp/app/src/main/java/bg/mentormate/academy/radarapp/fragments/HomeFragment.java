@@ -2,6 +2,7 @@ package bg.mentormate.academy.radarapp.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import bg.mentormate.academy.radarapp.views.RoomItem;
 /**
  * Created by tl on 09.02.15.
  */
-public class HomeFragment extends ListFragment {
+public class HomeFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener{
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -50,6 +51,8 @@ public class HomeFragment extends ListFragment {
 
     private RoomItem mRiMyRoom;
     private TextView mTvNoRoomInfo;
+    private View mHeaderView;
+    private SwipeRefreshLayout mSrlRefresh;
 
     public HomeFragment() {
     }
@@ -58,6 +61,7 @@ public class HomeFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        mHeaderView = inflater.inflate(R.layout.fragment_home_header, null);
 
         init(rootView);
 
@@ -71,9 +75,18 @@ public class HomeFragment extends ListFragment {
 
         mMyRoom = mCurrentUser.getRoom();
 
-        mRiMyRoom = (RoomItem) rootView.findViewById(R.id.riMyRoom);
-        mTvNoRoomInfo = (TextView) rootView.findViewById(R.id.tvNoRoomInfo);
+        mRiMyRoom = (RoomItem) mHeaderView.findViewById(R.id.riMyRoom);
+        mTvNoRoomInfo = (TextView) mHeaderView.findViewById(R.id.tvNoRoomInfo);
+        mSrlRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.srlRefresh);
 
+        setupMyRoomData();
+
+        mRecentRoomQueryAdapter = new RoomQueryAdapter(getActivity(), null);
+
+        mSrlRefresh.setOnRefreshListener(this);
+    }
+
+    private void setupMyRoomData() {
         if (mMyRoom != null) {
             roomOwnedVisibility();
 
@@ -86,9 +99,13 @@ public class HomeFragment extends ListFragment {
         } else {
             roomNotOwnedVisibility();
         }
+    }
 
-        mRecentRoomQueryAdapter = new RoomQueryAdapter(getActivity(), null);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
+        getListView().addHeaderView(mHeaderView);
         setListAdapter(mRecentRoomQueryAdapter);
     }
 
@@ -111,5 +128,20 @@ public class HomeFragment extends ListFragment {
                     getArguments().getInt(ARG_SECTION_NUMBER),
                     null);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        setListAdapter(null);
+    }
+
+    @Override
+    public void onRefresh() {
+        setupMyRoomData();
+        mRecentRoomQueryAdapter = new RoomQueryAdapter(getActivity(), null);
+        setListAdapter(mRecentRoomQueryAdapter);
+
+        mSrlRefresh.setRefreshing(false);
     }
 }
