@@ -156,22 +156,29 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mMyRoom = mUser.getRoom();
 
         mFbFollow.setData(LocalDb.getInstance().getCurrentUser(), mUser);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).onSectionAttached(
+                    getArguments().getInt(ARG_SECTION_NUMBER),
+                    mUser.getUsername());
+        } else if (getActivity() instanceof ProfileActivity) {
+            ((ProfileActivity) getActivity()).getSupportActionBar().setTitle(mUser.getUsername());
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mPivBigAvatar.setParseFile(mUser.getAvatar());
+        mPivBigAvatar.loadInBackground();
 
         setRoomUIElementsVisibility();
-    }
-
-    private void showErrorAlert(ParseException e) {
-        AlertHelper.alert(getActivity(),
-                getString(R.string.dialog_error_title),
-                e.getMessage());
-    }
-
-    private void hideProgressBar() {
-        mProgressBar.setVisibility(View.GONE);
-    }
-
-    private void showProgressBar() {
-        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     private void setRoomUIElementsVisibility() {
@@ -192,7 +199,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void done(ParseObject room, ParseException e) {
                     if (e == null) {
-                        mRiMyRoom.setData(LocalDb.getInstance().getCurrentUser(), (Room) room);
+                        mRiMyRoom.setData(mUser, mMyRoom);
                     }
                 }
             });
@@ -217,26 +224,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             mBtnDestroy.setVisibility(View.GONE);
             mBtnEditRoom.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER),
-                    mUser.getUsername());
-        } else if (getActivity() instanceof ProfileActivity) {
-            ((ProfileActivity) getActivity()).getSupportActionBar().setTitle(mUser.getUsername());
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPivBigAvatar.setParseFile(mUser.getAvatar());
-        mPivBigAvatar.loadInBackground();
     }
 
     @Override
@@ -272,7 +259,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void goToEditRoom() {
-        startActivity(new Intent(getActivity(), EditRoomActivity.class));
+        Intent editRoomIntent = new Intent(getActivity(), EditRoomActivity.class);
+        startActivity(editRoomIntent);
     }
 
     private void onCreateClicked() {
@@ -367,6 +355,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 }
             });
         }
+    }
+
+    private void showErrorAlert(ParseException e) {
+        AlertHelper.alert(getActivity(),
+                getString(R.string.dialog_error_title),
+                e.getMessage());
+    }
+
+    private void hideProgressBar() {
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    private void showProgressBar() {
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     private void goToEditProfile() {

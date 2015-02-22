@@ -77,5 +77,6 @@
     <string name="follower_label">follower</string>
     <string name="delete">Delete</string>
     <string name="membersHaveBeenRemoved">"The members you've selected have been removed from your room. "</string>
+    <string name="cant_select_yourself_warning">Can\'t select yourself</string>
 
 </resources>

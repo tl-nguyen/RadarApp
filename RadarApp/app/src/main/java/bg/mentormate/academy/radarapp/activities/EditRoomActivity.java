@@ -147,7 +147,7 @@ public class EditRoomActivity extends ActionBarActivity
 
         if (selectedMember.equals(mCurrentUser)) {
             Toast.makeText(this,
-                    "Can't select yourself",
+                    getString(R.string.cant_select_yourself_warning),
                     Toast.LENGTH_SHORT).show();
             return false;
         }
