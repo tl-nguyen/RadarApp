@@ -30,6 +30,8 @@ public class Constants {
      */
     public final static String CURRENT_LOCATION_TABLE = "CurrentLocation";
     public final static String CURRENT_LOCATION_COL_LOCATION = "location";
+    public final static String CURRENT_LOCATION_COL_PROVIDER = "provider";
+    public final static String CURRENT_LOCATION_COL_ACTIVE = "active";
 
     /**
      * Parse.com Room table constants

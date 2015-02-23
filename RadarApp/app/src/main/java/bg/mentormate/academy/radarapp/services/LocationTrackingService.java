@@ -9,8 +9,13 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
+
+import com.parse.ParseException;
 
 import bg.mentormate.academy.radarapp.data.LocalDb;
+import bg.mentormate.academy.radarapp.models.CurrentLocation;
+import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.widgets.TrackingStatusToggleWidget;
 
 public class LocationTrackingService extends Service implements Handler.Callback {
@@ -31,6 +36,7 @@ public class LocationTrackingService extends Service implements Handler.Callback
     private Looper mLooper;
     private Handler mHandler;
     private LocalDb mLocalDb;
+    private User mCurrentUser;
 
     public LocationTrackingService() {
     }
@@ -40,6 +46,7 @@ public class LocationTrackingService extends Service implements Handler.Callback
         super.onCreate();
 
         mLocalDb = LocalDb.getInstance();
+        mCurrentUser = mLocalDb.getCurrentUser();
 
         HandlerThread thread = new HandlerThread(HANDLER_THREAD_NAME);
         thread.start();
@@ -90,6 +97,8 @@ public class LocationTrackingService extends Service implements Handler.Callback
         lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, NETWORK_INTERVAL_TRACKING, NETWORK_MIN_DISTANCE, mNetworkListener, mLooper);
 
         updateWidget();
+
+        setUserActiveState(true);
     }
 
     private void doStopTracking() {
@@ -106,6 +115,22 @@ public class LocationTrackingService extends Service implements Handler.Callback
         }
 
         updateWidget();
+
+        setUserActiveState(false);
+    }
+
+    private void setUserActiveState(boolean isActive) {
+        if (mCurrentUser != null) {
+            try {
+                CurrentLocation location = mCurrentUser.getCurrentLocation();
+                location.fetchIfNeeded();
+                location.setActive(isActive);
+                location.save();
+            } catch (ParseException e) {
+                Log.d(LocationTrackingService.class.getSimpleName(),
+                        e.getMessage());
+            }
+        }
     }
 
     private void updateWidget() {

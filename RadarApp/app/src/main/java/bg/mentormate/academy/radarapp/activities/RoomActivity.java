@@ -265,7 +265,6 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
             this.mIconGenerator = new IconGenerator(RoomActivity.this);
             this.mImageView = new ImageView(RoomActivity.this);
             mIconGenerator.setContentView(mImageView);
-            mIconGenerator.setStyle(IconGenerator.STYLE_GREEN);
         }
 
         @Override
@@ -342,6 +341,9 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                             true);
 
                     mImageView.setImageBitmap(scaledBitmap);
+
+                    setIconStyle(user);
+
                     avatarIcon = mIconGenerator.makeIcon();
                 }
             } catch (ParseException e) {
@@ -349,6 +351,21 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
             }
 
             return avatarIcon;
+        }
+
+        private void setIconStyle(User user) {
+            String provider = user.getCurrentLocation().getProvider();
+            boolean isActive = user.getCurrentLocation().getActive();
+
+            if (isActive) {
+                if (provider.equals(LocationManager.GPS_PROVIDER)) {
+                    mIconGenerator.setStyle(IconGenerator.STYLE_GREEN);
+                } else if (provider.equals(LocationManager.NETWORK_PROVIDER)) {
+                    mIconGenerator.setStyle(IconGenerator.STYLE_ORANGE);
+                }
+            } else {
+                mIconGenerator.setStyle(IconGenerator.STYLE_RED);
+            }
         }
     }
 }

@@ -50,7 +50,7 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
     private ParseFile mNewAvatar;
     private LocalDb mLocalDb;
     private User mUser;
-    boolean avatarChanged;
+    boolean mAvatarChanged;
     private Bitmap mAvatarBitmap;
 
     private ParseImageView mPivAvatar;
@@ -72,7 +72,7 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
     }
 
     private void init() {
-        avatarChanged = false;
+        mAvatarChanged = false;
 
         mLocalDb = LocalDb.getInstance();
         mUser = mLocalDb.getCurrentUser();
@@ -172,7 +172,7 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
         String pass = mEtChangePassword.getText().toString();
         String confirmPass = mEtConfirmPassword.getText().toString();
 
-        if(avatarChanged){
+        if(mAvatarChanged){
            mNewAvatar = new ParseFile(getBitmapAsByteArray(mAvatarBitmap));
            mUser.setAvatar(mNewAvatar);
         }
@@ -192,7 +192,7 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
             }
         }
 
-        if(emailChanged || passChanged || avatarChanged){
+        if(emailChanged || passChanged || mAvatarChanged){
             mUser.saveInBackground();
             if(passChangeAttempt) {
                 Toast.makeText(getApplicationContext(),
@@ -238,14 +238,14 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
                 mAvatarBitmap.compress(Bitmap.CompressFormat.JPEG, DEFAULT_QUALITY_FACTOR, byteArrayOutputStream);
                 byte[] image = byteArrayOutputStream.toByteArray();
                 InputStream stream = new ByteArrayInputStream(image);
-                avatarChanged = true;
+                mAvatarChanged = true;
                 mAvatarBitmap = BitmapFactory.decodeStream(stream);
                 mAvatarBitmap = getResizedBitmap(mAvatarBitmap, DEFAULT_IMG_SIZE_X, DEFAULT_IMG_SIZE_Y);
                 mPivAvatar.setImageBitmap(mAvatarBitmap);
                 mPivAvatar.setVisibility(View.VISIBLE);
             }
 
-            avatarChanged = true;
+            mAvatarChanged = true;
         }
     }
 
@@ -263,7 +263,7 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
             mPivAvatar.setImageBitmap(mAvatarBitmap);
             mPivAvatar.setVisibility(View.VISIBLE);
 
-            avatarChanged = true;
+            mAvatarChanged = true;
         }
     }
 

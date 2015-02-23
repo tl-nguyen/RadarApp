@@ -37,6 +37,9 @@ public class ServiceLocationListener implements LocationListener {
                             location.getLatitude(),
                             location.getLongitude()));
 
+            currentLocation.setProvider(location.getProvider());
+
+            currentLocation.setActive(true);
             try {
                 currentLocation.save();
             } catch (ParseException e) {

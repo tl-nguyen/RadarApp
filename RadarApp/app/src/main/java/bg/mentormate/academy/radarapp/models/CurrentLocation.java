@@ -19,4 +19,20 @@ public class CurrentLocation extends ParseObject {
     public void setLocation(ParseGeoPoint location) {
         put(Constants.CURRENT_LOCATION_COL_LOCATION, location);
     }
+
+    public String getProvider() {
+        return getString(Constants.CURRENT_LOCATION_COL_PROVIDER);
+    }
+
+    public void setProvider(String provider) {
+        put(Constants.CURRENT_LOCATION_COL_PROVIDER, provider);
+    }
+
+    public boolean getActive() {
+        return getBoolean(Constants.CURRENT_LOCATION_COL_ACTIVE);
+    }
+
+    public void setActive(boolean active) {
+        put(Constants.CURRENT_LOCATION_COL_ACTIVE, active);
+    }
 }
