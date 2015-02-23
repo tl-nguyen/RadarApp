@@ -1,8 +1,8 @@
 package bg.mentormate.academy.radarapp.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +18,7 @@ import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
-public class LoginActivity extends Activity implements View.OnClickListener {
+public class LoginActivity extends ActionBarActivity implements View.OnClickListener {
 
     private EditText mEtUsername;
     private EditText mEtPassword;
@@ -32,6 +32,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        getSupportActionBar().hide();
 
         init();
     }

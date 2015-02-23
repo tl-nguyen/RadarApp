@@ -1,6 +1,5 @@
 package bg.mentormate.academy.radarapp.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -9,6 +8,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,7 +28,7 @@ import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
-public class RegisterActivity extends Activity implements View.OnClickListener {
+public class RegisterActivity extends ActionBarActivity implements View.OnClickListener {
 
     ParseFile mBlankAvatar;
 
@@ -43,6 +43,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        getSupportActionBar().hide();
 
         init();
     }
