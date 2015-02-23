@@ -59,10 +59,10 @@
     <string name="users_search_title">Users</string>
     <string name="empty_list">No found!</string>
     <string name="search_hint">...</string>
-    <string name="search_btn">Search</string>
+    <string name="search_btn">SEARCH</string>
     <string name="title_activity_profile">ProfileActivity</string>
-    <string name="unfollow_text_btn">UnFollow</string>
-    <string name="follow_text_btn">Follow</string>
+    <string name="unfollow_text_btn">UNFOLLOW</string>
+    <string name="follow_text_btn">FOLLOW</string>
     <string name="unregister_text_btn">UNREGISTER</string>
     <string name="register_text_btn">REGISTER</string>
     <string name="edit_room_btn">EDIT ROOM</string>
