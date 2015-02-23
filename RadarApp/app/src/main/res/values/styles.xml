@@ -34,7 +34,7 @@
     </style>
 
     <style name="ActionBar.Solid.Br" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
-        <item name="background">@drawable/ab_solid_br</item>
+        <item name="background">@color/br_dark_background</item>
         <item name="backgroundStacked">@drawable/ab_stacked_solid_br</item>
         <item name="backgroundSplit">@drawable/ab_bottom_solid_br</item>
         <item name="progressBarStyle">@style/ProgressBar.Br</item>
@@ -43,7 +43,7 @@
 
     <style name="ActionBar.Solid.Br.TitleTextStyle" 
         parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/br_text</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="ActionBar.Transparent.Br" parent="@style/Widget.AppCompat.Light.ActionBar">
