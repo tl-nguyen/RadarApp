@@ -6,33 +6,39 @@
 
 
     <EditText
+        android:id="@+id/etChangeRoomName"
         android:layout_width="match_parent"
-        android:hint="new room name"
         android:layout_height="wrap_content"
-        android:id="@+id/etChangeRoomName" />
+        android:hint="new room name" />
 
     <EditText
+        android:id="@+id/etChangePass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="passkey"
-        android:id="@+id/etChangePass"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:hint="passkey" />
 
     <Button
+        android:id="@+id/btnApplyChanges"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Apply Changes"
-        android:id="@+id/btnApplyChanges" />
+        android:text="Apply Changes" />
 
     <TextView
+        android:id="@+id/textMembers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Members:"
-        android:id="@+id/textMembers" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <ListView
+    <GridView
         android:id="@+id/usersList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:columnWidth="60dp"
+        android:gravity="center"
+        android:horizontalSpacing="@dimen/user_grid_spacing"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="@dimen/user_grid_spacing" />
 </LinearLayout>

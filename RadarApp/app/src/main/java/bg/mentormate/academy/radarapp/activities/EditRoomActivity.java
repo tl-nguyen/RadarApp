@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.GridView;
 import android.widget.Toast;
 
 import com.parse.GetCallback;
@@ -32,7 +32,7 @@ public class EditRoomActivity extends ActionBarActivity
     private Button mBtnApplyChanges;
     private EditText mEtChangePassword;
     private EditText mEtChangeRoomName;
-    private ListView mLvUsers;
+    private GridView mGvUsers;
 
     private LocalDb mLocalDb;
     private User mCurrentUser;
@@ -61,7 +61,7 @@ public class EditRoomActivity extends ActionBarActivity
         mEtChangePassword = (EditText) findViewById(R.id.etChangePass);
         mEtChangeRoomName = (EditText) findViewById(R.id.etChangeRoomName);
         mBtnApplyChanges = (Button) findViewById(R.id.btnApplyChanges);
-        mLvUsers = (ListView) findViewById(R.id.usersList);
+        mGvUsers = (GridView) findViewById(R.id.usersList);
 
         mRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @Override
@@ -73,10 +73,10 @@ public class EditRoomActivity extends ActionBarActivity
         mUsers = mRoom.getUsers();
 
         mEditRoomUserAdapter = new EditRoomUserAdapter(this, mUsers);
-        mLvUsers.setAdapter(mEditRoomUserAdapter);
+        mGvUsers.setAdapter(mEditRoomUserAdapter);
 
         mBtnApplyChanges.setOnClickListener(this);
-        mLvUsers.setOnItemLongClickListener(this);
+        mGvUsers.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class EditRoomActivity extends ActionBarActivity
                 mUsers.remove(mSelectedUsers.get(i));
             }
             mEditRoomUserAdapter = new EditRoomUserAdapter(this, mUsers);
-            mLvUsers.setAdapter(mEditRoomUserAdapter);
+            mGvUsers.setAdapter(mEditRoomUserAdapter);
             mSelectedUsers.clear();
         }
     }
@@ -157,7 +157,7 @@ public class EditRoomActivity extends ActionBarActivity
             view.setBackgroundColor(Color.GRAY);
         } else {
             mSelectedUsers.remove(selectedMember);
-            view.setBackgroundColor(Color.TRANSPARENT);
+            view.setBackgroundColor(Color.WHITE);
         }
 
         setDeleteIconVisibility();

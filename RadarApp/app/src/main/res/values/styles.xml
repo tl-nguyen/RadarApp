@@ -4,6 +4,8 @@
         <item name="android:editTextBackground">@drawable/apptheme_edit_text_holo_light</item>
         <item name="android:progressBarStyleHorizontal">@style/ProgressBarAppTheme</item>
         <item name="android:buttonStyleToggle">@style/ToggleAppTheme</item>
+        <item name="android:listViewStyle">@style/Theme.Br.LightBackground</item>
+        <item name="android:gridViewStyle">@style/Theme.Br.LightBackground.GridView</item>
 
         <item name="actionBarItemBackground">@drawable/selectable_background_br</item>
         <item name="popupMenuStyle">@style/PopupMenu.Br</item>
@@ -15,9 +17,6 @@
         <item name="actionModeSplitBackground">@drawable/cab_background_bottom_br</item>
         <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Br</item>
         <item name="actionOverflowButtonStyle">@style/Theme.Br.Overflow</item>
-        <item name="android:listViewStyle">@style/Theme.Br.LightBackground</item>
-        <item name="android:gridViewStyle">@style/Theme.Br.LightBackground.GridView</item>
-
     </style>
 
     <style name="Theme.Br.LightBackground">
@@ -95,6 +94,7 @@
 
     <style name="ToggleAppTheme" parent="android:Widget.Holo.Light.Button.Toggle">
         <item name="android:background">@drawable/apptheme_btn_toggle_holo_light</item>
+        <item name="android:textColor">@color/br_text</item>
     </style>
 
     <style name="AuthBackground">
@@ -164,6 +164,13 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/br_light_text</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="FollowCount">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textColor">@color/br_text</item>
     </style>
 
 
