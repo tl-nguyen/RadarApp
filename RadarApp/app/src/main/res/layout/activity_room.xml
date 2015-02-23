@@ -1,25 +1,29 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.RoomActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".activities.RoomActivity">
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"/>
+        android:layout_weight="5" />
 
     <GridView
+        android:id="@+id/gvUsers"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:numColumns="5"
-        android:id="@+id/gvUsers"/>
+        android:layout_weight="2"
+        android:clipToPadding="false"
+        android:columnWidth="60dp"
+        android:gravity="center"
+        android:horizontalSpacing="@dimen/user_grid_spacing"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="@dimen/user_grid_spacing" />
 
 </LinearLayout>
 

@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="apptheme_color">#4caf50</color>
-    <color name="br_background">#4caf50</color>
+    <color name="br_dark_background">#4caf50</color>
+    <color name="br_light_background">#e8f5e9</color>
     <color name="br_hint_text">#bbbbbb</color>
     <color name="br_button">#c8e6c9</color>
     <color name="br_pressed_button">#81c784</color>
     <color name="br_focused_button">#a5d6a7</color>
     <color name="br_text">#1b5e20</color>
+    <color name="br_light_text">#43a047</color>
+    <color name="br_navigation_drawer_background">#bbffffff</color>
+
 </resources>

@@ -10,4 +10,11 @@
     <dimen name="login_vertical_margin">32dp</dimen>
     <dimen name="login_horizontal_padding">10dp</dimen>
     <dimen name="login_vertical_padding">10dp</dimen>
+
+    <dimen name="list_item_horizontal_margin">8dp</dimen>
+    <dimen name="list_item_vertical_margin">4dp</dimen>
+    <dimen name="list_item_padding">8dp</dimen>
+    <dimen name="room_name_vertical_margin">4dp</dimen>
+    <dimen name="user_grid_spacing">8dp</dimen>
+
 </resources>

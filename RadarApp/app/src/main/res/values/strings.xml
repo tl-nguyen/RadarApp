@@ -38,8 +38,8 @@
     <string name="room_name_sample">Cool Room</string>
     <string name="username_sample">tlnguyen</string>
     <string name="no_room_info_tv">Don\'t have any room yet, create one to get one ;-)</string>
-    <string name="my_room_label">My Room:</string>
-    <string name="recent_room_label">Recent Rooms:</string>
+    <string name="my_room_label">MY ROOM</string>
+    <string name="recent_room_label">NEW ROOMS</string>
     <string name="name_hint">Name</string>
     <string name="check_keypass_title">Enter the passkey to get in!</string>
     <string name="got_it_btn">Got it!</string>

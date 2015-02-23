@@ -1,37 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        style="@style/HomeHeader"
         android:text="@string/my_room_label" />
 
     <TextView
+        android:id="@+id/tvNoRoomInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_gravity="center_horizontal"
         android:text="@string/no_room_info_tv"
-        android:id="@+id/tvNoRoomInfo"
-        android:layout_gravity="center_horizontal" />
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/llMyRoom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/llMyRoom">
+        android:orientation="horizontal">
 
         <bg.mentormate.academy.radarapp.views.RoomItem
+            android:id="@+id/riMyRoom"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/riMyRoom"/>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        style="@style/HomeHeader"
         android:text="@string/recent_room_label" />
+
 </LinearLayout>

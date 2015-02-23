@@ -14,7 +14,23 @@
         <item name="actionModeBackground">@drawable/cab_background_top_br</item>
         <item name="actionModeSplitBackground">@drawable/cab_background_bottom_br</item>
         <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Br</item>
+        <item name="actionOverflowButtonStyle">@style/Theme.Br.Overflow</item>
+        <item name="android:listViewStyle">@style/Theme.Br.LightBackground</item>
+        <item name="android:gridViewStyle">@style/Theme.Br.LightBackground.GridView</item>
 
+    </style>
+
+    <style name="Theme.Br.LightBackground">
+        <item name="android:background">@color/br_light_background</item>
+        <item name="android:divider">@null</item>
+    </style>
+
+    <style name="Theme.Br.LightBackground.GridView">
+        <item name="android:padding">@dimen/user_grid_spacing</item>
+    </style>
+
+    <style name="Theme.Br.Overflow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_overflow_menu</item>
     </style>
 
     <style name="ActionBar.Solid.Br" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
@@ -22,6 +38,12 @@
         <item name="backgroundStacked">@drawable/ab_stacked_solid_br</item>
         <item name="backgroundSplit">@drawable/ab_bottom_solid_br</item>
         <item name="progressBarStyle">@style/ProgressBar.Br</item>
+        <item name="titleTextStyle">@style/ActionBar.Solid.Br.TitleTextStyle</item>
+    </style>
+
+    <style name="ActionBar.Solid.Br.TitleTextStyle" 
+        parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/br_text</item>
     </style>
 
     <style name="ActionBar.Transparent.Br" parent="@style/Widget.AppCompat.Light.ActionBar">
@@ -76,7 +98,7 @@
     </style>
 
     <style name="AuthBackground">
-        <item name="android:background">@color/br_background</item>
+        <item name="android:background">@color/br_dark_background</item>
     </style>
 
     <style name="AuthTitle">
@@ -131,8 +153,18 @@
         <item name="android:textSize">13sp</item>
     </style>
 
-
-
+    <style name="HomeHeader">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/room_name_vertical_margin</item>
+        <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_marginTop">@dimen/room_name_vertical_margin</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/br_light_text</item>
+        <item name="android:gravity">center</item>
+    </style>
 
 
 </resources>
