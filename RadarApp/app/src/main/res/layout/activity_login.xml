@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AuthBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -8,53 +9,60 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="bg.mentormate.academy.radarapp.activities.LoginActivity">
 
-    <EditText
-        android:id="@+id/etUsername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:hint="@string/et_username">
+    <TextView
+        android:id="@+id/tvTitle"
+        style="@style/AuthTitle"
+        android:text="@string/app_name" />
 
-        <requestFocus />
-    </EditText>
+    <TextView
+        android:id="@+id/tvSubTitle"
+        style="@style/AuthTitle.AuthSubTitle"
+        android:text="@string/app_sub_title" />
 
-    <EditText
-        android:id="@+id/etPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etUsername"
-        android:layout_centerHorizontal="true"
-        android:ems="10"
-        android:hint="@string/et_password"
-        android:inputType="textPassword" />
+    <LinearLayout
+        android:id="@+id/llEdit"
+        style="@style/AuthEditFieldContainer">
+
+        <EditText
+            android:id="@+id/etUsername"
+            style="@style/AuthEditText"
+            android:hint="@string/et_username">
+
+            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/etPassword"
+            style="@style/AuthEditText"
+            android:hint="@string/et_password"
+            android:inputType="textPassword" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etPassword"
-        android:layout_centerHorizontal="true"
+        style="@style/AuthButton"
+        android:layout_below="@id/llEdit"
         android:text="@string/btn_login" />
 
     <TextView
         android:id="@+id/tvRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnLogin"
+        android:layout_below="@id/btnLogin"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
         android:text="@string/tv_register"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ff0697ff" />
+        android:textColor="@android:color/white" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tvRegister"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:indeterminate="true"
         android:visibility="gone" />
+
 </RelativeLayout>

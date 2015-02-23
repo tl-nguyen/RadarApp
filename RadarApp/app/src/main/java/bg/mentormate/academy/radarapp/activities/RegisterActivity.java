@@ -1,5 +1,6 @@
 package bg.mentormate.academy.radarapp.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -8,7 +9,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,7 +28,7 @@ import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
-public class RegisterActivity extends ActionBarActivity implements View.OnClickListener {
+public class RegisterActivity extends Activity implements View.OnClickListener {
 
     ParseFile mBlankAvatar;
 
@@ -36,6 +36,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     private EditText mEtPassword;
     private EditText mEtEmail;
     private Button mBtnRegister;
+    private Button mBtnCancel;
     private ProgressBar mProgresBar;
 
     @Override
@@ -51,9 +52,11 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         mEtPassword = (EditText) findViewById(R.id.etPassword);
         mEtEmail = (EditText) findViewById(R.id.etEmail);
         mBtnRegister = (Button) findViewById(R.id.btnRegister);
+        mBtnCancel = (Button) findViewById(R.id.btnCancel);
         mProgresBar = (ProgressBar) findViewById(R.id.progressBar);
 
         mBtnRegister.setOnClickListener(this);
+        mBtnCancel.setOnClickListener(this);
     }
 
     @Override
@@ -63,6 +66,9 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         switch (id) {
             case R.id.btnRegister:
                 register();
+                break;
+            case R.id.btnCancel:
+                finish();
                 break;
         }
     }

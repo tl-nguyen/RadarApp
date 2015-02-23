@@ -45,11 +45,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.RegisterActivity"
-            android:label="@string/title_activity_register"
-            android:parentActivityName=".activities.LoginActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="bg.mentormate.academy.radarapp.activities.LoginActivity" />
+            android:label="@string/title_activity_register">
         </activity>
         <activity
             android:name=".activities.RoomActivity"

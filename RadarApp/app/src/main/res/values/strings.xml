@@ -12,13 +12,13 @@
     <string name="hello_world">Hello world!</string>
     <string name="et_username">Username</string>
     <string name="et_password">Password</string>
-    <string name="btn_login">Login</string>
-    <string name="tv_register">Don\'t have an account yet ?</string>
+    <string name="btn_login">SIGN IN</string>
+    <string name="tv_register">Don\'t have an account yet ? Sign Up!</string>
     <string name="title_activity_register">New User</string>
     <string name="dialog_error_title">Opaa!</string>
     <string name="login_invalid_inputs_message">The username and password fields can not be empty</string>
     <string name="et_email">Email</string>
-    <string name="btn_register">Register</string>
+    <string name="btn_register">SIGN UP</string>
     <string name="signup_invalid_inputs_message">The username, password and email fields can not be empty</string>
     <string name="followers_label">follwers</string>
     <string name="following_label">following</string>
@@ -32,7 +32,7 @@
     <string name="pass_key_hint">Pass Key</string>
     <string name="create_room_title">Make a cool room!</string>
     <string name="make_room_btn">Make it!</string>
-    <string name="cancel_btn">Don\'t want no more</string>
+    <string name="cancel_btn">CANCEL</string>
     <string name="create_room_invalid_inputs_message">The Room Name and KeyPass field must not be empty</string>
     <string name="by_label">by: </string>
     <string name="room_name_sample">Cool Room</string>
@@ -78,5 +78,6 @@
     <string name="delete">Delete</string>
     <string name="membersHaveBeenRemoved">"The members you've selected have been removed from your room. "</string>
     <string name="cant_select_yourself_warning">Can\'t select yourself</string>
+    <string name="app_sub_title">A MentorMate Academy Project</string>
 
 </resources>
