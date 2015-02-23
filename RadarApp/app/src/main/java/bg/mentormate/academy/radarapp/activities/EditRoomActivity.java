@@ -128,17 +128,23 @@ public class EditRoomActivity extends ActionBarActivity
     private void applyChanges() {
         String newRoomName = mEtChangeRoomName.getText().toString();
         String passkey = mEtChangePassword.getText().toString();
+        boolean changesApplied = false;
 
         if (!newRoomName.trim().isEmpty() && !newRoomName.equals(mRoom.getName())) {
             mRoom.setName(newRoomName.trim());
+            changesApplied = true;
         }
 
         if(!passkey.trim().isEmpty()) {
             mRoom.setPassKey(passkey.trim());
+            changesApplied = true;
         }
 
-        mRoom.saveInBackground();
-        finish();
+        if(changesApplied) {
+            mRoom.saveInBackground();
+            finish();
+        }
+
     }
 
     @Override
