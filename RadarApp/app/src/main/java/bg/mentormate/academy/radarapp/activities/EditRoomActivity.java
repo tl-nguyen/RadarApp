@@ -40,6 +40,7 @@ public class EditRoomActivity extends ActionBarActivity
     private EditRoomUserAdapter mEditRoomUserAdapter;
     private List<User> mUsers;
     private ArrayList<User> mSelectedUsers;
+    private boolean mUsersDeleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class EditRoomActivity extends ActionBarActivity
         mRoom = mCurrentUser.getRoom();
 
         mSelectedUsers = new ArrayList<>();
+        mUsersDeleted = false;
 
         mEtChangePassword = (EditText) findViewById(R.id.etChangePass);
         mEtChangeRoomName = (EditText) findViewById(R.id.etChangeRoomName);
@@ -96,7 +98,7 @@ public class EditRoomActivity extends ActionBarActivity
             case android.R.id.home:
                 this.finish();
                 return true;
-            case R.id.delete_users:
+            case R.id.action_delete_users:
                 deleteSelectedUsers();
                 return true;
             default:
@@ -113,6 +115,8 @@ public class EditRoomActivity extends ActionBarActivity
             mEditRoomUserAdapter = new EditRoomUserAdapter(this, mUsers);
             mGvUsers.setAdapter(mEditRoomUserAdapter);
             mSelectedUsers.clear();
+            mMenu.findItem(R.id.action_delete_users).setVisible(false);
+            mUsersDeleted = true;
         }
     }
 
@@ -140,11 +144,19 @@ public class EditRoomActivity extends ActionBarActivity
             changesApplied = true;
         }
 
-        if(changesApplied) {
-            mRoom.saveInBackground();
-            finish();
+        if(mUsersDeleted) {
+            changesApplied = true;
         }
 
+        if(changesApplied) {
+            mRoom.saveInBackground();
+        } else {
+            Toast.makeText(this,
+                    getString(R.string.nothing_changed_text),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        finish();
     }
 
     @Override
@@ -172,9 +184,9 @@ public class EditRoomActivity extends ActionBarActivity
 
     private void setDeleteIconVisibility() {
         if (mSelectedUsers.size() > 0) {
-            mMenu.findItem(R.id.delete_users).setVisible(true);
+            mMenu.findItem(R.id.action_delete_users).setVisible(true);
         } else {
-            mMenu.findItem(R.id.delete_users).setVisible(false);
+            mMenu.findItem(R.id.action_delete_users).setVisible(false);
         }
     }
 }

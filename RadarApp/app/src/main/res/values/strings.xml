@@ -81,5 +81,8 @@
     <string name="app_sub_title">A MentorMate Academy Project</string>
     <string name="member_header_text">MEMBERS</string>
     <string name="home_text">HOME</string>
+    <string name="nothing_changed_text">Nothing changed</string>
+    <string name="kick_out_text_title">You were kicked from the room</string>
+    <string name="kickout_text_description">Contact the room owner for more information</string>
 
 </resources>

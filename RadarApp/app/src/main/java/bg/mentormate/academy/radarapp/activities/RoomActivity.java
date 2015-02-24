@@ -1,6 +1,8 @@
 package bg.mentormate.academy.radarapp.activities;
 
+import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +15,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -275,6 +278,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
         @Override
         protected Void doInBackground(Void... params) {
             mUsers = mRoom.getUsers();
+            boolean isInTheRoom = false;
 
             for (User user: mUsers) {
                 final MarkerOptions marker = new MarkerOptions();
@@ -285,6 +289,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                     user.fetchIfNeeded();
 
                     if (user.equals(mCurrentUser)) {
+                        isInTheRoom = true;
                         continue;
                     }
 
@@ -314,6 +319,10 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                 }
             }
 
+            if (!isInTheRoom) {
+                kickFromTheRoom();
+            }
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -324,6 +333,32 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
             });
 
             return null;
+        }
+
+        private void kickFromTheRoom() {
+            notifyTheUser();
+            finish();
+        }
+
+        // Notification
+        public void notifyTheUser() {
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(RoomActivity.this)
+                    .setContentTitle(getString(R.string.kick_out_text_title))
+                    .setContentText(getString(R.string.kickout_text_description))
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setAutoCancel(true);
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_EMAIL, mRoom.getCreatedBy().getEmail());
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(RoomActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            notificationBuilder.setContentIntent(pendingIntent);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Activity.NOTIFICATION_SERVICE);
+
+            notificationManager.notify(1, notificationBuilder.build());
         }
 
         private Bitmap getAvatarIcon(User user) {
