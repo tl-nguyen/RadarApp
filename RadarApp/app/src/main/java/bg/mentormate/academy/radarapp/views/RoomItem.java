@@ -1,9 +1,11 @@
 package bg.mentormate.academy.radarapp.views;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,11 +86,16 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
                     final User user = mRoom.getCreatedBy();
 
                     user.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                         @Override
                         public void done(ParseObject parseObject, ParseException e) {
                             mTvUsername.setText(user.getUsername());
-                            mPivAvatar.setParseFile(user.getAvatar());
-                            mPivAvatar.loadInBackground();
+                            if (user.getAvatar() != null) {
+                                mPivAvatar.setParseFile(user.getAvatar());
+                                mPivAvatar.loadInBackground();
+                            } else {
+                                mPivAvatar.setBackground(getResources().getDrawable(R.drawable.ic_avatar));
+                            }
                         }
                     });
 

@@ -372,7 +372,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                 if (fetchedAvatar != null) {
                     scaledBitmap = Bitmap.createScaledBitmap(
                             fetchedAvatar,
-                            50, 50,
+                            100, 100,
                             true);
 
                     mImageView.setImageBitmap(scaledBitmap);

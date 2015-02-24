@@ -1,7 +1,9 @@
 package bg.mentormate.academy.radarapp.views;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,11 +59,18 @@ public class UserItem extends LinearLayout implements View.OnClickListener {
         mUser = user;
 
         mUser.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void done(ParseObject parseObject, ParseException e) {
                 mTvUsername.setText(mUser.getUsername());
-                mPivAvatar.setParseFile(mUser.getAvatar());
-                mPivAvatar.loadInBackground();
+
+                if (mUser.getAvatar() != null) {
+                    mPivAvatar.setParseFile(mUser.getAvatar());
+                    mPivAvatar.loadInBackground();
+                } else {
+                    mPivAvatar.setBackground(getResources().getDrawable(R.drawable.ic_avatar));
+                }
+
                 mFbFollow.setData(LocalDb.getInstance().getCurrentUser(), mUser);
             }
         });

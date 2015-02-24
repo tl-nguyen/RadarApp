@@ -1,9 +1,6 @@
 package bg.mentormate.academy.radarapp.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -15,10 +12,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import bg.mentormate.academy.radarapp.R;
@@ -29,8 +24,6 @@ import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
 public class RegisterActivity extends ActionBarActivity implements View.OnClickListener {
-
-    ParseFile mBlankAvatar;
 
     private EditText mEtUsername;
     private EditText mEtPassword;
@@ -95,14 +88,6 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         createUserTask.execute(username, password, email);
     }
 
-    private byte[] getBitmapFromDrawableId(int id) {
-        Drawable drawable = getResources().getDrawable(id);
-        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        return stream.toByteArray();
-    }
-
     private void hideProgressBar() {
         mProgresBar.setVisibility(View.GONE);
     }
@@ -151,20 +136,10 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             emptyFollow.setFollowers(new ArrayList<User>());
             emptyFollow.setFollowings(new ArrayList<User>());
 
-            // Putting ic_launcher as a default avatar
-            if (mBlankAvatar == null) {
-                mBlankAvatar = new ParseFile(
-                        getBitmapFromDrawableId(R.drawable.ic_launcher));
-            }
-
             try {
                 // Save the new follow table
                 emptyFollow.save();
                 newUser.setFollow(emptyFollow);
-
-                // Save the avatar file
-                mBlankAvatar.save();
-                newUser.setAvatar(mBlankAvatar);
 
                 // Save empty location (0,9)
                 currentLocation.save();

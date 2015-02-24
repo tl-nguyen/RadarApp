@@ -1,8 +1,10 @@
 package bg.mentormate.academy.radarapp.fragments;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -182,12 +184,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onResume() {
         super.onResume();
 
-        mPivBigAvatar.setParseFile(mUser.getAvatar());
-        mPivBigAvatar.loadInBackground();
+        if (mUser.getAvatar() != null) {
+            mPivBigAvatar.setParseFile(mUser.getAvatar());
+            mPivBigAvatar.loadInBackground();
+        } else {
+            mPivBigAvatar.setBackground(getResources().getDrawable(R.drawable.ic_avatar));
+        }
 
         setRoomUIElementsVisibility();
     }

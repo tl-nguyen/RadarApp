@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -53,10 +52,13 @@ public class UserAdapter extends BaseAdapter {
         ParseImageView ivIcon = (ParseImageView) convertView.findViewById(R.id.ivIcon);
         TextView tvUsername = (TextView) convertView.findViewById(R.id.tvUsername);
 
-        ivIcon.setParseFile(mUsers.get(position).getAvatar());
         tvUsername.setText(mUsers.get(position).getUsername());
-
-        ivIcon.loadInBackground();
+        if (mUsers.get(position).getAvatar() != null) {
+            ivIcon.setParseFile(mUsers.get(position).getAvatar());
+            ivIcon.loadInBackground();
+        } else {
+            ivIcon.setBackground(mContext.getResources().getDrawable(R.drawable.ic_avatar));
+        }
 
         return convertView;
     }
