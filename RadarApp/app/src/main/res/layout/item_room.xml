@@ -84,7 +84,8 @@
             android:layout_marginRight="@dimen/room_name_vertical_margin"
             android:text="@string/join_btn"
             android:textColor="@color/br_text"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

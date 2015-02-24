@@ -55,11 +55,11 @@ public class TrackingStatusToggleWidget extends AppWidgetProvider {
                 R.layout.widget_layout);
 
         if (LocalDb.getInstance().isTrackingOn()) {
-            remoteViews.setViewVisibility(R.id.ibSwitchOff, View.GONE);
-            remoteViews.setViewVisibility(R.id.ibSwitchOn, View.VISIBLE);
+            remoteViews.setViewVisibility(R.id.ivSwitchOff, View.GONE);
+            remoteViews.setViewVisibility(R.id.ivSwitchOn, View.VISIBLE);
         } else {
-            remoteViews.setViewVisibility(R.id.ibSwitchOff, View.VISIBLE);
-            remoteViews.setViewVisibility(R.id.ibSwitchOn, View.GONE);
+            remoteViews.setViewVisibility(R.id.ivSwitchOff, View.VISIBLE);
+            remoteViews.setViewVisibility(R.id.ivSwitchOn, View.GONE);
         }
 
         Intent openAppIntent = new Intent(context, MainActivity.class);
@@ -79,8 +79,8 @@ public class TrackingStatusToggleWidget extends AppWidgetProvider {
                 .getService(context, 0, stopTrackingIntent, 0);
 
         remoteViews.setOnClickPendingIntent(R.id.tvOpenApp, openAppPendingIntent);
-        remoteViews.setOnClickPendingIntent(R.id.ibSwitchOff, startTrackingPendingIntent);
-        remoteViews.setOnClickPendingIntent(R.id.ibSwitchOn, stopTrackingPendingIntent);
+        remoteViews.setOnClickPendingIntent(R.id.ivSwitchOff, startTrackingPendingIntent);
+        remoteViews.setOnClickPendingIntent(R.id.ivSwitchOn, stopTrackingPendingIntent);
 
         return remoteViews;
     }

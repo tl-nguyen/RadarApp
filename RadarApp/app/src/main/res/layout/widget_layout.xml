@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/llStatusSwitch"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:background="@color/br_dark_background">
 
     <TextView
         android:id="@+id/tvOpenApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#ff0697ff"
+        android:text="@string/home_text"
+        android:textColor="@color/br_text"
+        android:textStyle="bold"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <ImageButton
-        android:id="@+id/ibSwitchOff"
+    <ImageView
+        android:id="@+id/ivSwitchOff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_marker_off"
@@ -23,8 +24,8 @@
         android:layout_below="@+id/tvOpenApp"
         android:layout_centerHorizontal="true" />
 
-    <ImageButton
-        android:id="@+id/ibSwitchOn"
+    <ImageView
+        android:id="@+id/ivSwitchOn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_marker_on"

@@ -49,7 +49,7 @@ import bg.mentormate.academy.radarapp.tools.AlertHelper;
 
 public class RoomActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
 
-    private final static long DATA_UPDATE_INTERVAL = 4000;
+    private final static long DATA_UPDATE_INTERVAL = 5000;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 

@@ -80,5 +80,6 @@
     <string name="cant_select_yourself_warning">Can\'t select yourself</string>
     <string name="app_sub_title">A MentorMate Academy Project</string>
     <string name="member_header_text">MEMBERS</string>
+    <string name="home_text">HOME</string>
 
 </resources>
