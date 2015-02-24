@@ -95,7 +95,4 @@
                 android:resource="@xml/widget_resource" />
         </receiver>
     </application>
-
-
-
 </manifest>

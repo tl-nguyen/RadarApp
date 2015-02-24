@@ -12,8 +12,8 @@
     <TextView
         android:id="@+id/tvTitle"
         style="@style/AuthTitle"
-        android:text="@string/app_name"
-        android:layout_marginTop="200dp"/>
+        android:layout_marginTop="200dp"
+        android:text="@string/app_name" />
 
     <TextView
         android:id="@+id/tvSubTitle"
@@ -45,10 +45,10 @@
     <Button
         android:id="@+id/btnLogin"
         style="@style/Button"
-        android:layout_below="@id/llEdit"
-        android:text="@string/btn_login"
         android:layout_width="440dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@id/llEdit"
+        android:layout_centerHorizontal="true"
+        android:text="@string/btn_login" />
 
     <TextView
         android:id="@+id/tvRegister"
@@ -65,8 +65,9 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvRegister"
+        android:layout_below="@+id/tvRegister"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="153dp"
         android:indeterminate="true"
         android:visibility="gone" />
 
