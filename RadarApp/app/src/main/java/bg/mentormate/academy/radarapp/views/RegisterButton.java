@@ -25,6 +25,6 @@ public class RegisterButton extends ToggleButton {
     public void setData(User currentUser, Room selectedRoom) {
         List<User> users = selectedRoom.getUsers();
 
-        setChecked (users.contains(currentUser));
+        setChecked(users.contains(currentUser));
     }
 }

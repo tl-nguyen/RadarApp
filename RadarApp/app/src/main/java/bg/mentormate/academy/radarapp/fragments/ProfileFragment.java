@@ -106,7 +106,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mLocalDb = LocalDb.getInstance();
         mUser = mLocalDb.getCurrentUser();
         mFollow = mUser.getFollow();
-        mMyRoom = mUser.getRoom();
 
         mIsCurrentUser = id == null || mUser.getObjectId().equals(id);
 
@@ -116,11 +115,25 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             try {
                 mUser = (User) query.get(id);
                 mFollow = mUser.getFollow();
+
             } catch (ParseException e) {
                 AlertHelper.alert(getActivity(),
                         getString(R.string.dialog_error_title),
                         e.getMessage());
             }
+        }
+
+        mMyRoom = mUser.getRoom();
+
+        if (mMyRoom != null) {
+            mMyRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject room, ParseException e) {
+                    if (e == null) {
+                        mRiMyRoom.setData(LocalDb.getInstance().getCurrentUser(), mMyRoom);
+                    }
+                }
+            });
         }
     }
 
@@ -188,19 +201,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             mBtnCreate.setVisibility(View.GONE);
         }
 
-        if (mMyRoom == null) {
-            roomNotCreatedVisibility();
-        } else {
+        if (mMyRoom != null) {
             roomCreatedVisibility();
-
-            mMyRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
-                @Override
-                public void done(ParseObject room, ParseException e) {
-                    if (e == null) {
-                        mRiMyRoom.setData(mUser, mMyRoom);
-                    }
-                }
-            });
+        } else {
+            roomNotCreatedVisibility();
         }
     }
 
