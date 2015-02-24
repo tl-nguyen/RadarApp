@@ -96,6 +96,22 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
+                view.setBackgroundColor(getResources().getColor(R.color.br_button));
+
+                // TODO: This is a hack for color changing in background of Drawer Item, find a proper solution when have time
+                switch (position) {
+                    case 0:
+                        mDrawerListView.getChildAt(1).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                        mDrawerListView.getChildAt(2).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                        break;
+                    case 1:
+                        mDrawerListView.getChildAt(0).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                        mDrawerListView.getChildAt(2).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                        break;
+                    case 2:
+                        mDrawerListView.getChildAt(0).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                        mDrawerListView.getChildAt(1).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                }
             }
         });
         mDrawerListView.setAdapter(new ArrayAdapter<>(
@@ -107,7 +123,10 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_section2),
                         getString(R.string.title_section3)
                 }));
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+
+        // TODO: Hack: Don't select anything at first to work along with the hack above
+//        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+
         return mDrawerListView;
     }
 
