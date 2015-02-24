@@ -189,8 +189,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
 
+        mPivBigAvatar.setParseFile(mUser.getAvatar());
+
         if (mUser.getAvatar() != null) {
-            mPivBigAvatar.setParseFile(mUser.getAvatar());
             mPivBigAvatar.loadInBackground();
         } else {
             mPivBigAvatar.setBackground(getResources().getDrawable(R.drawable.ic_avatar));

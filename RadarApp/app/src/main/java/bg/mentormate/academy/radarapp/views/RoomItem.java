@@ -90,8 +90,9 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
                         @Override
                         public void done(ParseObject parseObject, ParseException e) {
                             mTvUsername.setText(user.getUsername());
+                            mPivAvatar.setParseFile(user.getAvatar());
+
                             if (user.getAvatar() != null) {
-                                mPivAvatar.setParseFile(user.getAvatar());
                                 mPivAvatar.loadInBackground();
                             } else {
                                 mPivAvatar.setBackground(getResources().getDrawable(R.drawable.ic_avatar));

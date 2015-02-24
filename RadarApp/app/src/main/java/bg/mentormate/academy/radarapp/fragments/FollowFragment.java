@@ -2,6 +2,8 @@ package bg.mentormate.academy.radarapp.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +59,22 @@ public class FollowFragment extends ListFragment implements View.OnClickListener
             mBtnSearch = (Button) rootView.findViewById(R.id.btnSeach);
 
             mBtnSearch.setOnClickListener(this);
+        }
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setActivityTitle();
+    }
+
+    private void setActivityTitle() {
+        ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
+
+        if (mState.equals(Constants.FOLLOWER)) {
+            actionBar.setTitle(getString(R.string.followers_label));
+        } else {
+            actionBar.setTitle(getString(R.string.following_label));
         }
     }
 

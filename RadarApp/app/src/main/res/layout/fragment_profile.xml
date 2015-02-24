@@ -39,7 +39,7 @@
                 android:id="@+id/tvFollowerLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/follower_label"
+                android:text="@string/followers_label"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 

@@ -1,6 +1,8 @@
 package bg.mentormate.academy.radarapp.adapters;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,7 @@ public class UserAdapter extends BaseAdapter {
         return 0;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -53,8 +56,10 @@ public class UserAdapter extends BaseAdapter {
         TextView tvUsername = (TextView) convertView.findViewById(R.id.tvUsername);
 
         tvUsername.setText(mUsers.get(position).getUsername());
+
+        ivIcon.setParseFile(mUsers.get(position).getAvatar());
+
         if (mUsers.get(position).getAvatar() != null) {
-            ivIcon.setParseFile(mUsers.get(position).getAvatar());
             ivIcon.loadInBackground();
         } else {
             ivIcon.setBackground(mContext.getResources().getDrawable(R.drawable.ic_avatar));

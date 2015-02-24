@@ -63,9 +63,9 @@ public class UserItem extends LinearLayout implements View.OnClickListener {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
                 mTvUsername.setText(mUser.getUsername());
+                mPivAvatar.setParseFile(mUser.getAvatar());
 
                 if (mUser.getAvatar() != null) {
-                    mPivAvatar.setParseFile(mUser.getAvatar());
                     mPivAvatar.loadInBackground();
                 } else {
                     mPivAvatar.setBackground(getResources().getDrawable(R.drawable.ic_avatar));
