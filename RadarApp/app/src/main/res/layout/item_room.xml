@@ -68,15 +68,20 @@
 
         <bg.mentormate.academy.radarapp.views.RegisterButton
             android:id="@+id/rbRegister"
+            style="@style/ToggleButton.Register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/room_name_vertical_margin"
+            android:layout_marginRight="@dimen/room_name_vertical_margin"
             android:textSize="12sp" />
 
         <Button
             android:id="@+id/btnJoin"
-            style="?android:attr/buttonStyleSmall"
+            style="@style/Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/room_name_vertical_margin"
+            android:layout_marginRight="@dimen/room_name_vertical_margin"
             android:text="@string/join_btn"
             android:textColor="@color/br_text"
             android:textSize="12sp" />

@@ -22,7 +22,7 @@
 
     <Button
         android:id="@+id/btnApplyChanges"
-        style="@style/AuthButton"
+        style="@style/Button"
         android:text="@string/saveChangesBtn" />
 
     <TextView

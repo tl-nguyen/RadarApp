@@ -41,7 +41,7 @@
 
     <Button
         android:id="@+id/btnLogin"
-        style="@style/AuthButton"
+        style="@style/Button"
         android:layout_below="@id/llEdit"
         android:text="@string/btn_login" />
 

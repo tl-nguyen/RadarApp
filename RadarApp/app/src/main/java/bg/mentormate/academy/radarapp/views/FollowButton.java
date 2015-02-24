@@ -24,22 +24,14 @@ public class FollowButton extends ToggleButton {
 
     public FollowButton(Context context) {
         super(context);
-        init();
     }
 
     public FollowButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public FollowButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    private void init() {
-        setTextOn(getContext().getString(R.string.unfollow_text_btn));
-        setTextOff(getContext().getString(R.string.follow_text_btn));
     }
 
     public void setData(final User currentUser, final User followingUser) {
@@ -56,8 +48,10 @@ public class FollowButton extends ToggleButton {
                 }
 
                 if (followingUsers.contains(followingUser)) {
+                    setColorToggleOn();
                     setChecked(true);
                 } else {
+                    setColorToggleOff();
                     setChecked(false);
                 }
 
@@ -71,10 +65,22 @@ public class FollowButton extends ToggleButton {
         });
     }
 
+    private void setColorToggleOn() {
+        setBackgroundColor(getResources().getColor(R.color.br_toggle_on));
+        setTextColor(getResources().getColor(android.R.color.white));
+    }
+
+    private void setColorToggleOff() {
+        setBackgroundColor(getResources().getColor(R.color.br_button));
+        setTextColor(getResources().getColor(R.color.br_text));
+    }
+
     private void onFollowClicked(List<User> followingUsers, final User followingUser, final User currentUser) {
         if (followingUsers.contains(followingUser)) {
+            setColorToggleOff();
             followingUsers.remove(followingUser);
         } else {
+            setColorToggleOn();
             followingUsers.add(followingUser);
         }
 

@@ -42,7 +42,7 @@
     <string name="recent_room_label">NEW ROOMS</string>
     <string name="name_hint">Name</string>
     <string name="check_keypass_title">Enter the passkey to get in!</string>
-    <string name="got_it_btn">Got it!</string>
+    <string name="room_register_text">REGISTER</string>
     <string name="passkey_incorrect_message">The passkey is incorrect :-(</string>
     <string name="title_activity_room">Room</string>
     <string name="action_settings">Settings</string>

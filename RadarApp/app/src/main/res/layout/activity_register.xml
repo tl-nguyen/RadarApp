@@ -53,7 +53,7 @@
 
     <Button
         android:id="@+id/btnRegister"
-        style="@style/AuthButton"
+        style="@style/Button"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@id/llEdit"
@@ -65,7 +65,7 @@
 
     <Button
         android:id="@+id/btnCancel"
-        style="@style/AuthButton"
+        style="@style/Button"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/llEdit"

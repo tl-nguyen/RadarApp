@@ -8,12 +8,12 @@
         android:id="@+id/pivBigAvatar"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:src="@drawable/ic_launcher" />
 
     <LinearLayout
@@ -53,7 +53,7 @@
 
             <TextView
                 android:id="@+id/tvFollowingCount"
-                style="@style/FollowCount"/>
+                style="@style/FollowCount" />
 
             <TextView
                 android:id="@+id/tvFollowingLabel"
@@ -67,7 +67,7 @@
 
     <Button
         android:id="@+id/btnEditProfile"
-        style="@style/AuthButton"
+        style="@style/Button"
         android:layout_alignBottom="@+id/pivBigAvatar"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
@@ -76,13 +76,18 @@
         android:text="@string/edit_profile_label" />
 
     <bg.mentormate.academy.radarapp.views.FollowButton
+        style="@style/ToggleButton.Follow"
         android:id="@+id/fbFollow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/pivBigAvatar"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_toEndOf="@+id/pivBigAvatar"
         android:layout_toRightOf="@+id/pivBigAvatar"
-        android:checked="false"
         android:visibility="invisible" />
 
     <bg.mentormate.academy.radarapp.views.RoomItem
@@ -93,7 +98,7 @@
 
     <Button
         android:id="@+id/btnCreate"
-        style="@style/AuthButton"
+        style="@style/Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/riMyRoom"
@@ -109,7 +114,7 @@
 
     <Button
         android:id="@+id/btnEditRoom"
-        style="@style/AuthButton"
+        style="@style/Button"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@id/riMyRoom"
@@ -121,7 +126,7 @@
 
     <Button
         android:id="@+id/btnDestroy"
-        style="@style/AuthButton"
+        style="@style/Button"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/riMyRoom"

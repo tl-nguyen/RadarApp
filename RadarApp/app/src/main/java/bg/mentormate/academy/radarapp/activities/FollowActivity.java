@@ -12,7 +12,7 @@ public class FollowActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_following);
+        setContentView(R.layout.activity_follow);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

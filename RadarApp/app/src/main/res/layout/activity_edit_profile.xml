@@ -30,7 +30,7 @@
 
         <Button
             android:id="@+id/btnTakePic"
-            style="@style/AuthButton"
+            style="@style/Button"
             android:layout_width="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginRight="0dp"
@@ -44,7 +44,7 @@
 
         <Button
             android:id="@+id/btnChangeAvatar"
-            style="@style/AuthButton"
+            style="@style/Button"
             android:layout_width="0dp"
             android:layout_marginLeft="0dp"
             android:layout_marginStart="0dp"
@@ -79,7 +79,7 @@
 
     <Button
         android:id="@+id/btnSaveChanges"
-        style="@style/AuthButton"
+        style="@style/Button"
         android:layout_below="@+id/llEdit"
         android:text="@string/saveChangesBtn" />
 

@@ -40,8 +40,7 @@
         <item name="titleTextStyle">@style/ActionBar.Solid.Br.TitleTextStyle</item>
     </style>
 
-    <style name="ActionBar.Solid.Br.TitleTextStyle" 
-        parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+    <style name="ActionBar.Solid.Br.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@android:color/white</item>
     </style>
 
@@ -142,7 +141,7 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="AuthButton">
+    <style name="Button">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerHorizontal">true</item>
@@ -173,5 +172,22 @@
         <item name="android:textColor">@color/br_text</item>
     </style>
 
+    <style name="ToggleButton">
+        <item name="android:background">@color/br_button</item>
+        <item name="android:textColor">@color/br_text</item>
+        <item name="android:checked">false</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+    </style>
+
+    <style name="ToggleButton.Follow">
+        <item name="android:textOn">@string/unfollow_text_btn</item>
+        <item name="android:textOff">@string/follow_text_btn</item>
+    </style>
+
+    <style name="ToggleButton.Register">
+        <item name="android:textOn">@string/unregister_text_btn</item>
+        <item name="android:textOff">@string/register_text_btn</item>
+    </style>
 
 </resources>

@@ -6,7 +6,6 @@ import android.widget.ToggleButton;
 
 import java.util.List;
 
-import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 
@@ -17,17 +16,10 @@ public class RegisterButton extends ToggleButton {
 
     public RegisterButton(Context context) {
         super(context);
-        init();
     }
 
     public RegisterButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
-    }
-
-    private void init() {
-        setTextOn(getContext().getString(R.string.unregister_text_btn));
-        setTextOff(getContext().getString(R.string.register_text_btn));
     }
 
     public void setData(User currentUser, Room selectedRoom) {

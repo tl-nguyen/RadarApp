@@ -98,9 +98,9 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
                             mRbRegister.setData(mCurrentUser, mRoom);
 
                             if (mRbRegister.isChecked()) {
-                                setRegisteredVisibility();
+                                setRegisteredVisibilityAndStyle();
                             } else {
-                                setUnregisteredVisibility();
+                                setUnregisteredVisibilityAndStyle();
                             }
                         }
                     });
@@ -131,16 +131,16 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
         // TODO: it is not supposed to be like this, check it when have time
         if (!mRbRegister.isChecked()) {
             if (mRoom.getUsers().contains(mCurrentUser)) {
-                setUnregisteredVisibility();
+                setUnregisteredVisibilityAndStyle();
                 removeUserFromRoom();
             } else {
-                setUnregisteredVisibility();
+                setUnregisteredVisibilityAndStyle();
             }
         } else {
             if (!mRoom.getUsers().contains(mCurrentUser)) {
                 checkForPassKey();
             } else {
-                setRegisteredVisibility();
+                setRegisteredVisibilityAndStyle();
             }
         }
     }
@@ -156,7 +156,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     }
 
     private void checkForPassKey() {
-        setUnregisteredVisibility();
+        setUnregisteredVisibilityAndStyle();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -166,7 +166,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
 
         builder.setView(dvCreateRoom)
                 .setTitle(getContext().getString(R.string.check_keypass_title))
-                .setPositiveButton(getContext().getString(R.string.got_it_btn), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getContext().getString(R.string.room_register_text), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         String passKey = etPassKey.getText().toString().trim();
@@ -193,9 +193,9 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    setUnregisteredVisibility();
+                    setUnregisteredVisibilityAndStyle();
                 } else {
-                    setUnregisteredVisibility();
+                    setUnregisteredVisibilityAndStyle();
                     AlertHelper.alert(getContext(),
                             getContext().getString(R.string.dialog_error_title),
                             e.getMessage());
@@ -211,9 +211,9 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    setRegisteredVisibility();
+                    setRegisteredVisibilityAndStyle();
                 } else {
-                    setUnregisteredVisibility();
+                    setUnregisteredVisibilityAndStyle();
                     AlertHelper.alert(getContext(),
                             getContext().getString(R.string.dialog_error_title),
                             e.getMessage());
@@ -222,14 +222,18 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
         });
     }
 
-    private void setUnregisteredVisibility() {
+    private void setUnregisteredVisibilityAndStyle() {
         mRbRegister.setChecked(false);
         mBtnJoin.setVisibility(View.GONE);
+        mRbRegister.setBackgroundColor(getResources().getColor(R.color.br_button));
+        mRbRegister.setTextColor(getResources().getColor(R.color.br_text));
     }
 
-    private void setRegisteredVisibility() {
+    private void setRegisteredVisibilityAndStyle() {
         mRbRegister.setChecked(true);
         mBtnJoin.setVisibility(View.VISIBLE);
+        mRbRegister.setBackgroundColor(getResources().getColor(R.color.br_toggle_on));
+        mRbRegister.setTextColor(getResources().getColor(android.R.color.white));
     }
 
     private void goToRoom() {

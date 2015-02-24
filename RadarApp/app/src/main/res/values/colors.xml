@@ -9,6 +9,8 @@
     <color name="br_focused_button">#a5d6a7</color>
     <color name="br_text">#1b5e20</color>
     <color name="br_light_text">#43a047</color>
-    <color name="br_navigation_drawer_background">#bbffffff</color>
+    <color name="br_navigation_drawer_background">#ffffffff</color>
+    <color name="br_toggle_on">#ef5350</color>
+    <color name="br_toggle_off">#a5d6a7</color>
 
 </resources>
