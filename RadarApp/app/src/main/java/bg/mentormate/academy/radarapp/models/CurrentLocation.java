@@ -12,6 +12,7 @@ import bg.mentormate.academy.radarapp.Constants;
 
 @ParseClassName(Constants.CURRENT_LOCATION_TABLE)
 public class CurrentLocation extends ParseObject {
+
     public ParseGeoPoint getLocation() {
         return getParseGeoPoint(Constants.CURRENT_LOCATION_COL_LOCATION);
     }
@@ -35,4 +36,8 @@ public class CurrentLocation extends ParseObject {
     public void setActive(boolean active) {
         put(Constants.CURRENT_LOCATION_COL_ACTIVE, active);
     }
+
+    public String getStatus() { return getString(Constants.CURRENT_LOCATION_COL_STATUS); }
+
+    public void setStatus(String status) { put(Constants.CURRENT_LOCATION_COL_STATUS, status); }
 }

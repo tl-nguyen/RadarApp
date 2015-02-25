@@ -83,5 +83,8 @@
     <string name="nothing_changed_text">Nothing changed</string>
     <string name="kick_out_text_title">You were kicked from the room</string>
     <string name="kickout_text_description">Contact the room owner for more information</string>
+    <string name="statusUpdate">Status</string>
+    <string name="update_button">UPDATE</string>
+    <string name="dialog_change_status_title">Change status</string>
 
 </resources>

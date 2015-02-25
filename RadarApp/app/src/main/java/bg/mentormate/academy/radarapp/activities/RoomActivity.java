@@ -1,9 +1,11 @@
 package bg.mentormate.academy.radarapp.activities;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -12,9 +14,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -56,7 +61,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     private final static long DATA_UPDATE_INTERVAL = 4000;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-
+    private Menu mMenu;
     private LocalDb mLocalDb;
     private User mCurrentUser;
     private Room mRoom;
@@ -94,6 +99,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
 
         mLocalDb = LocalDb.getInstance();
         mCurrentUser = (User) User.getCurrentUser();
+
     }
 
     private void initViews() {
@@ -225,6 +231,13 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_room_activity, menu);
+        this.mMenu = menu;
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -232,10 +245,40 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
             case android.R.id.home:
                 finish();
                 break;
+            case R.id.action_change_status:
+                changeStatus();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void changeStatus() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View dvCreateRoom = inflater.inflate(R.layout.dialog_change_status, null);
+
+        final EditText etStatus = (EditText) dvCreateRoom.findViewById(R.id.etEditStatus);
+
+        builder.setView(dvCreateRoom)
+                .setTitle(getString(R.string.dialog_change_status_title))
+                .setPositiveButton(getString(R.string.update_button), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String status = etStatus.getText().toString().trim();
+
+                        if (!status.isEmpty()) {
+                            mCurrentUser.getCurrentLocation().setStatus(status);
+                        }
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel_btn), null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -403,7 +446,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                     mIconGenerator);
 
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(avatarIcon[0]))
-                    .title(user.getUsername())
+                    .title(getMarkerTitle(user))
                     .position(position);
 
             return markerOptions;
@@ -428,7 +471,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                     mIconGenerator);
 
             marker.setIcon(BitmapDescriptorFactory.fromBitmap(avatarIcon[0]));
-            marker.setTitle(user.getUsername());
+            marker.setTitle(getMarkerTitle(user));
         }
 
         private void kickFromTheRoom() {
@@ -446,5 +489,20 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
 
             finish();
         }
+    }
+
+    private String getMarkerTitle(User user) {
+        String mMarkerTitle;
+        String mCurrentStatus;
+        mCurrentStatus = user.getCurrentLocation().getStatus();
+
+        if(mCurrentStatus == null || mCurrentStatus.isEmpty()){
+            mMarkerTitle = user.getUsername();
+        }
+        else {
+            mMarkerTitle = user.getUsername() + ": " + mCurrentStatus;
+        }
+
+        return mMarkerTitle;
     }
 }

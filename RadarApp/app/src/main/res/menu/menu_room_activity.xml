@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="bg.mentormate.academy.radarapp.activities.EditRoomActivity">
+
+    <item
+        android:id="@+id/action_change_status"
+        android:icon="@drawable/ic_status"
+        android:orderInCategory="100"
+        android:title="@string/statusUpdate"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+
+</menu>
