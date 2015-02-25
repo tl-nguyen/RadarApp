@@ -15,9 +15,6 @@ import bg.mentormate.academy.radarapp.activities.MainActivity;
 import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.services.LocationTrackingService;
 
-/**
- * Created by lopi on 2/22/2015.
- */
 public class TrackingStatusToggleWidget extends AppWidgetProvider {
 
     private static final String ON_TRACKING_CLICK = "bg.mentormate.academy.radarapp.action.ON_TRACKING_CLICK";
