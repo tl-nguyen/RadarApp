@@ -82,6 +82,9 @@ public class HomeFragment extends ListFragment implements SwipeRefreshLayout.OnR
         mTvNoRoomInfo = (TextView) mHeaderView.findViewById(R.id.tvNoRoomInfo);
         mSrlRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.srlRefresh);
 
+        mSrlRefresh.setColorSchemeColors(
+                getResources().getColor(R.color.br_dark_background));
+
         mSrlRefresh.setOnRefreshListener(this);
     }
 

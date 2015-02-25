@@ -3,6 +3,7 @@ package bg.mentormate.academy.radarapp.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,8 @@ import bg.mentormate.academy.radarapp.adapters.RoomQueryAdapter;
 /**
  * Created by tl on 16.02.15.
  */
-public class SearchRoomsFragment extends ListFragment implements View.OnClickListener {
+public class SearchRoomsFragment extends ListFragment implements View.OnClickListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private static final String QUERY = "query";
 
@@ -40,6 +42,7 @@ public class SearchRoomsFragment extends ListFragment implements View.OnClickLis
     private RoomQueryAdapter mRoomQueryAdapter;
     private EditText mEtQuery;
     private Button mBtnSearch;
+    private SwipeRefreshLayout mSrlRefresh;
 
     public SearchRoomsFragment() {
     }
@@ -76,8 +79,13 @@ public class SearchRoomsFragment extends ListFragment implements View.OnClickLis
     private void initViews(View rootView) {
         mEtQuery = (EditText) rootView.findViewById(R.id.etQuery);
         mBtnSearch = (Button) rootView.findViewById(R.id.btnSeach);
+        mSrlRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.srlRefresh);
+
+        mSrlRefresh.setColorSchemeColors(
+                getResources().getColor(R.color.br_dark_background));
 
         mBtnSearch.setOnClickListener(this);
+        mSrlRefresh.setOnRefreshListener(this);
     }
 
     @Override
@@ -92,16 +100,22 @@ public class SearchRoomsFragment extends ListFragment implements View.OnClickLis
 
         switch (id) {
             case R.id.btnSeach:
-                searchForRooms();
+                onSearchClicked();
                 break;
         }
     }
 
-    private void searchForRooms() {
+    private void onSearchClicked() {
         String query = mEtQuery.getText().toString();
 
         mRoomQueryAdapter = new RoomQueryAdapter(getActivity(), query);
 
         setListAdapter(mRoomQueryAdapter);
+    }
+
+    @Override
+    public void onRefresh() {
+        onSearchClicked();
+        mSrlRefresh.setRefreshing(false);
     }
 }

@@ -9,7 +9,7 @@
     tools:context="bg.mentormate.academy.radarapp.activities.MainActivity">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/llSearchBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -19,36 +19,44 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:hint="@string/search_hint" >
+            android:hint="@string/search_hint">
 
             <requestFocus />
         </EditText>
 
         <Button
             android:id="@+id/btnSeach"
+            style="@style/Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="@string/search_btn"
-            style="@style/Button"/>
+            android:text="@string/search_btn" />
 
     </LinearLayout>
 
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="wrap_content"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srlRefresh"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/linearLayout" />
+        android:layout_below="@id/llSearchBox">
+
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/llSearchBox" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@android:id/empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/empty_list"
-        android:layout_below="@+id/linearLayout"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/llSearchBox"
+        android:text="@string/empty_list" />
 
 </RelativeLayout>

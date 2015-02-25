@@ -2,6 +2,7 @@ package bg.mentormate.academy.radarapp.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -23,13 +24,15 @@ import bg.mentormate.academy.radarapp.tools.QueryHelper;
 /**
  * Created by tl on 19.02.15.
  */
-public class FollowFragment extends ListFragment implements View.OnClickListener {
+public class FollowFragment extends ListFragment implements View.OnClickListener,
+        SwipeRefreshLayout.OnRefreshListener{
 
     private static final String USER_ID = "USER_ID";
 
     private UserQueryAdapter mUserQueryAdapter;
     private EditText mEtQuery;
     private Button mBtnSearch;
+    private SwipeRefreshLayout mSrlRefresh;
 
     private User mUser;
     private String mState;
@@ -74,8 +77,13 @@ public class FollowFragment extends ListFragment implements View.OnClickListener
     private void initViews(View rootView) {
         mEtQuery = (EditText) rootView.findViewById(R.id.etQuery);
         mBtnSearch = (Button) rootView.findViewById(R.id.btnSeach);
+        mSrlRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.srlRefresh);
+
+        mSrlRefresh.setColorSchemeColors(
+                getResources().getColor(R.color.br_dark_background));
 
         mBtnSearch.setOnClickListener(this);
+        mSrlRefresh.setOnRefreshListener(this);
     }
 
     @Override
@@ -111,5 +119,11 @@ public class FollowFragment extends ListFragment implements View.OnClickListener
         mUserQueryAdapter = new UserQueryAdapter(getActivity(), query, mState, mUser);
 
         setListAdapter(mUserQueryAdapter);
+    }
+
+    @Override
+    public void onRefresh() {
+        onSearchClicked();
+        mSrlRefresh.setRefreshing(false);
     }
 }

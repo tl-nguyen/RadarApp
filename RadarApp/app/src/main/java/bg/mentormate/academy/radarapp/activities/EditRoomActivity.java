@@ -2,6 +2,7 @@ package bg.mentormate.academy.radarapp.activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,14 +26,16 @@ import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 
-public class EditRoomActivity extends ActionBarActivity
-        implements View.OnClickListener, AdapterView.OnItemLongClickListener {
+public class EditRoomActivity extends ActionBarActivity implements View.OnClickListener,
+        AdapterView.OnItemLongClickListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private Menu mMenu;
     private Button mBtnApplyChanges;
     private EditText mEtChangePassword;
     private EditText mEtChangeRoomName;
     private GridView mGvUsers;
+    private SwipeRefreshLayout mSrlRefresh;
 
     private LocalDb mLocalDb;
     private User mCurrentUser;
@@ -56,7 +59,7 @@ public class EditRoomActivity extends ActionBarActivity
         mLocalDb = LocalDb.getInstance();
         mCurrentUser = mLocalDb.getCurrentUser();
         mRoom = mCurrentUser.getRoom();
-
+        mUsers = mRoom.getUsers();
         mSelectedUsers = new ArrayList<>();
         mUsersDeleted = false;
 
@@ -64,6 +67,7 @@ public class EditRoomActivity extends ActionBarActivity
         mEtChangeRoomName = (EditText) findViewById(R.id.etChangeRoomName);
         mBtnApplyChanges = (Button) findViewById(R.id.btnApplyChanges);
         mGvUsers = (GridView) findViewById(R.id.usersList);
+        mSrlRefresh = (SwipeRefreshLayout) findViewById(R.id.srlRefresh);
 
         mRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @Override
@@ -72,13 +76,15 @@ public class EditRoomActivity extends ActionBarActivity
             }
         });
 
-        mUsers = mRoom.getUsers();
-
         mEditRoomUserAdapter = new EditRoomUserAdapter(this, mUsers);
         mGvUsers.setAdapter(mEditRoomUserAdapter);
 
+        mSrlRefresh.setColorSchemeColors(
+                getResources().getColor(R.color.br_dark_background));
+
         mBtnApplyChanges.setOnClickListener(this);
         mGvUsers.setOnItemLongClickListener(this);
+        mSrlRefresh.setOnRefreshListener(this);
     }
 
     @Override
@@ -188,5 +194,19 @@ public class EditRoomActivity extends ActionBarActivity
         } else {
             mMenu.findItem(R.id.action_delete_users).setVisible(false);
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        mRoom.fetchInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                mUsers.clear();
+                mUsers.addAll(mRoom.getUsers());
+                mEditRoomUserAdapter.notifyDataSetChanged();
+
+                mSrlRefresh.setRefreshing(false);
+            }
+        });
     }
 }

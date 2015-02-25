@@ -34,14 +34,22 @@
         android:text="@string/member_header_text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <GridView
-        android:id="@+id/usersList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:columnWidth="60dp"
-        android:gravity="center"
-        android:horizontalSpacing="@dimen/user_grid_spacing"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="@dimen/user_grid_spacing" />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/srlRefresh">
+
+        <GridView
+            android:id="@+id/usersList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:columnWidth="60dp"
+            android:gravity="center"
+            android:horizontalSpacing="@dimen/user_grid_spacing"
+            android:numColumns="auto_fit"
+            android:verticalSpacing="@dimen/user_grid_spacing" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 </LinearLayout>
