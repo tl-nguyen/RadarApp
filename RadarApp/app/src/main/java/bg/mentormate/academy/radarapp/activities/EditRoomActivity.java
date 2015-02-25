@@ -115,7 +115,7 @@ public class EditRoomActivity extends ActionBarActivity implements View.OnClickL
     private void deleteSelectedUsers() {
         if(!mSelectedUsers.isEmpty()){
             for(int i=0; i < mSelectedUsers.size(); i++){
-                mEditRoomUserAdapter.getView(i, null, null).setBackgroundColor(Color.TRANSPARENT);
+                mEditRoomUserAdapter.getView(i, null, null).setBackgroundColor(Color.WHITE);
                 mUsers.remove(mSelectedUsers.get(i));
             }
             mEditRoomUserAdapter = new EditRoomUserAdapter(this, mUsers);
@@ -178,7 +178,7 @@ public class EditRoomActivity extends ActionBarActivity implements View.OnClickL
 
         if (!mSelectedUsers.contains(selectedMember)) {
             mSelectedUsers.add(selectedMember);
-            view.setBackgroundColor(Color.GRAY);
+            view.setBackgroundColor(getResources().getColor(R.color.br_toggle_on));
         } else {
             mSelectedUsers.remove(selectedMember);
             view.setBackgroundColor(Color.WHITE);
