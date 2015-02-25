@@ -15,7 +15,7 @@ import java.util.List;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.User;
-import bg.mentormate.academy.radarapp.tools.AlertHelper;
+import bg.mentormate.academy.radarapp.tools.NotificationHelper;
 
 /**
  * Created by tl on 18.02.15.
@@ -101,14 +101,14 @@ public class FollowButton extends ToggleButton {
                                 }
                                 follow.saveInBackground();
                             } else {
-                                AlertHelper.alert(getContext(),
+                                NotificationHelper.alert(getContext(),
                                         getContext().getString(R.string.dialog_error_title),
                                         e.getMessage());
                             }
                         }
                     });
                 } else {
-                    AlertHelper.alert(getContext(),
+                    NotificationHelper.alert(getContext(),
                             getContext().getString(R.string.dialog_error_title),
                             e.getMessage());
                 }

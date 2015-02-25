@@ -19,7 +19,7 @@ import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.adapters.UserQueryAdapter;
 import bg.mentormate.academy.radarapp.models.User;
-import bg.mentormate.academy.radarapp.tools.AlertHelper;
+import bg.mentormate.academy.radarapp.tools.NotificationHelper;
 
 /**
  * Created by tl on 19.02.15.
@@ -91,7 +91,7 @@ public class FollowFragment extends ListFragment implements View.OnClickListener
 
                     setListAdapter(mUserQueryAdapter);
                 } else {
-                    AlertHelper.alert(getActivity(),
+                    NotificationHelper.alert(getActivity(),
                             getString(R.string.dialog_error_title),
                             e.getMessage());
                 }

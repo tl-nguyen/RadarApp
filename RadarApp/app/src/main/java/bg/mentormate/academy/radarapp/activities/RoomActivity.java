@@ -1,8 +1,6 @@
 package bg.mentormate.academy.radarapp.activities;
 
-import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,7 +13,6 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +26,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 import com.parse.GetCallback;
@@ -37,7 +35,10 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
@@ -48,11 +49,11 @@ import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.services.LocationTrackingService;
 import bg.mentormate.academy.radarapp.services.RetrieveRoomDataService;
-import bg.mentormate.academy.radarapp.tools.AlertHelper;
+import bg.mentormate.academy.radarapp.tools.NotificationHelper;
 
 public class RoomActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
 
-    private final static long DATA_UPDATE_INTERVAL = 5000;
+    private final static long DATA_UPDATE_INTERVAL = 4000;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -60,6 +61,9 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     private User mCurrentUser;
     private Room mRoom;
     private List<User> mUsers;
+    private Map<String, Marker> mMarkers;
+    private UserAdapter mUserAdapter;
+
     private Intent mDataServiceIntent;
 
     private GridView mGvUsers;
@@ -79,13 +83,17 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mLocalDb = LocalDb.getInstance();
+        mUsers = new ArrayList<>();
+        mMarkers = new HashMap<>();
 
+        mLocalDb = LocalDb.getInstance();
         mCurrentUser = (User) User.getCurrentUser();
 
         setUpMapIfNeeded();
 
         mGvUsers = (GridView) findViewById(R.id.gvUsers);
+        mUserAdapter = new UserAdapter(this, mUsers);
+        mGvUsers.setAdapter(mUserAdapter);
         mGvUsers.setOnItemClickListener(this);
     }
 
@@ -203,7 +211,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
 
                     updateMarkers();
                 } else {
-                    AlertHelper.alert(RoomActivity.this,
+                    NotificationHelper.alert(RoomActivity.this,
                             getString(R.string.dialog_error_title),
                             e.getMessage());
                 }
@@ -250,10 +258,14 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(mUsers.get(position).getCurrentLocation().getLocation().getLatitude(),
-                        mUsers.get(position).getCurrentLocation().getLocation().getLongitude()),
-                15));
+        ParseGeoPoint userLocation = mUsers.get(position)
+                .getCurrentLocation()
+                .getLocation();
+
+        LatLng latLng = new LatLng(userLocation.getLatitude(),
+                userLocation.getLongitude());
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
     }
 
     /**
@@ -271,23 +283,26 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
         }
 
         @Override
-        protected void onPreExecute() {
-            mMap.clear();
-        }
-
-        @Override
         protected Void doInBackground(Void... params) {
-            mUsers = mRoom.getUsers();
-            boolean isInTheRoom = false;
+            List<User> users = mRoom.getUsers();
 
-            for (User user: mUsers) {
-                final MarkerOptions marker = new MarkerOptions();
+            boolean isInTheRoom = false;
+            boolean newUserAdded = false;
+
+            for (final User user: users) {
                 ParseGeoPoint userLocation = null;
-                Bitmap avatarIcon = null;
+                final Bitmap[] avatarIcon = {null};
 
                 try {
                     user.fetchIfNeeded();
 
+                    // Add to the gridview data source if the user is new
+                    if (!mUsers.contains(user)) {
+                        mUsers.add(user);
+                        newUserAdded = true;
+                    }
+
+                    // If the user is me, don't do anything
                     if (user.equals(mCurrentUser)) {
                         isInTheRoom = true;
                         continue;
@@ -296,69 +311,92 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                     user.getCurrentLocation().fetchIfNeeded();
 
                     userLocation = user.getCurrentLocation().getLocation();
-
-                    avatarIcon = getAvatarIcon(user);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
+                // Visualize the user's marker
                 if (userLocation != null) {
-                    marker.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
-                            .title(user.getUsername());
+                    final LatLng latLngPosition = new LatLng(
+                            userLocation.getLatitude(),
+                            userLocation.getLongitude());
 
-                    if (avatarIcon != null) {
-                        marker.icon(BitmapDescriptorFactory.fromBitmap(avatarIcon));
+                    // Add new marker to the markers Map Collection if it's not in it
+                    if (!mMarkers.containsKey(user.getObjectId())) {
+                        final MarkerOptions markerOptions = getMarkerOptions(user, avatarIcon, latLngPosition);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Marker marker = mMap.addMarker(markerOptions);
+                                mMarkers.put(user.getObjectId(), marker);
+                            }
+                        });
+                    } else {
+                        final Marker marker = mMarkers.get(user.getObjectId());
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateMarker(marker, latLngPosition, avatarIcon, user);
+                            }
+                        });
+
                     }
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mMap.addMarker(marker);
-                        }
-                    });
                 }
             }
 
+            // If the user is not from the room list then...
             if (!isInTheRoom) {
                 kickFromTheRoom();
             }
 
+            final boolean toRefresh = newUserAdded;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    UserAdapter adapter = new UserAdapter(RoomActivity.this, mUsers);
-                    mGvUsers.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
+                    if (toRefresh) {
+                        mUserAdapter.notifyDataSetChanged();
+                    }
                 }
             });
 
             return null;
         }
 
-        private void kickFromTheRoom() {
-            notifyTheUser();
-            finish();
+        private MarkerOptions getMarkerOptions(User user, Bitmap[] avatarIcon, LatLng newPosition) {
+            final MarkerOptions markerOptions = new MarkerOptions();
+
+            markerOptions.position(newPosition);
+
+            // Put the avatar to the marker
+            avatarIcon[0] = getAvatarIcon(user);
+            if (avatarIcon[0] != null) {
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(avatarIcon[0]));
+            } else {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_avatar));
+            }
+
+            markerOptions.title(user.getUsername());
+            return markerOptions;
         }
 
-        // Notification
-        public void notifyTheUser() {
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(RoomActivity.this)
-                    .setContentTitle(getString(R.string.kick_out_text_title))
-                    .setContentText(getString(R.string.kickout_text_description))
-                    .setSmallIcon(R.drawable.ic_launcher)
-                    .setAutoCancel(true);
+        private void updateMarker(Marker marker, LatLng latLngPosition, Bitmap[] avatarIcon, User user) {
+            if (marker.getPosition().latitude != latLngPosition.latitude ||
+                    marker.getPosition().longitude != latLngPosition.longitude) {
 
-            Intent intent = new Intent(Intent.ACTION_SEND);
+                marker.setPosition(latLngPosition);
 
-            intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_EMAIL, mRoom.getCreatedBy().getEmail());
+                // Put the avatar to the marker
+                avatarIcon[0] = getAvatarIcon(user);
+                if (avatarIcon[0] != null) {
+                    marker.setIcon(BitmapDescriptorFactory.fromBitmap(avatarIcon[0]));
+                } else {
+                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_avatar));
+                }
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(RoomActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-            notificationBuilder.setContentIntent(pendingIntent);
-
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Activity.NOTIFICATION_SERVICE);
-
-            notificationManager.notify(1, notificationBuilder.build());
+                marker.setTitle(user.getUsername());
+            }
         }
 
         private Bitmap getAvatarIcon(User user) {
@@ -401,6 +439,20 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
             } else {
                 mIconGenerator.setStyle(IconGenerator.STYLE_RED);
             }
+        }
+
+        private void kickFromTheRoom() {
+            // Intent to send a email to the room owner if needed
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_EMAIL, mRoom.getCreatedBy().getEmail());
+
+            NotificationHelper.notifyTheUser(RoomActivity.this,
+                    R.string.kick_out_text_title,
+                    R.string.kickout_text_description,
+                    intent);
+
+            finish();
         }
     }
 }

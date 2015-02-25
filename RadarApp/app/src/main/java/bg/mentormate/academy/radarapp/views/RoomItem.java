@@ -27,7 +27,7 @@ import bg.mentormate.academy.radarapp.activities.RoomActivity;
 import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
-import bg.mentormate.academy.radarapp.tools.AlertHelper;
+import bg.mentormate.academy.radarapp.tools.NotificationHelper;
 
 /**
  * Created by tl on 18.02.15.
@@ -182,7 +182,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
                         if (passKey.equals(mRoom.getPassKey())) {
                             addUserToRoom();
                         } else {
-                            AlertHelper.alert(getContext(),
+                            NotificationHelper.alert(getContext(),
                                     getContext().getString(R.string.dialog_error_title),
                                     getContext().getString(R.string.passkey_incorrect_message));
                         }
@@ -204,7 +204,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
                     setUnregisteredVisibilityAndStyle();
                 } else {
                     setUnregisteredVisibilityAndStyle();
-                    AlertHelper.alert(getContext(),
+                    NotificationHelper.alert(getContext(),
                             getContext().getString(R.string.dialog_error_title),
                             e.getMessage());
                 }
@@ -222,7 +222,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
                     setRegisteredVisibilityAndStyle();
                 } else {
                     setUnregisteredVisibilityAndStyle();
-                    AlertHelper.alert(getContext(),
+                    NotificationHelper.alert(getContext(),
                             getContext().getString(R.string.dialog_error_title),
                             e.getMessage());
                 }

@@ -16,7 +16,7 @@ import com.parse.ParseUser;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.User;
-import bg.mentormate.academy.radarapp.tools.AlertHelper;
+import bg.mentormate.academy.radarapp.tools.NotificationHelper;
 
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -71,7 +71,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
         if (username.isEmpty() || password.isEmpty()) {
             // The input are empty, show an alert
-            AlertHelper.alert(this, getString(R.string.dialog_error_title),
+            NotificationHelper.alert(this, getString(R.string.dialog_error_title),
                     getString(R.string.login_invalid_inputs_message));
         } else {
             showProgressBar();
@@ -87,7 +87,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                         mLocalDb.setCurrentUser((User) parseUser);
                         goToMain();
                     } else {
-                        AlertHelper.alert(LoginActivity.this, getString(R.string.dialog_error_title),
+                        NotificationHelper.alert(LoginActivity.this, getString(R.string.dialog_error_title),
                                 e.getMessage());
                     }
                 }

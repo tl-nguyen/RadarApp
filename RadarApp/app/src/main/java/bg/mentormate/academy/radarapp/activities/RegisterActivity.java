@@ -21,7 +21,7 @@ import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.CurrentLocation;
 import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.User;
-import bg.mentormate.academy.radarapp.tools.AlertHelper;
+import bg.mentormate.academy.radarapp.tools.NotificationHelper;
 
 public class RegisterActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -75,7 +75,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
         if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
             // The inputs are empty, show an alert
-            AlertHelper.alert(this, getString(R.string.dialog_error_title),
+            NotificationHelper.alert(this, getString(R.string.dialog_error_title),
                     getString(R.string.signup_invalid_inputs_message));
         } else {
             // Create the new user in Parse.com
@@ -152,7 +152,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        AlertHelper.alert(RegisterActivity.this,
+                        NotificationHelper.alert(RegisterActivity.this,
                                 getString(R.string.dialog_error_title),
                                 e.getMessage());
                     }

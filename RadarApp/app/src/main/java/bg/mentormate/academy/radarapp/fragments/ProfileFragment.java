@@ -38,7 +38,7 @@ import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
-import bg.mentormate.academy.radarapp.tools.AlertHelper;
+import bg.mentormate.academy.radarapp.tools.NotificationHelper;
 import bg.mentormate.academy.radarapp.views.FollowButton;
 import bg.mentormate.academy.radarapp.views.RoomItem;
 
@@ -119,7 +119,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 mFollow = mUser.getFollow();
 
             } catch (ParseException e) {
-                AlertHelper.alert(getActivity(),
+                NotificationHelper.alert(getActivity(),
                         getString(R.string.dialog_error_title),
                         e.getMessage());
             }
@@ -301,7 +301,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void createRoom(String name, String passKey) {
         if (name.isEmpty() || passKey.isEmpty()) {
-            AlertHelper.alert(getActivity(), getString(R.string.dialog_error_title),
+            NotificationHelper.alert(getActivity(), getString(R.string.dialog_error_title),
                     getString(R.string.create_room_invalid_inputs_message));
         } else {
             if (mMyRoom == null && !mUser.containsKey(Constants.USER_COL_ROOM)) {
@@ -368,7 +368,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void showErrorAlert(ParseException e) {
-        AlertHelper.alert(getActivity(),
+        NotificationHelper.alert(getActivity(),
                 getString(R.string.dialog_error_title),
                 e.getMessage());
     }
