@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -33,7 +31,6 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +46,10 @@ import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.services.LocationTrackingService;
 import bg.mentormate.academy.radarapp.services.RetrieveRoomDataService;
+import bg.mentormate.academy.radarapp.tools.BitmapHelper;
+import bg.mentormate.academy.radarapp.tools.LocationHelper;
 import bg.mentormate.academy.radarapp.tools.NotificationHelper;
+import bg.mentormate.academy.radarapp.tools.QueryHelper;
 
 public class RoomActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
 
@@ -83,37 +83,32 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        initData();
+        initViews();
+        setUpMapIfNeeded();
+    }
+
+    private void initData() {
         mUsers = new ArrayList<>();
         mMarkers = new HashMap<>();
 
         mLocalDb = LocalDb.getInstance();
         mCurrentUser = (User) User.getCurrentUser();
+    }
 
-        setUpMapIfNeeded();
-
+    private void initViews() {
         mGvUsers = (GridView) findViewById(R.id.gvUsers);
         mUserAdapter = new UserAdapter(this, mUsers);
         mGvUsers.setAdapter(mUserAdapter);
         mGvUsers.setOnItemClickListener(this);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        startServiceForLocationTracking();
-
-        registerReceiver(positionsUpdateReceiver,
-                new IntentFilter(RetrieveRoomDataService.BROADCAST_RESULT));
-
-        startServiceForUpdatingPositions();
-    }
-
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+            ((SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map))
                     .getMapAsync(new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
@@ -128,6 +123,23 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        startServiceForLocationTracking();
+        startServiceForUpdatingPositions();
+
+        registerReceiver(positionsUpdateReceiver,
+                new IntentFilter(RetrieveRoomDataService.BROADCAST_RESULT));
+    }
+
+    private void startServiceForLocationTracking() {
+        Intent trackingIntent = new Intent(this, LocationTrackingService.class);
+        trackingIntent.setAction(LocationTrackingService.ACTION_START_MONITORING);
+        startService(trackingIntent);
+    }
+
     private void startServiceForUpdatingPositions() {
         final long ALARM_TRIGGER_AT_TIME = SystemClock.elapsedRealtime() + 20000;
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
@@ -135,24 +147,46 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
         mDataServiceIntent = new Intent(this, RetrieveRoomDataService.class);
 
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, mDataServiceIntent, 0);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, ALARM_TRIGGER_AT_TIME, DATA_UPDATE_INTERVAL, pendingIntent);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                ALARM_TRIGGER_AT_TIME,
+                DATA_UPDATE_INTERVAL,
+                pendingIntent);
     }
 
     private void setUpMap() {
         mMap.setMyLocationEnabled(true);
 
-        showCurrentLocationOnMap();
+        navigateToCurrentLocationOnMap();
 
         String roomId = getIntent().getStringExtra(Constants.ROOM_ID);
 
         if (roomId != null) {
-            retrieveRoomById(roomId);
+            QueryHelper.getRoomById(roomId, new GetCallback() {
+                @Override
+                public void done(ParseObject parseObject, ParseException e) {
+                    if (e == null) {
+                        mRoom = (Room) parseObject;
+                        mLocalDb.setSelectedRoom(mRoom);
+
+                        // Set activity title
+                        getSupportActionBar().setTitle(mRoom.getName());
+
+                        // Do an async update
+                        updateMarkers();
+                    } else {
+                        NotificationHelper.alert(RoomActivity.this,
+                                getString(R.string.dialog_error_title),
+                                e.getMessage());
+                    }
+                }
+            });
         }
     }
 
-    private void showCurrentLocationOnMap() {
+    private void navigateToCurrentLocationOnMap() {
         final CurrentLocation locationOnDb = mCurrentUser.getCurrentLocation();
-        final Location lastKnownLocation = getLocation();
+        final Location lastKnownLocation = LocationHelper.getLastKnownLocation(this);
 
         if (lastKnownLocation != null) {
             // Show the position of the last know location on the map
@@ -185,49 +219,9 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
         }
     }
 
-    private Location getLocation() {
-        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        if (location == null) {
-            location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        }
-
-        return location;
-    }
-    private void retrieveRoomById(String roomId) {
-        ParseQuery query = new ParseQuery(Constants.ROOM_TABLE);
-
-        query.getInBackground(roomId, new GetCallback() {
-            @Override
-            public void done(ParseObject room, ParseException e) {
-                if (e == null) {
-                    mRoom = (Room) room;
-                    mLocalDb.setSelectedRoom(mRoom);
-
-                    // Set activity title
-                    getSupportActionBar().setTitle(mRoom.getName());
-
-                    updateMarkers();
-                } else {
-                    NotificationHelper.alert(RoomActivity.this,
-                            getString(R.string.dialog_error_title),
-                            e.getMessage());
-                }
-            }
-        });
-    }
-
     private void updateMarkers() {
         MarkersUpdateTask markersUpdateTask = new MarkersUpdateTask();
         markersUpdateTask.execute();
-    }
-
-    private void startServiceForLocationTracking() {
-        Intent trackingIntent = new Intent(this, LocationTrackingService.class);
-        trackingIntent.setAction(LocationTrackingService.ACTION_START_MONITORING);
-        startService(trackingIntent);
     }
 
     @Override
@@ -244,6 +238,18 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     }
 
     @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ParseGeoPoint userLocation = mUsers.get(position)
+                .getCurrentLocation()
+                .getLocation();
+
+        LatLng latLng = new LatLng(userLocation.getLatitude(),
+                userLocation.getLongitude());
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+    }
+
+    @Override
     protected void onStop() {
         if (mDataServiceIntent != null) {
             stopService(mDataServiceIntent);
@@ -256,29 +262,19 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
         super.onStop();
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        ParseGeoPoint userLocation = mUsers.get(position)
-                .getCurrentLocation()
-                .getLocation();
-
-        LatLng latLng = new LatLng(userLocation.getLatitude(),
-                userLocation.getLongitude());
-
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-    }
-
     /**
-     * Using this class to do the fetching data in background
+     * Using this class to do updating the markers in background
      */
     private class MarkersUpdateTask extends AsyncTask<Void, MarkerOptions, Void> {
 
+        // Those variables are needed for building the avatar icon
         private IconGenerator mIconGenerator;
         private ImageView mImageView;
 
         private MarkersUpdateTask() {
             this.mIconGenerator = new IconGenerator(RoomActivity.this);
             this.mImageView = new ImageView(RoomActivity.this);
+
             mIconGenerator.setContentView(mImageView);
         }
 
@@ -296,7 +292,6 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                 try {
                     user.fetchIfNeeded();
 
-                    // Add to the gridview data source if the user is new
                     if (!mUsers.contains(user)) {
                         mUsers.add(user);
                         newUserAdded = true;
@@ -317,32 +312,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
 
                 // Visualize the user's marker
                 if (userLocation != null) {
-                    final LatLng latLngPosition = new LatLng(
-                            userLocation.getLatitude(),
-                            userLocation.getLongitude());
-
-                    // Add new marker to the markers Map Collection if it's not in it
-                    if (!mMarkers.containsKey(user.getObjectId())) {
-                        final MarkerOptions markerOptions = getMarkerOptions(user, avatarIcon, latLngPosition);
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Marker marker = mMap.addMarker(markerOptions);
-                                mMarkers.put(user.getObjectId(), marker);
-                            }
-                        });
-                    } else {
-                        final Marker marker = mMarkers.get(user.getObjectId());
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                updateMarker(marker, latLngPosition, avatarIcon, user);
-                            }
-                        });
-
-                    }
+                    updateMarkerOnMap(user, userLocation, avatarIcon);
                 }
             }
 
@@ -351,11 +321,12 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                 kickFromTheRoom();
             }
 
-            final boolean toRefresh = newUserAdded;
+            // Update the User Grid
+            final boolean toRefreshTheUserGrid = newUserAdded;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (toRefresh) {
+                    if (toRefreshTheUserGrid) {
                         mUserAdapter.notifyDataSetChanged();
                     }
                 }
@@ -364,80 +335,72 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
             return null;
         }
 
-        private MarkerOptions getMarkerOptions(User user, Bitmap[] avatarIcon, LatLng newPosition) {
-            final MarkerOptions markerOptions = new MarkerOptions();
+        private void updateMarkerOnMap(final User user,
+                                       ParseGeoPoint userLocation,
+                                       final Bitmap[] avatarIcon) {
 
-            markerOptions.position(newPosition);
+            final LatLng latLngPosition = new LatLng(
+                    userLocation.getLatitude(),
+                    userLocation.getLongitude());
 
-            // Put the avatar to the marker
-            avatarIcon[0] = getAvatarIcon(user);
-            if (avatarIcon[0] != null) {
-                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(avatarIcon[0]));
+            // Add new marker to the markers Map Collection if it's not in it
+            if (!mMarkers.containsKey(user.getObjectId())) {
+                final MarkerOptions markerOptions = getMarkerOptions(user, avatarIcon, latLngPosition);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Marker marker = mMap.addMarker(markerOptions);
+                        mMarkers.put(user.getObjectId(), marker);
+                    }
+                });
             } else {
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_avatar));
-            }
+                final Marker marker = mMarkers.get(user.getObjectId());
 
-            markerOptions.title(user.getUsername());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateMarker(marker, latLngPosition, avatarIcon, user);
+                    }
+                });
+
+            }
+        }
+
+        private MarkerOptions getMarkerOptions(User user,
+                                               Bitmap[] avatarIcon,
+                                               LatLng position) {
+
+            MarkerOptions markerOptions = new MarkerOptions();
+
+            // Build user avatar
+            avatarIcon[0] = BitmapHelper.buildAvatarIcon(user,
+                    mImageView,
+                    mIconGenerator);
+
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(avatarIcon[0]))
+                    .title(user.getUsername())
+                    .position(position);
+
             return markerOptions;
         }
 
-        private void updateMarker(Marker marker, LatLng latLngPosition, Bitmap[] avatarIcon, User user) {
+        private void updateMarker(Marker marker,
+                                  LatLng latLngPosition,
+                                  Bitmap[] avatarIcon,
+                                  User user) {
+
             if (marker.getPosition().latitude != latLngPosition.latitude ||
                     marker.getPosition().longitude != latLngPosition.longitude) {
 
+                // Build user avatar
+                avatarIcon[0] = BitmapHelper.buildAvatarIcon(user,
+                        mImageView,
+                        mIconGenerator);
+
                 marker.setPosition(latLngPosition);
-
-                // Put the avatar to the marker
-                avatarIcon[0] = getAvatarIcon(user);
-                if (avatarIcon[0] != null) {
-                    marker.setIcon(BitmapDescriptorFactory.fromBitmap(avatarIcon[0]));
-                } else {
-                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_avatar));
-                }
-
+                marker.setIcon(BitmapDescriptorFactory.fromBitmap(avatarIcon[0]));
                 marker.setTitle(user.getUsername());
-            }
-        }
-
-        private Bitmap getAvatarIcon(User user) {
-            Bitmap avatarIcon = null;
-            Bitmap scaledBitmap;
-
-            try {
-                byte[] bytes = user.getAvatar().getData();
-                Bitmap fetchedAvatar = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-                if (fetchedAvatar != null) {
-                    scaledBitmap = Bitmap.createScaledBitmap(
-                            fetchedAvatar,
-                            100, 100,
-                            true);
-
-                    mImageView.setImageBitmap(scaledBitmap);
-
-                    setIconStyle(user);
-
-                    avatarIcon = mIconGenerator.makeIcon();
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            return avatarIcon;
-        }
-
-        private void setIconStyle(User user) {
-            String provider = user.getCurrentLocation().getProvider();
-            boolean isActive = user.getCurrentLocation().getActive();
-
-            if (isActive) {
-                if (provider.equals(LocationManager.GPS_PROVIDER)) {
-                    mIconGenerator.setStyle(IconGenerator.STYLE_GREEN);
-                } else if (provider.equals(LocationManager.NETWORK_PROVIDER)) {
-                    mIconGenerator.setStyle(IconGenerator.STYLE_ORANGE);
-                }
-            } else {
-                mIconGenerator.setStyle(IconGenerator.STYLE_RED);
             }
         }
 
