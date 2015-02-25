@@ -435,7 +435,9 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
             // Intent to send a email to the room owner if needed
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_EMAIL, mRoom.getCreatedBy().getEmail());
+            String[] emailList = new String[1];
+            emailList[0] = mRoom.getCreatedBy().getEmail();
+            intent.putExtra(Intent.EXTRA_EMAIL, emailList);
 
             NotificationHelper.notifyTheUser(RoomActivity.this,
                     R.string.kick_out_text_title,
