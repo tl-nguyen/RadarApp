@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -22,7 +23,7 @@ public class TrackingStatusToggleWidget extends AppWidgetProvider {
     private static final String ON_TRACKING_CLICK = "bg.mentormate.academy.radarapp.action.ON_TRACKING_CLICK";
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
 
         if (intent.getAction().equals(ON_TRACKING_CLICK)) {
@@ -39,11 +40,7 @@ public class TrackingStatusToggleWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        final int ID_SIZE = appWidgetIds.length;
-
-        for (int i=0; i < ID_SIZE; i++) {
-            int widgetId = appWidgetIds[i];
-
+        for (int widgetId : appWidgetIds) {
             RemoteViews remoteViews = setupRemoteView(context);
 
             appWidgetManager.updateAppWidget(widgetId, remoteViews);

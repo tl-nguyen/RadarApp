@@ -1,5 +1,6 @@
 package bg.mentormate.academy.radarapp.tools;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.LocationManager;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import com.google.maps.android.ui.IconGenerator;
 import com.parse.ParseException;
 
+import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.models.User;
 
 /**
@@ -15,26 +17,35 @@ import bg.mentormate.academy.radarapp.models.User;
  */
 public class BitmapHelper {
 
-    public static Bitmap buildAvatarIcon(User user, ImageView imageView, IconGenerator iconGenerator) {
+    public static Bitmap buildAvatarIcon(Context context,
+                                         User user,
+                                         ImageView imageView,
+                                         IconGenerator iconGenerator) {
         Bitmap avatarIcon = null;
         Bitmap scaledBitmap;
 
+        iconGenerator.setContentView(imageView);
+
         try {
-            byte[] bytes = user.getAvatar().getData();
-            Bitmap fetchedAvatar = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            Bitmap fetchedAvatar;
 
-            if (fetchedAvatar != null) {
-                scaledBitmap = Bitmap.createScaledBitmap(
-                        fetchedAvatar,
-                        100, 100,
-                        true);
-
-                imageView.setImageBitmap(scaledBitmap);
-
-                setIconStyle(user, iconGenerator);
-
-                avatarIcon = iconGenerator.makeIcon();
+            if (user.getAvatar() != null) {
+                byte[] bytes = user.getAvatar().getData();
+                fetchedAvatar= BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            } else {
+                fetchedAvatar = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_avatar);
             }
+
+            scaledBitmap = Bitmap.createScaledBitmap(
+                    fetchedAvatar,
+                    100, 100,
+                    true);
+
+            imageView.setImageBitmap(scaledBitmap);
+
+            setIconStyle(user, iconGenerator);
+
+            avatarIcon = iconGenerator.makeIcon();
         } catch (ParseException e) {
             e.printStackTrace();
         }

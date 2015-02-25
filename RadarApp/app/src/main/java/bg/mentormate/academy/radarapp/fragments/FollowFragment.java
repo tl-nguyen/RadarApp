@@ -12,14 +12,13 @@ import android.widget.EditText;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 
 import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.adapters.UserQueryAdapter;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.NotificationHelper;
+import bg.mentormate.academy.radarapp.tools.QueryHelper;
 
 /**
  * Created by tl on 19.02.15.
@@ -43,23 +42,40 @@ public class FollowFragment extends ListFragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search_list, container, false);
 
-        init(rootView);
+        initData();
+        initViews(rootView);
 
         return rootView;
     }
 
-    private void init(View rootView) {
+    private void initData() {
         String id = getArguments().getString(USER_ID);
         mState = getArguments().getString(Constants.STATE);
 
         if (id != null && mState != null) {
-            retrieveUserById(id);
+            QueryHelper.getUserById(id, new GetCallback<User>() {
+                @Override
+                public void done(User user, ParseException e) {
+                    if (e == null) {
+                        mUser = user;
 
-            mEtQuery = (EditText) rootView.findViewById(R.id.etQuery);
-            mBtnSearch = (Button) rootView.findViewById(R.id.btnSeach);
-
-            mBtnSearch.setOnClickListener(this);
+                        mUserQueryAdapter = new UserQueryAdapter(getActivity(), null, mState, mUser);
+                        setListAdapter(mUserQueryAdapter);
+                    } else {
+                        NotificationHelper.alert(getActivity(),
+                                getString(R.string.dialog_error_title),
+                                e.getMessage());
+                    }
+                }
+            });
         }
+    }
+
+    private void initViews(View rootView) {
+        mEtQuery = (EditText) rootView.findViewById(R.id.etQuery);
+        mBtnSearch = (Button) rootView.findViewById(R.id.btnSeach);
+
+        mBtnSearch.setOnClickListener(this);
     }
 
     @Override
@@ -78,39 +94,18 @@ public class FollowFragment extends ListFragment implements View.OnClickListener
         }
     }
 
-    private void retrieveUserById(String userId) {
-        ParseQuery query = new ParseQuery(Constants.USER_TABLE);
-
-        query.getInBackground(userId, new GetCallback() {
-            @Override
-            public void done(ParseObject user, ParseException e) {
-                if (e == null) {
-                    mUser = (User) user;
-
-                    mUserQueryAdapter = new UserQueryAdapter(getActivity(), null, mState, mUser);
-
-                    setListAdapter(mUserQueryAdapter);
-                } else {
-                    NotificationHelper.alert(getActivity(),
-                            getString(R.string.dialog_error_title),
-                            e.getMessage());
-                }
-            }
-        });
-    }
-
     @Override
     public void onClick(View v) {
         int id = v.getId();
 
         switch (id) {
             case R.id.btnSeach:
-                searchForUsers();
+                onSearchClicked();
                 break;
         }
     }
 
-    private void searchForUsers() {
+    private void onSearchClicked() {
         String query = mEtQuery.getText().toString();
 
         mUserQueryAdapter = new UserQueryAdapter(getActivity(), query, mState, mUser);

@@ -19,12 +19,12 @@ import bg.mentormate.academy.radarapp.models.User;
 /**
  * Created by tl on 21.02.15.
  */
-public class UserAdapter extends BaseAdapter {
+public class RoomUserAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<User> mUsers;
 
-    public UserAdapter(Context context, List<User> users) {
+    public RoomUserAdapter(Context context, List<User> users) {
         mContext = context;
         mUsers = users;
     }

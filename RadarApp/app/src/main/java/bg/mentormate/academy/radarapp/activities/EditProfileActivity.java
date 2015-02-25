@@ -50,8 +50,8 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
     private ParseFile mNewAvatar;
     private LocalDb mLocalDb;
     private User mUser;
-    boolean mAvatarChanged;
     private Bitmap mAvatarBitmap;
+    private boolean mAvatarChanged;
 
     private ParseImageView mPivAvatar;
     private Button mBtnSaveChanges;
@@ -141,13 +141,13 @@ public class EditProfileActivity extends ActionBarActivity implements View.OnCli
             if (albumFolder != null) {
                 if (!albumFolder.mkdirs()) {
                     if (!albumFolder.exists()) {
-                        Log.d("Camera:", "failed to create directory");
+                        Log.d(EditProfileActivity.class.getSimpleName(), "failed to create directory");
                         albumFolder = null;
                     }
                 }
             }
         } else {
-            Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
+            Log.d(EditProfileActivity.class.getSimpleName(), "External storage is not mounted READ/WRITE.");
         }
 
         File photoFile = new File(albumFolder, imageFileName + Constants.JPEG_FILE_SUFFIX);

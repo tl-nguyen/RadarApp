@@ -39,7 +39,7 @@ import java.util.Map;
 
 import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
-import bg.mentormate.academy.radarapp.adapters.UserAdapter;
+import bg.mentormate.academy.radarapp.adapters.RoomUserAdapter;
 import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.CurrentLocation;
 import bg.mentormate.academy.radarapp.models.Room;
@@ -62,7 +62,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     private Room mRoom;
     private List<User> mUsers;
     private Map<String, Marker> mMarkers;
-    private UserAdapter mUserAdapter;
+    private RoomUserAdapter mRoomUserAdapter;
 
     private Intent mDataServiceIntent;
 
@@ -98,8 +98,8 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
 
     private void initViews() {
         mGvUsers = (GridView) findViewById(R.id.gvUsers);
-        mUserAdapter = new UserAdapter(this, mUsers);
-        mGvUsers.setAdapter(mUserAdapter);
+        mRoomUserAdapter = new RoomUserAdapter(this, mUsers);
+        mGvUsers.setAdapter(mRoomUserAdapter);
         mGvUsers.setOnItemClickListener(this);
     }
 
@@ -162,11 +162,11 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
         String roomId = getIntent().getStringExtra(Constants.ROOM_ID);
 
         if (roomId != null) {
-            QueryHelper.getRoomById(roomId, new GetCallback() {
+            QueryHelper.getRoomById(roomId, new GetCallback<Room>() {
                 @Override
-                public void done(ParseObject parseObject, ParseException e) {
+                public void done(Room room, ParseException e) {
                     if (e == null) {
-                        mRoom = (Room) parseObject;
+                        mRoom = room;
                         mLocalDb.setSelectedRoom(mRoom);
 
                         // Set activity title
@@ -274,18 +274,32 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
         private MarkersUpdateTask() {
             this.mIconGenerator = new IconGenerator(RoomActivity.this);
             this.mImageView = new ImageView(RoomActivity.this);
-
-            mIconGenerator.setContentView(mImageView);
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            List<User> users = mRoom.getUsers();
+            List<User> fetchedUsers = mRoom.getUsers();
 
             boolean isInTheRoom = false;
             boolean newUserAdded = false;
+            boolean userHasUnregistered = false;
 
-            for (final User user: users) {
+            // Naive way to check if someone has left and remove his marker from the Map
+            for (User localUser : mUsers) {
+                if (!fetchedUsers.contains(localUser)) {
+                    userHasUnregistered = true;
+                    mUsers.remove(localUser);
+
+                    if (mMarkers.containsKey(localUser.getObjectId())) {
+                        Marker marker = mMarkers.get(localUser.getObjectId());
+
+                        removeMarkerFromMap(marker);
+                        mMarkers.remove(localUser.getObjectId());
+                    }
+                }
+            }
+
+            for (final User user: fetchedUsers) {
                 ParseGeoPoint userLocation = null;
                 final Bitmap[] avatarIcon = {null};
 
@@ -322,17 +336,26 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
             }
 
             // Update the User Grid
-            final boolean toRefreshTheUserGrid = newUserAdded;
+            final boolean toRefreshTheUserGrid = newUserAdded || userHasUnregistered;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     if (toRefreshTheUserGrid) {
-                        mUserAdapter.notifyDataSetChanged();
+                        mRoomUserAdapter.notifyDataSetChanged();
                     }
                 }
             });
 
             return null;
+        }
+
+        private void removeMarkerFromMap(final Marker marker) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    marker.remove();
+                }
+            });
         }
 
         private void updateMarkerOnMap(final User user,
@@ -363,7 +386,6 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                         updateMarker(marker, latLngPosition, avatarIcon, user);
                     }
                 });
-
             }
         }
 
@@ -374,7 +396,9 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
             MarkerOptions markerOptions = new MarkerOptions();
 
             // Build user avatar
-            avatarIcon[0] = BitmapHelper.buildAvatarIcon(user,
+            avatarIcon[0] = BitmapHelper.buildAvatarIcon(
+                    RoomActivity.this,
+                    user,
                     mImageView,
                     mIconGenerator);
 
@@ -389,19 +413,22 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                                   LatLng latLngPosition,
                                   Bitmap[] avatarIcon,
                                   User user) {
+            user.getCurrentLocation().getActive();
 
             if (marker.getPosition().latitude != latLngPosition.latitude ||
                     marker.getPosition().longitude != latLngPosition.longitude) {
-
-                // Build user avatar
-                avatarIcon[0] = BitmapHelper.buildAvatarIcon(user,
-                        mImageView,
-                        mIconGenerator);
-
                 marker.setPosition(latLngPosition);
-                marker.setIcon(BitmapDescriptorFactory.fromBitmap(avatarIcon[0]));
-                marker.setTitle(user.getUsername());
             }
+
+            // Build user avatar
+            avatarIcon[0] = BitmapHelper.buildAvatarIcon(
+                    RoomActivity.this,
+                    user,
+                    mImageView,
+                    mIconGenerator);
+
+            marker.setIcon(BitmapDescriptorFactory.fromBitmap(avatarIcon[0]));
+            marker.setTitle(user.getUsername());
         }
 
         private void kickFromTheRoom() {

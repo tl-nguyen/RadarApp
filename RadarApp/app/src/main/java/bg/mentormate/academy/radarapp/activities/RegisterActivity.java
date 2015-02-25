@@ -104,6 +104,9 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         startActivity(homeIntent);
     }
 
+    /**
+     * Background job for creating a new user
+     */
     private class CreateUserTask extends AsyncTask<String, ParseException, Void> {
         @Override
         protected void onPreExecute() {
