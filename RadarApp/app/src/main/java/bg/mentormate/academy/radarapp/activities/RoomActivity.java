@@ -330,6 +330,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
         private MarkersUpdateTask() {
             this.mIconGenerator = new IconGenerator(RoomActivity.this);
             this.mImageView = new ImageView(RoomActivity.this);
+            mIconGenerator.setContentView(mImageView);
         }
 
         @Override

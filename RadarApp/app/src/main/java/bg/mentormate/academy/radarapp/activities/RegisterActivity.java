@@ -134,6 +134,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                 currentLocation.setLocation(new ParseGeoPoint(0, 0));
             }
 
+            currentLocation.setProvider(LocationManager.NETWORK_PROVIDER);
+
             // Create an empty follow row
             Follow emptyFollow = new Follow();
             emptyFollow.setFollowers(new ArrayList<User>());

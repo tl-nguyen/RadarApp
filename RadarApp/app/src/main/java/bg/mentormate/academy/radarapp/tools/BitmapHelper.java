@@ -24,8 +24,6 @@ public class BitmapHelper {
         Bitmap avatarIcon = null;
         Bitmap scaledBitmap;
 
-        iconGenerator.setContentView(imageView);
-
         try {
             Bitmap fetchedAvatar;
 
