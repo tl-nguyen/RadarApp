@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +39,7 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +63,6 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     private final static long DATA_UPDATE_INTERVAL = 4000;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private Menu mMenu;
     private LocalDb mLocalDb;
     private User mCurrentUser;
     private Room mRoom;
@@ -233,7 +234,6 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_room_activity, menu);
-        this.mMenu = menu;
         return true;
     }
 
@@ -342,35 +342,41 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                 }
             }
 
-            for (final User user: fetchedUsers) {
-                ParseGeoPoint userLocation = null;
-                final Bitmap[] avatarIcon = {null};
+            try {
+                for (final User user : fetchedUsers) {
+                    ParseGeoPoint userLocation = null;
+                    final Bitmap[] avatarIcon = {null};
 
-                try {
-                    user.fetchIfNeeded();
+                    try {
+                        user.fetchIfNeeded();
 
-                    if (!mUsers.contains(user)) {
-                        mUsers.add(user);
-                        newUserAdded = true;
+                        if (!mUsers.contains(user)) {
+                            mUsers.add(user);
+                            newUserAdded = true;
+                        }
+
+                        // If the user is me, don't do anything
+                        if (user.equals(mCurrentUser)) {
+                            isInTheRoom = true;
+                            continue;
+                        }
+
+                        user.getCurrentLocation().fetchIfNeeded();
+
+                        userLocation = user.getCurrentLocation().getLocation();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
 
-                    // If the user is me, don't do anything
-                    if (user.equals(mCurrentUser)) {
-                        isInTheRoom = true;
-                        continue;
+                    // Visualize the user's marker
+                    if (userLocation != null) {
+                        updateMarkerOnMap(user, userLocation, avatarIcon);
                     }
-
-                    user.getCurrentLocation().fetchIfNeeded();
-
-                    userLocation = user.getCurrentLocation().getLocation();
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 }
-
-                // Visualize the user's marker
-                if (userLocation != null) {
-                    updateMarkerOnMap(user, userLocation, avatarIcon);
-                }
+            } catch (ConcurrentModificationException e) {
+                kickFromTheRoom();
+                Log.d(RoomActivity.class.getSimpleName(),
+                        "Concurrency problem");
             }
 
             // If the user is not from the room list then...

@@ -2,9 +2,11 @@ package bg.mentormate.academy.radarapp.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 
 import com.parse.ParseException;
 
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import bg.mentormate.academy.radarapp.data.LocalDb;
@@ -30,7 +32,8 @@ public class RetrieveRoomDataService extends IntentService {
 
                 List<User> users = selectedRoom.getUsers();
 
-                for (User user: users) {
+
+                for (User user : users) {
                     user.fetchIfNeeded();
                     CurrentLocation currentLocation = user.getCurrentLocation();
                     currentLocation.fetch();
@@ -39,7 +42,9 @@ public class RetrieveRoomDataService extends IntentService {
                 Intent broadcastIntent = new Intent(BROADCAST_RESULT);
                 sendBroadcast(broadcastIntent);
             } catch (ParseException e) {
-                e.printStackTrace();
+                Log.d(RetrieveRoomDataService.class.getSimpleName(), e.getMessage());
+            } catch (ConcurrentModificationException e) {
+                Log.d(RetrieveRoomDataService.class.getSimpleName(), "conccurency problem");
             }
         }
     }

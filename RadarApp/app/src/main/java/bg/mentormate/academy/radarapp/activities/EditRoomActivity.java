@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,9 +116,14 @@ public class EditRoomActivity extends ActionBarActivity implements View.OnClickL
 
     private void deleteSelectedUsers() {
         if(!mSelectedUsers.isEmpty()){
-            for(int i=0; i < mSelectedUsers.size(); i++){
-                mEditRoomUserAdapter.getView(i, null, null).setBackgroundColor(Color.WHITE);
-                mUsers.remove(mSelectedUsers.get(i));
+            try {
+                for (int i = 0; i < mSelectedUsers.size(); i++) {
+                    mEditRoomUserAdapter.getView(i, null, null).setBackgroundColor(Color.WHITE);
+                    mUsers.remove(mSelectedUsers.get(i));
+                }
+            } catch (Exception e) {
+                Log.d(EditRoomActivity.class.getSimpleName(),
+                        "deleteSelectedUsers() : " + e.getMessage());
             }
             mEditRoomUserAdapter = new EditRoomUserAdapter(this, mUsers);
             mGvUsers.setAdapter(mEditRoomUserAdapter);
@@ -154,8 +161,17 @@ public class EditRoomActivity extends ActionBarActivity implements View.OnClickL
             changesApplied = true;
         }
 
-        if(changesApplied) {
-            mRoom.saveInBackground();
+        if (changesApplied) {
+            mRoom.setUsers(mUsers);
+            mRoom.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.d(EditRoomActivity.class.getSimpleName(),
+                                "applyChanges() : " + e.getMessage());
+                    }
+                }
+            });
         } else {
             Toast.makeText(this,
                     getString(R.string.nothing_changed_text),
