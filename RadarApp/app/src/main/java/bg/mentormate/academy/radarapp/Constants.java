@@ -5,6 +5,8 @@ package bg.mentormate.academy.radarapp;
  */
 public class Constants {
 
+    public final static String INACTIVE_STATE = "INACTIVE";
+
     public final static String STATE = "STATE";
     public final static String FOLLOWER = "FOLLOWER";
     public final static String FOLLOWING = "FOLLOWING";

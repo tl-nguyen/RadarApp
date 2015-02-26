@@ -37,6 +37,7 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -68,6 +69,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     private Room mRoom;
     private List<User> mUsers;
     private Map<String, Marker> mMarkers;
+    private Map<String, String> mStates;
     private RoomUserAdapter mRoomUserAdapter;
 
     private Intent mDataServiceIntent;
@@ -97,6 +99,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     private void initData() {
         mUsers = new ArrayList<>();
         mMarkers = new HashMap<>();
+        mStates = new HashMap<>();
 
         mLocalDb = LocalDb.getInstance();
         mCurrentUser = (User) User.getCurrentUser();
@@ -270,6 +273,16 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
 
                         if (!status.isEmpty()) {
                             mCurrentUser.getCurrentLocation().setStatus(status);
+                            mCurrentUser.getCurrentLocation().saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e != null) {
+                                        NotificationHelper.alert(RoomActivity.this,
+                                                getString(R.string.dialog_error_title),
+                                                e.getMessage());
+                                    }
+                                }
+                            });
                         }
                     }
                 })
@@ -338,6 +351,10 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
 
                         removeMarkerFromMap(marker);
                         mMarkers.remove(localUser.getObjectId());
+                    }
+
+                    if (mStates.containsKey(localUser.getObjectId())) {
+                        mStates.remove(localUser.getObjectId());
                     }
                 }
             }
@@ -424,6 +441,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                     public void run() {
                         Marker marker = mMap.addMarker(markerOptions);
                         mMarkers.put(user.getObjectId(), marker);
+                        mStates.put(user.getObjectId(), user.getCurrentLocation().getProvider());
                     }
                 });
             } else {
@@ -462,14 +480,28 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                                   LatLng latLngPosition,
                                   Bitmap[] avatarIcon,
                                   User user) {
-            user.getCurrentLocation().getActive();
 
             if (marker.getPosition().latitude != latLngPosition.latitude ||
                     marker.getPosition().longitude != latLngPosition.longitude) {
                 marker.setPosition(latLngPosition);
             }
 
-            // Build user avatar
+            CurrentLocation userLocation = user.getCurrentLocation();
+
+            if ((!userLocation.getProvider().equals(mStates.get(user.getObjectId()))
+                    && userLocation.getActive())) {
+                // Build user avatar
+                setMarkerIcon(marker, avatarIcon, user);
+            } else if (!userLocation.getActive()) {
+                // Build user avatar
+                setMarkerIcon(marker, avatarIcon, user);
+                mStates.put(user.getObjectId(), Constants.INACTIVE_STATE);
+            }
+
+            marker.setTitle(getMarkerTitle(user));
+        }
+
+        private void setMarkerIcon(Marker marker, Bitmap[] avatarIcon, User user) {
             avatarIcon[0] = BitmapHelper.buildAvatarIcon(
                     RoomActivity.this,
                     user,
@@ -477,7 +509,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                     mIconGenerator);
 
             marker.setIcon(BitmapDescriptorFactory.fromBitmap(avatarIcon[0]));
-            marker.setTitle(getMarkerTitle(user));
+            mStates.put(user.getObjectId(), user.getCurrentLocation().getProvider());
         }
 
         private void kickFromTheRoom() {
