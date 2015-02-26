@@ -136,7 +136,6 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     }
 
     private void onRegisterClicked() {
-        // TODO: it is not supposed to be like this, check it when have time
         if (!mRbRegister.isChecked()) {
             if (mRoom.getUsers().contains(mCurrentUser)) {
                 setUnregisteredVisibilityAndStyle();
@@ -203,7 +202,6 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
                 if (e == null) {
                     setUnregisteredVisibilityAndStyle();
                 } else {
-                    setUnregisteredVisibilityAndStyle();
                     NotificationHelper.alert(getContext(),
                             getContext().getString(R.string.dialog_error_title),
                             e.getMessage());

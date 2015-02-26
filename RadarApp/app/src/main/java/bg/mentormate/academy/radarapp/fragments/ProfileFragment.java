@@ -324,7 +324,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                             mUser.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
-                                    if (e != null) {
+                                    if (e == null) {
+                                        mRiMyRoom.setData(mUser, mMyRoom);
+                                    } else {
                                         showErrorAlert(e);
                                     }
                                 }
