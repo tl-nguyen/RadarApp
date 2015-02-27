@@ -24,7 +24,6 @@ import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.activities.ProfileActivity;
 import bg.mentormate.academy.radarapp.activities.RoomActivity;
-import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.NotificationHelper;
@@ -43,7 +42,6 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     private Button mBtnJoin;
 
     private User mCurrentUser;
-    private Follow mFollow;
     private Room mRoom;
 
     public RoomItem(Context context) {
@@ -75,7 +73,6 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     public void setData(User currentUser,Room room) {
         mRoom = room;
         mCurrentUser = currentUser;
-        mFollow = mCurrentUser.getFollow();
 
         mRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @Override
@@ -108,7 +105,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
                             if (mRbRegister.isChecked()) {
                                 setRegisteredVisibilityAndStyle();
                             } else {
-                                setUnregisteredVisibilityAndStyle();
+                                setNotRegisteredVisibilityAndStyle();
                             }
                         }
                     });
@@ -138,10 +135,10 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     private void onRegisterClicked() {
         if (!mRbRegister.isChecked()) {
             if (mRoom.getUsers().contains(mCurrentUser)) {
-                setUnregisteredVisibilityAndStyle();
+                setNotRegisteredVisibilityAndStyle();
                 removeUserFromRoom();
             } else {
-                setUnregisteredVisibilityAndStyle();
+                setNotRegisteredVisibilityAndStyle();
             }
         } else {
             if (!mRoom.getUsers().contains(mCurrentUser)) {
@@ -163,7 +160,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
     }
 
     private void checkForPassKey() {
-        setUnregisteredVisibilityAndStyle();
+        setNotRegisteredVisibilityAndStyle();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -200,7 +197,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    setUnregisteredVisibilityAndStyle();
+                    setNotRegisteredVisibilityAndStyle();
                 } else {
                     NotificationHelper.alert(getContext(),
                             getContext().getString(R.string.dialog_error_title),
@@ -219,7 +216,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
                 if (e == null) {
                     setRegisteredVisibilityAndStyle();
                 } else {
-                    setUnregisteredVisibilityAndStyle();
+                    setNotRegisteredVisibilityAndStyle();
                     NotificationHelper.alert(getContext(),
                             getContext().getString(R.string.dialog_error_title),
                             e.getMessage());
@@ -228,7 +225,7 @@ public class RoomItem extends LinearLayout implements View.OnClickListener {
         });
     }
 
-    private void setUnregisteredVisibilityAndStyle() {
+    private void setNotRegisteredVisibilityAndStyle() {
         mRbRegister.setChecked(false);
         mBtnJoin.setVisibility(View.GONE);
         mRbRegister.setBackgroundColor(getResources().getColor(R.color.br_button));

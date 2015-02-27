@@ -71,6 +71,8 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     private Map<String, Marker> mMarkers;
     private Map<String, String> mStates;
     private RoomUserAdapter mRoomUserAdapter;
+    private AlarmManager mAlarmManager;
+    private PendingIntent mPendingIntent;
 
     private Intent mDataServiceIntent;
 
@@ -152,16 +154,16 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
 
     private void startServiceForUpdatingPositions() {
         final long ALARM_TRIGGER_AT_TIME = SystemClock.elapsedRealtime() + 20000;
-        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        mAlarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 
         mDataServiceIntent = new Intent(this, RetrieveRoomDataService.class);
 
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, mDataServiceIntent, 0);
+        mPendingIntent = PendingIntent.getService(this, 0, mDataServiceIntent, 0);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+        mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
                 ALARM_TRIGGER_AT_TIME,
                 DATA_UPDATE_INTERVAL,
-                pendingIntent);
+                mPendingIntent);
     }
 
     private void setUpMap() {
@@ -309,7 +311,12 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     protected void onStop() {
         if (mDataServiceIntent != null) {
             stopService(mDataServiceIntent);
+
+            if (mAlarmManager != null && mPendingIntent != null) {
+                mAlarmManager.cancel(mPendingIntent);
+            }
         }
+
 
         if (positionsUpdateReceiver != null) {
             unregisterReceiver(positionsUpdateReceiver);

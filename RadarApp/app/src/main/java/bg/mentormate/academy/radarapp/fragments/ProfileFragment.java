@@ -126,17 +126,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
 
         mMyRoom = mUser.getRoom();
-
-        if (mMyRoom != null) {
-            mMyRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
-                @Override
-                public void done(ParseObject room, ParseException e) {
-                    if (e == null) {
-                        mRiMyRoom.setData(LocalDb.getInstance().getCurrentUser(), mMyRoom);
-                    }
-                }
-            });
-        }
     }
 
     private void initViews(View rootView) {
@@ -195,6 +184,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             mPivBigAvatar.loadInBackground();
         } else {
             mPivBigAvatar.setBackground(getResources().getDrawable(R.drawable.ic_avatar));
+        }
+
+        if (mMyRoom != null) {
+            mMyRoom.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject room, ParseException e) {
+                    if (e == null) {
+                        mRiMyRoom.setData(LocalDb.getInstance().getCurrentUser(), mMyRoom);
+                    }
+                }
+            });
         }
 
         setRoomUIElementsVisibility();
@@ -317,6 +317,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     public void done(ParseException e) {
                         hideProgressBar();
                         if (e == null) {
+                            mRiMyRoom.setData(mUser, mMyRoom);
+
                             // managing UI elements
                             setRoomUIElementsVisibility();
 
@@ -324,9 +326,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                             mUser.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
-                                    if (e == null) {
-                                        mRiMyRoom.setData(mUser, mMyRoom);
-                                    } else {
+                                    if (e != null) {
                                         showErrorAlert(e);
                                     }
                                 }
