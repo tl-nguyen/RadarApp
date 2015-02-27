@@ -49,7 +49,7 @@ import bg.mentormate.academy.radarapp.Constants;
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.adapters.RoomUserAdapter;
 import bg.mentormate.academy.radarapp.data.LocalDb;
-import bg.mentormate.academy.radarapp.models.CurrentLocation;
+import bg.mentormate.academy.radarapp.models.UserDetail;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.services.LocationTrackingService;
@@ -197,7 +197,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     }
 
     private void navigateToCurrentLocationOnMap() {
-        final CurrentLocation locationOnDb = mCurrentUser.getCurrentLocation();
+        final UserDetail locationOnDb = mCurrentUser.getUserDetail();
         final Location lastKnownLocation = LocationHelper.getLastKnownLocation(this);
 
         if (lastKnownLocation != null) {
@@ -274,8 +274,8 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                         String status = etStatus.getText().toString().trim();
 
                         if (!status.isEmpty()) {
-                            mCurrentUser.getCurrentLocation().setStatus(status);
-                            mCurrentUser.getCurrentLocation().saveInBackground(new SaveCallback() {
+                            mCurrentUser.getUserDetail().setStatus(status);
+                            mCurrentUser.getUserDetail().saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
                                     if (e != null) {
@@ -298,7 +298,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ParseGeoPoint userLocation = mUsers.get(position)
-                .getCurrentLocation()
+                .getUserDetail()
                 .getLocation();
 
         LatLng latLng = new LatLng(userLocation.getLatitude(),
@@ -392,9 +392,9 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                             continue;
                         }
 
-                        user.getCurrentLocation().fetchIfNeeded();
+                        user.getUserDetail().fetchIfNeeded();
 
-                        userLocation = user.getCurrentLocation().getLocation();
+                        userLocation = user.getUserDetail().getLocation();
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -455,7 +455,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                     public void run() {
                         Marker marker = mMap.addMarker(markerOptions);
                         mMarkers.put(user.getObjectId(), marker);
-                        mStates.put(user.getObjectId(), user.getCurrentLocation().getProvider());
+                        mStates.put(user.getObjectId(), user.getUserDetail().getProvider());
                     }
                 });
             } else {
@@ -500,7 +500,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                 marker.setPosition(latLngPosition);
             }
 
-            CurrentLocation userLocation = user.getCurrentLocation();
+            UserDetail userLocation = user.getUserDetail();
 
             if ((!userLocation.getProvider().equals(mStates.get(user.getObjectId()))
                     && userLocation.getActive())) {
@@ -523,7 +523,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                     mIconGenerator);
 
             marker.setIcon(BitmapDescriptorFactory.fromBitmap(avatarIcon[0]));
-            mStates.put(user.getObjectId(), user.getCurrentLocation().getProvider());
+            mStates.put(user.getObjectId(), user.getUserDetail().getProvider());
         }
 
         private void kickFromTheRoom() {
@@ -546,7 +546,7 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
     private String getMarkerTitle(User user) {
         String mMarkerTitle;
         String mCurrentStatus;
-        mCurrentStatus = user.getCurrentLocation().getStatus();
+        mCurrentStatus = user.getUserDetail().getStatus();
 
         if(mCurrentStatus == null || mCurrentStatus.isEmpty()){
             mMarkerTitle = user.getUsername();

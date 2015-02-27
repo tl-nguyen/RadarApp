@@ -5,7 +5,7 @@ import android.app.Application;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
-import bg.mentormate.academy.radarapp.models.CurrentLocation;
+import bg.mentormate.academy.radarapp.models.UserDetail;
 import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
@@ -22,7 +22,7 @@ public class RadarApplication extends Application {
 
         ParseObject.registerSubclass(User.class);
         ParseObject.registerSubclass(Room.class);
-        ParseObject.registerSubclass(CurrentLocation.class);
+        ParseObject.registerSubclass(UserDetail.class);
         ParseObject.registerSubclass(Follow.class);
 
         Parse.initialize(this,

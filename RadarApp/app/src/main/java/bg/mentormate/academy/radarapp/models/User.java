@@ -13,12 +13,12 @@ import bg.mentormate.academy.radarapp.Constants;
 @ParseClassName(Constants.USER_TABLE)
 public class User extends ParseUser{
 
-    public CurrentLocation getCurrentLocation() {
-        return (CurrentLocation) getParseObject(Constants.USER_COL_CURRENT_LOCATION);
+    public UserDetail getUserDetail() {
+        return (UserDetail) getParseObject(Constants.USER_COL_USER_DETAIL);
     }
 
-    public void setCurrentLocation(CurrentLocation currentLocation) {
-        put(Constants.USER_COL_CURRENT_LOCATION, currentLocation);
+    public void setUserDetail(UserDetail userDetail) {
+        put(Constants.USER_COL_USER_DETAIL, userDetail);
     }
 
     public Room getRoom() {

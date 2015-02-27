@@ -28,13 +28,13 @@ public class Constants {
     public final static String FOLLOW_COL_FOLLOWINGS = "followings";
 
     /**
-     * Parse.com CurrentLocation table constants
+     * Parse.com UserDetail table constants
      */
-    public final static String CURRENT_LOCATION_TABLE = "CurrentLocation";
-    public final static String CURRENT_LOCATION_COL_LOCATION = "location";
-    public final static String CURRENT_LOCATION_COL_PROVIDER = "provider";
-    public final static String CURRENT_LOCATION_COL_ACTIVE = "active";
-    public static final String CURRENT_LOCATION_COL_STATUS = "status";
+    public final static String USER_DETAIL_TABLE = "CurrentLocation";
+    public final static String USER_DETAIL_COL_LOCATION = "location";
+    public final static String USER_DETAIL_COL_PROVIDER = "provider";
+    public final static String USER_DETAIL_COL_ACTIVE = "active";
+    public static final String USER_DETAIL_COL_STATUS = "status";
 
     /**
      * Parse.com Room table constants
@@ -49,7 +49,7 @@ public class Constants {
      * Parse.com _User table constants
      */
     public final static String USER_TABLE = "_User";
-    public final static String USER_COL_CURRENT_LOCATION = "currentLocation";
+    public final static String USER_COL_USER_DETAIL = "currentLocation";
     public final static String USER_COL_ROOM = "room";
     public final static String USER_COL_AVATAR = "avatar";
     public final static String USER_COL_FOLLOW = "follow";

@@ -9,7 +9,7 @@ import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 
 import bg.mentormate.academy.radarapp.data.LocalDb;
-import bg.mentormate.academy.radarapp.models.CurrentLocation;
+import bg.mentormate.academy.radarapp.models.UserDetail;
 import bg.mentormate.academy.radarapp.models.User;
 
 /**
@@ -30,18 +30,18 @@ public class ServiceLocationListener implements LocationListener {
         if (LocalDb.getInstance() != null) {
             mCurrentUser = LocalDb.getInstance().getCurrentUser();
 
-            CurrentLocation currentLocation = mCurrentUser.getCurrentLocation();
+            UserDetail userDetail = mCurrentUser.getUserDetail();
 
-            currentLocation.setLocation(
+            userDetail.setLocation(
                     new ParseGeoPoint(
                             location.getLatitude(),
                             location.getLongitude()));
 
-            currentLocation.setProvider(location.getProvider());
+            userDetail.setProvider(location.getProvider());
 
-            currentLocation.setActive(true);
+            userDetail.setActive(true);
             try {
-                currentLocation.save();
+                userDetail.save();
             } catch (ParseException e) {
                 Log.d(ServiceLocationListener.class.getSimpleName(),
                                 e.getMessage());

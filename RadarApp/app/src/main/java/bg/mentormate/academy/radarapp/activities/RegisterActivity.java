@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import bg.mentormate.academy.radarapp.R;
 import bg.mentormate.academy.radarapp.data.LocalDb;
-import bg.mentormate.academy.radarapp.models.CurrentLocation;
+import bg.mentormate.academy.radarapp.models.UserDetail;
 import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.tools.NotificationHelper;
@@ -125,16 +125,16 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             newUser.setEmail(email);
 
             // Retrieve user current Location
-            CurrentLocation currentLocation = new CurrentLocation();
+            UserDetail userDetail = new UserDetail();
             Location location = getLocation();
             if (location != null) {
-                currentLocation.setLocation(new ParseGeoPoint(location.getLatitude(),
+                userDetail.setLocation(new ParseGeoPoint(location.getLatitude(),
                         location.getLongitude()));
             } else {
-                currentLocation.setLocation(new ParseGeoPoint(0, 0));
+                userDetail.setLocation(new ParseGeoPoint(0, 0));
             }
 
-            currentLocation.setProvider(LocationManager.NETWORK_PROVIDER);
+            userDetail.setProvider(LocationManager.NETWORK_PROVIDER);
 
             // Create an empty follow row
             Follow emptyFollow = new Follow();
@@ -147,8 +147,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                 newUser.setFollow(emptyFollow);
 
                 // Save empty location (0,9)
-                currentLocation.save();
-                newUser.setCurrentLocation(currentLocation);
+                userDetail.save();
+                newUser.setUserDetail(userDetail);
 
                 // sign-up the new user
                 newUser.signUp();

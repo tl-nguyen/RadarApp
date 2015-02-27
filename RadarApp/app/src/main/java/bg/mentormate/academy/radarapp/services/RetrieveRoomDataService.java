@@ -10,7 +10,7 @@ import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import bg.mentormate.academy.radarapp.data.LocalDb;
-import bg.mentormate.academy.radarapp.models.CurrentLocation;
+import bg.mentormate.academy.radarapp.models.UserDetail;
 import bg.mentormate.academy.radarapp.models.Room;
 import bg.mentormate.academy.radarapp.models.User;
 
@@ -35,8 +35,8 @@ public class RetrieveRoomDataService extends IntentService {
 
                 for (User user : users) {
                     user.fetchIfNeeded();
-                    CurrentLocation currentLocation = user.getCurrentLocation();
-                    currentLocation.fetch();
+                    UserDetail userDetail = user.getUserDetail();
+                    userDetail.fetch();
                 }
 
                 Intent broadcastIntent = new Intent(BROADCAST_RESULT);

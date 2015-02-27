@@ -14,7 +14,7 @@ import android.util.Log;
 import com.parse.ParseException;
 
 import bg.mentormate.academy.radarapp.data.LocalDb;
-import bg.mentormate.academy.radarapp.models.CurrentLocation;
+import bg.mentormate.academy.radarapp.models.UserDetail;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.widgets.TrackingStatusToggleWidget;
 
@@ -122,7 +122,7 @@ public class LocationTrackingService extends Service implements Handler.Callback
     private void setUserActiveState(boolean isActive) {
         if (mCurrentUser != null) {
             try {
-                CurrentLocation location = mCurrentUser.getCurrentLocation();
+                UserDetail location = mCurrentUser.getUserDetail();
                 location.fetchIfNeeded();
                 location.setActive(isActive);
                 location.save();

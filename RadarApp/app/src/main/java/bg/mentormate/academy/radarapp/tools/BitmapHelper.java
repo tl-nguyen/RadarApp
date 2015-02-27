@@ -52,8 +52,8 @@ public class BitmapHelper {
     }
 
     private static void setIconStyle(User user, IconGenerator iconGenerator) {
-        String provider = user.getCurrentLocation().getProvider();
-        boolean isActive = user.getCurrentLocation().getActive();
+        String provider = user.getUserDetail().getProvider();
+        boolean isActive = user.getUserDetail().getActive();
 
         if (isActive) {
             if (provider.equals(LocationManager.GPS_PROVIDER)) {
