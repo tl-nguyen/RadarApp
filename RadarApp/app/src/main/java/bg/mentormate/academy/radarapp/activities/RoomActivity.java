@@ -305,6 +305,12 @@ public class RoomActivity extends ActionBarActivity implements AdapterView.OnIte
                 userLocation.getLongitude());
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+        Marker userMarker = mMarkers.get(mUsers.get(position).getObjectId());
+
+        if (userMarker != null) {
+            userMarker.showInfoWindow();
+        }
     }
 
     @Override
