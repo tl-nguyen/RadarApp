@@ -263,7 +263,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void goToFollowingPage(String state) {
         Intent followingIntent = new Intent(getActivity(), FollowActivity.class);
-        followingIntent.putExtra(Constants.STATE, state);
+        followingIntent.putExtra(Constants.CATEGORY, state);
         followingIntent.putExtra(USER_ID, mUser.getObjectId());
         startActivity(followingIntent);
     }

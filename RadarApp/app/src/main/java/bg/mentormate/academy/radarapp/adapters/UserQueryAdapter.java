@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bg.mentormate.academy.radarapp.Constants;
+import bg.mentormate.academy.radarapp.data.LocalDb;
 import bg.mentormate.academy.radarapp.models.Follow;
 import bg.mentormate.academy.radarapp.models.User;
 import bg.mentormate.academy.radarapp.views.UserItem;
@@ -23,24 +24,27 @@ public class UserQueryAdapter extends ParseQueryAdapter<User> {
 
     private static final int LIMIT = 50;
 
-    public UserQueryAdapter(final Context context, final String searchQuery, final String state, final User user) {
+    public UserQueryAdapter(final Context context, final String searchQuery, final String category, final User user) {
         super(context, new QueryFactory<User>() {
 
             @Override
             public ParseQuery<User> create() {
-                ParseQuery query = new ParseQuery(Constants.USER_TABLE);
+                ParseQuery<User> query = new ParseQuery<>(Constants.USER_TABLE);
                 query.orderByDescending(Constants.PARSE_COL_CREATED_AT);
 
-                if (state.equals(Constants.SEARCH)) {
-                    query.setLimit(LIMIT);
-                } else if (state.equals(Constants.FOLLOWING) && user != null) {
+                if (category.equals(Constants.SEARCH)) {
+                    query.setLimit(LIMIT)
+                            .whereNotEqualTo(Constants.PARSE_COL_OBJECT_ID,
+                                LocalDb.getInstance().getCurrentUser().getObjectId());
+
+                } else if (category.equals(Constants.FOLLOWING) && user != null) {
                     Follow follow = getFollowObject(user);
 
                     List<User> users = follow.getFollowings();
                     List<String> objectIds = fetchUsersObjectIds(users);
 
                     query.whereContainedIn(Constants.PARSE_COL_OBJECT_ID, objectIds);
-                } else if (state.equals(Constants.FOLLOWER) && user != null) {
+                } else if (category.equals(Constants.FOLLOWER) && user != null) {
                     Follow follow = getFollowObject(user);
 
                     List<User> users = follow.getFollowers();

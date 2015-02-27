@@ -24,14 +24,16 @@ public class RoomQueryAdapter extends ParseQueryAdapter<Room> {
 
             @Override
             public ParseQuery<Room> create() {
-                ParseQuery query = new ParseQuery(Constants.ROOM_TABLE);
-                query.orderByDescending(Constants.PARSE_COL_CREATED_AT);
+                ParseQuery<Room> query = new ParseQuery<>(Constants.ROOM_TABLE);
 
                 if (searchQuery != null) {
                     query.whereContains(Constants.ROOM_COL_NAME, searchQuery);
                 }
 
-                query.setLimit(LIMIT);
+                query.whereNotEqualTo(Constants.ROOM_COL_CREATED_BY,
+                            LocalDb.getInstance().getCurrentUser())
+                        .orderByDescending(Constants.PARSE_COL_CREATED_AT)
+                        .setLimit(LIMIT);
 
                 return query;
             }

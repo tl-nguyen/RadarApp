@@ -34,7 +34,7 @@ public class FollowButton extends ToggleButton {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setData(final User currentUser, final User followingUser) {
+    public void setData(final User currentUser, final User followUser) {
         final Follow follow = currentUser.getFollow();
 
         follow.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
@@ -42,12 +42,13 @@ public class FollowButton extends ToggleButton {
             public void done(ParseObject parseObject, ParseException e) {
                 final List<User> followingUsers = follow.getFollowings();
 
-                if (followingUser.equals(currentUser)) {
+                // Don't show the Follow button, when it's you
+                if (followUser.equals(currentUser)) {
                     setVisibility(View.GONE);
                     return;
                 }
 
-                if (followingUsers.contains(followingUser)) {
+                if (followingUsers.contains(followUser)) {
                     setColorToggleOn();
                     setChecked(true);
                 } else {
@@ -58,7 +59,7 @@ public class FollowButton extends ToggleButton {
                 setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onFollowClicked(followingUsers, followingUser, currentUser);
+                        onFollowClicked(followingUsers, followUser, currentUser);
                     }
                 });
             }

@@ -31,7 +31,8 @@ public class UserItem extends LinearLayout implements View.OnClickListener {
     private ParseImageView mPivAvatar;
     private FollowButton mFbFollow;
 
-    private User mUser;
+    private User mSelectedUser;
+    private User mCurrentUser;
 
     public UserItem(Context context) {
         super(context);
@@ -47,6 +48,8 @@ public class UserItem extends LinearLayout implements View.OnClickListener {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         inflater.inflate(R.layout.item_user, this);
 
+        mCurrentUser = LocalDb.getInstance().getCurrentUser();
+
         mTvUsername = (TextView) findViewById(R.id.tvUsername);
         mPivAvatar = (ParseImageView) findViewById(R.id.pivAvatar);
         mFbFollow = (FollowButton) findViewById(R.id.fbFollow);
@@ -56,22 +59,24 @@ public class UserItem extends LinearLayout implements View.OnClickListener {
     }
 
     public void setData(User user) {
-        mUser = user;
+        mSelectedUser = user;
 
-        mUser.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+        mSelectedUser.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void done(ParseObject parseObject, ParseException e) {
-                mTvUsername.setText(mUser.getUsername());
-                mPivAvatar.setParseFile(mUser.getAvatar());
+                mTvUsername.setText(mSelectedUser.getUsername());
+                mPivAvatar.setParseFile(mSelectedUser.getAvatar());
 
-                if (mUser.getAvatar() != null) {
+                if (mSelectedUser.getAvatar() != null) {
                     mPivAvatar.loadInBackground();
                 } else {
                     mPivAvatar.setBackground(getResources().getDrawable(R.drawable.ic_avatar));
                 }
 
-                mFbFollow.setData(LocalDb.getInstance().getCurrentUser(), mUser);
+                if (!mCurrentUser.equals(mSelectedUser)) {
+                    mFbFollow.setData(mCurrentUser, mSelectedUser);
+                }
             }
         });
     }
@@ -90,7 +95,7 @@ public class UserItem extends LinearLayout implements View.OnClickListener {
 
     private void goToProfile() {
         Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
-        profileIntent.putExtra(USER_ID, mUser.getObjectId());
+        profileIntent.putExtra(USER_ID, mSelectedUser.getObjectId());
         getContext().startActivity(profileIntent);
     }
 }

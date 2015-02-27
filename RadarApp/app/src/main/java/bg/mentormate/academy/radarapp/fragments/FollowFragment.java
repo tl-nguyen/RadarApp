@@ -53,7 +53,7 @@ public class FollowFragment extends ListFragment implements View.OnClickListener
 
     private void initData() {
         String id = getArguments().getString(USER_ID);
-        mState = getArguments().getString(Constants.STATE);
+        mState = getArguments().getString(Constants.CATEGORY);
 
         if (id != null && mState != null) {
             QueryHelper.getUserById(id, new GetCallback<User>() {
